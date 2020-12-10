@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo/util/utils.dart';
 import 'package:todo/widget/fancy_button.dart';
+import 'package:todo/widget/login/log_in_page.dart';
 import 'package:todo/widget/modal_progress_hud.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -209,7 +210,7 @@ class _MyHomePageAfterLoadingState extends State<MyHomePageAfterLoading>
         child: SafeArea(
           child: Scaffold(
             backgroundColor: Colors.brown[50],
-            body: Container(),
+            body: LogInPage(),
           ),
         ),
       ),
