@@ -1,0 +1,10 @@
+{
+  "ok": "ok",
+  "cancel": "cancel",
+  "error": "error",
+  "loading_web": "loading...",
+  "privacy_title": "Privacy Policy",
+  "privacy_url": "https://todo-redefined.flycricket.io/privacy.html",
+  "terms_url": "https://todo-redefined.flycricket.io/terms.html",
+  "terms_title": "Terms & Conditions"
+}

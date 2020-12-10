@@ -1,15 +1,48 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todo/util/utils.dart';
+import 'package:todo/widget/fancy_button.dart';
+import 'package:todo/widget/modal_progress_hud.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-void main() {
+import 'generated/i18n.dart';
+
+part 'controller.dart';
+
+void main() async {
+  //run the app
   runApp(MyApp());
+  //init firebase app
+  Firebase.initializeApp();
+  //add all licenses
+  addLicenses();
 }
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    //set fullscreen
+    SystemChrome.setEnabledSystemUIOverlays([]);
+    //and portrait only
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
+    //create the material app
     return MaterialApp(
-      title: 'Flutter Demo',
+      //manage resources first
+      localizationsDelegates: [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
+      //define title etc.
+      title: app_name,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -20,94 +53,166 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.indigo,
+
+        // This makes the visual density adapt to the platform that you run
+        // the app on. For desktop platforms, the controls will be smaller and
+        // closer together (more dense) than on mobile platforms.
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+  MyHomePage({Key key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MyHomepageState createState() => _MyHomepageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+class _MyHomepageState extends State<MyHomePage> {
+  Future<void> _loadEverythingUp() async {
+    //await prefs
+    prefs = await SharedPreferences.getInstance();
+    //has to load is now false
+    _controller.hasToLoad = false;
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+    //set strings object
+    strings ??= S.of(context);
+    //init the context singleton object
+    ContextSingleton(context);
+    //build the chess controller,
+    //if needed set context newly
+    if (_controller == null)
+      _controller = Controller(context);
+    else
+      _controller.context = context;
+    //future builder: load old screen and show here on start the loading screen,
+    //when the future is finished,
+    //with setState show the real scaffold
+    //return the view
+    return (_controller.hasToLoad)
+        ? FutureBuilder(
+            future: _loadEverythingUp(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasError) {
+                  var error = snapshot.error;
+                  print('$error');
+                  return Center(child: Text(strings.error));
+                }
+
+                return MyHomePageAfterLoading();
+              } else {
+                return Center(
+                    child: ModalProgressHUD(
+                  child: Container(),
+                  inAsyncCall: true,
+                ));
+              }
+            },
+          )
+        : MyHomePageAfterLoading();
+  }
+}
+
+class MyHomePageAfterLoading extends StatefulWidget {
+  MyHomePageAfterLoading({Key key}) : super(key: key);
+
+  @override
+  _MyHomePageAfterLoadingState createState() => _MyHomePageAfterLoadingState();
+}
+
+class _MyHomePageAfterLoadingState extends State<MyHomePageAfterLoading>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+        _onWillPop();
+        break;
+      default:
+        break;
+    }
+  }
+
+  void update() {
+    setState(() {});
+  }
+
+  Future<bool> _onWillPop() async {
+    return true;
+  }
+
+  void _onAbout() async {
+    //show the about dialog
+    showAboutDialog(
+      context: context,
+      applicationVersion: version,
+      applicationIcon: Image.asset(
+        'res/drawable/ic_launcher.png',
+        width: 50,
+        height: 50,
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+      applicationLegalese: await rootBundle.loadString('res/licenses/this'),
+      children: [
+        FancyButton(
+          onPressed: () => launch(strings.privacy_url),
+          text: strings.privacy_title,
+        ),
+        FancyButton(
+          onPressed: () => launch(strings.terms_url),
+          text: strings.terms_title,
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    //set the update method
+    _controller.update = update;
+    //the default scaffold
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: ModalProgressHUD(
+        inAsyncCall: _controller.loading,
+        progressIndicator: kIsWeb
+            ? Text(
+                strings.loading_web,
+                style: Theme.of(context).textTheme.subtitle2,
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                ],
+              ),
+        child: SafeArea(
+          child: Scaffold(
+            backgroundColor: Colors.brown[50],
+            body: Container(),
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
