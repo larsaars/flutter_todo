@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "536523802943-fbe3nltc7ohjq9ck022dh630u3kgfsq7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lurzapps.todo",
+            "certificate_hash": "bdc3ce37d2d3882b707e2534aa0fc5ed37e38d4b"
+          }
+        },
+        {
+          "client_id": "536523802943-j9j086rub2h5gbe6d07lvgmnjv9bs3sn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lurzapps.todo",
+            "certificate_hash": "638ed9097de88323c43899e2a3102422d68c956b"
+          }
+        },
+        {
           "client_id": "536523802943-lg324lo9ntfja47do1jkv09gr43gdcg4.apps.googleusercontent.com",
           "client_type": 3
         }

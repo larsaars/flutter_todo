@@ -12,6 +12,12 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
+def debugKeyProperties = new Properties()
+def debugKeystorePropertiesFile = rootProject.file('debug_key.properties')
+if (debugKeystorePropertiesFile.exists()) {
+    debugKeyProperties.load(new FileInputStream(debugKeystorePropertiesFile))
+}
+
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
     throw new Exception("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
@@ -59,12 +65,22 @@ android {
             storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
             storePassword keystoreProperties['storePassword']
         }
+
+        debug {
+            keyAlias debugKeyProperties['keyAlias']
+            keyPassword debugKeyProperties['keyPassword']
+            storeFile debugKeyProperties['storeFile'] ? file(debugKeyProperties['storeFile']) : null
+            storePassword debugKeyProperties['storePassword']
+        }
     }
 
     buildTypes {
         release {
-            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.release
+        }
+
+        debug {
+            signingConfigs.debug
         }
     }
 }
