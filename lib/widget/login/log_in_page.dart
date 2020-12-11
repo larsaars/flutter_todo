@@ -11,7 +11,10 @@ final GoogleSignIn _googleSignIn = GoogleSignIn();
 class LogInPage extends StatefulWidget {
   final String title;
 
-  LogInPage({Key key, this.title}) : super(key: key);
+  LogInPage({
+    Key key,
+    this.title = 'login',
+  }) : super(key: key);
 
   @override
   _LogInPageState createState() => _LogInPageState();
