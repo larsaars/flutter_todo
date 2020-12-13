@@ -2,5 +2,13 @@
   "ok": "ok",
   "cancel": "schließen",
   "error": "Fehler",
-  "loading_web": "lädt..."
+  "loading_web": "lädt...",
+  "login_sign_in_with_email": "mit e-mail anmelden",
+  "login_register": "registrieren",
+  "login_login": "anmelden",
+  "login_email": "e-mail",
+  "login_please_enter_email": "bitte e-mail eingeben",
+  "login_enter_password": "bitte ein Passwort eingeben",
+  "login_password": "Passwort",
+  "login_sign_in_with_google": "mit google anmelden"
 }

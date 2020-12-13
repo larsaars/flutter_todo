@@ -58,6 +58,42 @@ class S {
     return Intl.message("Terms & Conditions", name: 'terms_title');
   }
 
+  String get login_sign_in_with_email {
+    return Intl.message("sign in with e-mail", name: 'login_sign_in_with_email');
+  }
+
+  String get login_register {
+    return Intl.message("register", name: 'login_register');
+  }
+
+  String get login_login {
+    return Intl.message("sign in", name: 'login_login');
+  }
+
+  String get login_email {
+    return Intl.message("e-mail", name: 'login_email');
+  }
+
+  String get login_please_enter_email {
+    return Intl.message("please enter your e-mail", name: 'login_please_enter_email');
+  }
+
+  String get login_enter_password {
+    return Intl.message("please enter a password", name: 'login_enter_password');
+  }
+
+  String get login_password {
+    return Intl.message("password", name: 'login_password');
+  }
+
+  String login_sign_in_failed(errorMsg) {
+    return Intl.message("sign in failed: ${errorMsg}", name: 'login_sign_in_failed', args: [errorMsg]);
+  }
+
+  String get login_sign_in_with_google {
+    return Intl.message("sign in with google", name: 'login_sign_in_with_google');
+  }
+
 
 }
 

@@ -17,6 +17,14 @@ class $de extends MessageLookupByLibrary {
 		"cancel" : MessageLookupByLibrary.simpleMessage("schließen"),
 		"error" : MessageLookupByLibrary.simpleMessage("Fehler"),
 		"loading_web" : MessageLookupByLibrary.simpleMessage("lädt..."),
+		"login_sign_in_with_email" : MessageLookupByLibrary.simpleMessage("mit e-mail anmelden"),
+		"login_register" : MessageLookupByLibrary.simpleMessage("registrieren"),
+		"login_login" : MessageLookupByLibrary.simpleMessage("anmelden"),
+		"login_email" : MessageLookupByLibrary.simpleMessage("e-mail"),
+		"login_please_enter_email" : MessageLookupByLibrary.simpleMessage("bitte e-mail eingeben"),
+		"login_enter_password" : MessageLookupByLibrary.simpleMessage("bitte ein Passwort eingeben"),
+		"login_password" : MessageLookupByLibrary.simpleMessage("Passwort"),
+		"login_sign_in_with_google" : MessageLookupByLibrary.simpleMessage("mit google anmelden"),
 
   };
 }
@@ -35,6 +43,15 @@ class $en extends MessageLookupByLibrary {
 		"privacy_url" : MessageLookupByLibrary.simpleMessage("https://todo-redefined.flycricket.io/privacy.html"),
 		"terms_url" : MessageLookupByLibrary.simpleMessage("https://todo-redefined.flycricket.io/terms.html"),
 		"terms_title" : MessageLookupByLibrary.simpleMessage("Terms & Conditions"),
+		"login_sign_in_with_email" : MessageLookupByLibrary.simpleMessage("sign in with e-mail"),
+		"login_register" : MessageLookupByLibrary.simpleMessage("register"),
+		"login_login" : MessageLookupByLibrary.simpleMessage("sign in"),
+		"login_email" : MessageLookupByLibrary.simpleMessage("e-mail"),
+		"login_please_enter_email" : MessageLookupByLibrary.simpleMessage("please enter your e-mail"),
+		"login_enter_password" : MessageLookupByLibrary.simpleMessage("please enter a password"),
+		"login_password" : MessageLookupByLibrary.simpleMessage("password"),
+		"login_sign_in_failed" : (errorMsg) => "sign in failed: ${errorMsg}",
+		"login_sign_in_with_google" : MessageLookupByLibrary.simpleMessage("sign in with google"),
 
   };
 }

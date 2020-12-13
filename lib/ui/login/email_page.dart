@@ -1,16 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:todo/main.dart';
 
 import 'logged_in_page.dart';
 
 class EmailPage extends StatefulWidget {
   final FirebaseAuth firebaseAuth;
 
-  const EmailPage({
-    Key key,
-    @required this.firebaseAuth
-  }) : super(key: key);
+  const EmailPage({Key key, @required this.firebaseAuth}) : super(key: key);
 
   @override
   _EmailPageState createState() => _EmailPageState();
@@ -28,7 +26,7 @@ class _EmailPageState extends State<EmailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign in with email'),
+        title: Text(strings.login_sign_in_with_email),
       ),
       body: Form(
         key: _formKey,
@@ -39,9 +37,11 @@ class _EmailPageState extends State<EmailPage> {
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(labelText: 'Email'),
+                decoration: InputDecoration(labelText: strings.login_email),
                 validator: (String value) {
-                  return value.isEmpty ? 'Please enter your email' : null;
+                  return value.isEmpty
+                      ? strings.login_please_enter_email
+                      : null;
                 },
               ),
             ),
@@ -49,41 +49,41 @@ class _EmailPageState extends State<EmailPage> {
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: TextFormField(
                 controller: _passwordController,
-                decoration: InputDecoration(labelText: 'Password'),
+                decoration: InputDecoration(labelText: strings.login_password),
                 obscureText: true,
                 validator: (String value) {
-                  return value.isEmpty ? 'Please enter a password' : null;
+                  return value.isEmpty ? strings.login_enter_password : null;
                 },
               ),
             ),
             Container(
-              alignment: Alignment.center,
-              child: ButtonBar(
-                children: <Widget>[
-                  FlatButton(
-                    child: Text('Create Account'),
-                    onPressed: () async {
-                      if (_formKey.currentState.validate()) {
-                        _createAccountWithEmailAndPassword();
-                      }
-                    },
-                  ),
-                  RaisedButton(
-                    child: Text('Sign In'),
-                    onPressed: () async {
-                      if (_formKey.currentState.validate()) {
-                        _signInWithEmailAndPassword();
-                      }
-                    }
-                  )
-                ],
-              ) 
-            ),
+                alignment: Alignment.center,
+                child: ButtonBar(
+                  children: <Widget>[
+                    FlatButton(
+                      child: Text(strings.login_register),
+                      onPressed: () async {
+                        if (_formKey.currentState.validate()) {
+                          _createAccountWithEmailAndPassword();
+                        }
+                      },
+                    ),
+                    RaisedButton(
+                        child: Text(strings.login_login),
+                        onPressed: () async {
+                          if (_formKey.currentState.validate()) {
+                            _signInWithEmailAndPassword();
+                          }
+                        })
+                  ],
+                )),
             Container(
               alignment: Alignment.center,
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                _success == null ? '' : 'Sign in failed: $_errorMessage',
+                _success == null
+                    ? ''
+                    : strings.login_sign_in_failed(_errorMessage),
                 style: TextStyle(color: Colors.red),
               ),
             ),
@@ -101,33 +101,44 @@ class _EmailPageState extends State<EmailPage> {
   }
 
   void _signInWithEmailAndPassword() async {
-    final UserCredential user = await widget.firebaseAuth.signInWithEmailAndPassword(
+    final UserCredential user =
+        await widget.firebaseAuth.signInWithEmailAndPassword(
       email: _emailController.text,
       password: _passwordController.text,
     );
 
     if (user != null) {
       setState(() {
-        _success = true; 
+        _success = true;
       });
-      Navigator.push(context, MaterialPageRoute<void>(builder: (_) => LoggedInPage(firebaseAuth: widget.firebaseAuth, firebaseUser: user.user)));
+      Navigator.push(
+          context,
+          MaterialPageRoute<void>(
+              builder: (_) => LoggedInPage(
+                  firebaseAuth: widget.firebaseAuth, firebaseUser: user.user)));
+    } else {
+      _success = false;
     }
   }
 
   void _createAccountWithEmailAndPassword() async {
     try {
-      final UserCredential user = await widget.firebaseAuth.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text
-      );
+      final UserCredential user = await widget.firebaseAuth
+          .createUserWithEmailAndPassword(
+              email: _emailController.text, password: _passwordController.text);
 
       if (user != null) {
         setState(() {
-         _success = true; 
+          _success = true;
         });
-        Navigator.push(context, MaterialPageRoute<void>(builder: (_) => LoggedInPage(firebaseAuth: widget.firebaseAuth, firebaseUser: user.user)));
+        Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+                builder: (_) => LoggedInPage(
+                    firebaseAuth: widget.firebaseAuth,
+                    firebaseUser: user.user)));
       }
-    } on PlatformException catch (e){
+    } on PlatformException catch (e) {
       setState(() {
         _success = false;
         _errorMessage = e.message;
