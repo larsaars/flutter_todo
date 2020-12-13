@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../main.dart';
-
 class ModalProgressHUD extends StatelessWidget {
   final bool inAsyncCall;
   final double opacity;

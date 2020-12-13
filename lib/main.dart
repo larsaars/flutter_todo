@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todo/ui/login/log_in_page.dart';
+import 'package:todo/ui/widget/fancy_button.dart';
+import 'package:todo/ui/widget/modal_progress_hud.dart';
 import 'package:todo/util/utils.dart';
-import 'package:todo/widget/fancy_button.dart';
-import 'package:todo/widget/login/log_in_page.dart';
-import 'package:todo/widget/modal_progress_hud.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'generated/i18n.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:todo/ui/widget/divider.dart';
 import 'package:todo/util/utils.dart';
-import 'package:todo/widget/divider.dart';
 
 import '../main.dart';
 
