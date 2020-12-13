@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:todo/main.dart';
 
 import 'email_page.dart';
 import 'logged_in_page.dart';
@@ -48,7 +49,7 @@ class _LogInPageState extends State<LogInPage> {
                 width: 24,
                 height: 24,
               ),
-              label: Text('Sign in with Google'),
+              label: Text(strings.login_sign_in_with_google),
               onPressed: () {
                 _signInWithGoogle();
               },
@@ -56,7 +57,7 @@ class _LogInPageState extends State<LogInPage> {
             RaisedButton.icon(
               color: Colors.white,
               icon: Icon(Icons.email),
-              label: Text('Sign in with email'),
+              label: Text(strings.login_sign_in_with_email),
               onPressed: () {
                 _pushPage(context, EmailPage(firebaseAuth: _auth));
               },

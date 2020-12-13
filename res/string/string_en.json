@@ -6,5 +6,14 @@
   "privacy_title": "Privacy Policy",
   "privacy_url": "https://todo-redefined.flycricket.io/privacy.html",
   "terms_url": "https://todo-redefined.flycricket.io/terms.html",
-  "terms_title": "Terms & Conditions"
+  "terms_title": "Terms & Conditions",
+  "login_sign_in_with_email": "sign in with e-mail",
+  "login_register": "register",
+  "login_login": "sign in",
+  "login_email": "e-mail",
+  "login_please_enter_email": "please enter your e-mail",
+  "login_enter_password": "please enter a password",
+  "login_password": "password",
+  "login_sign_in_failed": "sign in failed: ${errorMsg}",
+  "login_sign_in_with_google": "sign in with google"
 }
