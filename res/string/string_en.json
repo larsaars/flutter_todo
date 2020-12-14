@@ -15,5 +15,6 @@
   "login_enter_password": "please enter a password",
   "login_password": "password",
   "login_sign_in_failed": "sign in failed: ${errorMsg}",
-  "login_sign_in_with_google": "sign in with google"
+  "login_sign_in_with_google": "sign in with google",
+  "login_bad_password": "bad password"
 }

@@ -94,6 +94,10 @@ class S {
     return Intl.message("sign in with google", name: 'login_sign_in_with_google');
   }
 
+  String get login_bad_password {
+    return Intl.message("bad password", name: 'login_bad_password');
+  }
+
 
 }
 
