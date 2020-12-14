@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:todo/util/utils.dart';
+
 import 'fancy_button.dart';
 
 bool collapseFancyOptions = false;

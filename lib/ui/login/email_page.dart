@@ -111,17 +111,40 @@ class _EmailPageState extends State<EmailPage> {
       setState(() {
         _success = true;
       });
-      Navigator.push(
+      Future.microtask(() => Navigator.push(
           context,
           MaterialPageRoute<void>(
               builder: (_) => LoggedInPage(
-                  firebaseAuth: widget.firebaseAuth, firebaseUser: user.user)));
+                  firebaseAuth: widget.firebaseAuth,
+                  firebaseUser: user.user))));
     } else {
       _success = false;
     }
   }
 
+  bool _passwordValidates(String pass) {
+    int count = 0;
+
+    if (8 <= pass.length && pass.length <= 32) {
+      if (RegExp(".*\\d.*").hasMatch(pass)) count++;
+      if (RegExp(".*[a-z].*").hasMatch(pass)) count++;
+      if (RegExp(".*[A-Z].*").hasMatch(pass)) count++;
+      if (RegExp('^.*[*.!@#\$%^&(){}[]:\";\'<>,.?/~`_+-=|\\].*\$')
+          .hasMatch(pass)) count++;
+    }
+
+    return count >= 3;
+  }
+
   void _createAccountWithEmailAndPassword() async {
+    //check password
+    if (!_passwordValidates(_passwordController.text)) {
+      _success = false;
+      _errorMessage = strings.login_bad_password;
+      return;
+    }
+
+    //login with credentials
     try {
       final UserCredential user = await widget.firebaseAuth
           .createUserWithEmailAndPassword(
