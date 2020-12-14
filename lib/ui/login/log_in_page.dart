@@ -42,25 +42,31 @@ class _LogInPageState extends State<LogInPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            RaisedButton.icon(
-              color: Colors.white,
-              icon: Image.asset(
-                'res/drawable/google.png',
-                width: 24,
-                height: 24,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: RaisedButton.icon(
+                color: Colors.white,
+                icon: Image.asset(
+                  'res/drawable/google.png',
+                  width: 24,
+                  height: 24,
+                ),
+                label: Text(strings.login_sign_in_with_google),
+                onPressed: () {
+                  _signInWithGoogle();
+                },
               ),
-              label: Text(strings.login_sign_in_with_google),
-              onPressed: () {
-                _signInWithGoogle();
-              },
             ),
-            RaisedButton.icon(
-              color: Colors.white,
-              icon: Icon(Icons.email),
-              label: Text(strings.login_sign_in_with_email),
-              onPressed: () {
-                _pushPage(context, EmailPage(firebaseAuth: _auth));
-              },
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: RaisedButton.icon(
+                color: Colors.white,
+                icon: Icon(Icons.email),
+                label: Text(strings.login_sign_in_with_email),
+                onPressed: () {
+                  _pushPage(context, EmailPage(firebaseAuth: _auth));
+                },
+              ),
             )
           ],
         ),
