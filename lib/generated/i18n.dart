@@ -98,6 +98,10 @@ class S {
     return Intl.message("bad password", name: 'login_bad_password');
   }
 
+  String get account {
+    return Intl.message("account", name: 'account');
+  }
+
 
 }
 

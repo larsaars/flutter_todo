@@ -11,5 +11,6 @@
   "login_enter_password": "bitte ein Passwort eingeben",
   "login_password": "Passwort",
   "login_sign_in_with_google": "mit google anmelden",
-  "login_bad_password": "unsicheres Passwort"
+  "login_bad_password": "unsicheres Passwort",
+  "account": "account"
 }

@@ -10,8 +10,9 @@ import '../main.dart';
 RoundedRectangleBorder roundButtonShape =
     RoundedRectangleBorder(borderRadius: BorderRadius.circular(45));
 
-AppBar appBar(BuildContext context, String title, [bool withIcon = false]) =>
+AppBar appBar(BuildContext context, String title, [bool withIcon = false, List<Widget> actions]) =>
     AppBar(
+      actions: actions,
       leading: withIcon
           ? Padding(
               padding: const EdgeInsets.all(8.0),
