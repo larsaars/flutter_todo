@@ -92,7 +92,7 @@ class _LogInPageState extends State<LogInPage> {
 
 // Helper method to navigate pages
 void _pushPage(BuildContext context, Widget page) {
-  Future.microtask(() => Navigator.of(context).push(
+  Future.microtask(() => Navigator.of(context).pushReplacement(
         MaterialPageRoute<void>(builder: (_) => page),
       ));
 }

@@ -6,6 +6,7 @@ class TodoStartPage extends StatelessWidget {
   final User firebaseUser;
   final FirebaseAuth firebaseAuth;
 
+
   const TodoStartPage({
     Key key,
     @required this.firebaseUser,
