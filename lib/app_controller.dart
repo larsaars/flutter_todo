@@ -2,16 +2,13 @@ part of 'main.dart';
 
 S strings;
 SharedPreferences prefs;
-Controller _controller;
+AppRootController _controller;
 
-class Controller {
+class AppRootController {
   BuildContext context;
   Function update;
 
   bool loading = false, hasToLoad = true;
 
-  Controller(this.context);
-
-
-
+  AppRootController(this.context);
 }

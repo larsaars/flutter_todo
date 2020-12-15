@@ -12,7 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'generated/i18n.dart';
 
-part 'controller.dart';
+part 'app_controller.dart';
 
 void main() async {
   //run the app
@@ -90,7 +90,7 @@ class _MyHomepageState extends State<MyHomePage> {
     //build the chess controller,
     //if needed set context newly
     if (_controller == null)
-      _controller = Controller(context);
+      _controller = AppRootController(context);
     else
       _controller.context = context;
     //future builder: load old screen and show here on start the loading screen,
