@@ -2,9 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:todo/main.dart';
+import 'package:todo/util/widget_utils.dart';
 
 import 'email_page.dart';
-import 'logged_in_page.dart';
+import '../todo_start.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -28,45 +29,37 @@ class _LogInPageState extends State<LogInPage> {
     // Enabled persistent log-ins by checking the Firebase Auth instance for previously logged in users
     if (_auth.currentUser != null) {
       _pushPage(context,
-          LoggedInPage(firebaseAuth: _auth, firebaseUser: _auth.currentUser));
+          TodoStartPage(firebaseAuth: _auth, firebaseUser: _auth.currentUser));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
+      appBar: appBar(context, widget.title, true),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: RaisedButton.icon(
-                color: Colors.white,
-                icon: Image.asset(
-                  'res/drawable/google.png',
-                  width: 24,
-                  height: 24,
-                ),
-                label: Text(strings.login_sign_in_with_google),
-                onPressed: () {
-                  _signInWithGoogle();
-                },
+            RaisedButton.icon(
+              color: Colors.white,
+              icon: Image.asset(
+                'res/drawable/google.png',
+                width: 24,
+                height: 24,
               ),
+              label: Text(strings.login_sign_in_with_google),
+              onPressed: () {
+                _signInWithGoogle();
+              },
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: RaisedButton.icon(
-                color: Colors.white,
-                icon: Icon(Icons.email),
-                label: Text(strings.login_sign_in_with_email),
-                onPressed: () {
-                  _pushPage(context, EmailPage(firebaseAuth: _auth));
-                },
-              ),
+            RaisedButton.icon(
+              color: Colors.white,
+              icon: Icon(Icons.email),
+              label: Text(strings.login_sign_in_with_email),
+              onPressed: () {
+                _pushPage(context, EmailPage(firebaseAuth: _auth));
+              },
             )
           ],
         ),
@@ -92,7 +85,7 @@ class _LogInPageState extends State<LogInPage> {
     assert(currentUser.uid == currentUser.uid);
     if (user != null) {
       _pushPage(
-          context, LoggedInPage(firebaseAuth: _auth, firebaseUser: user.user));
+          context, TodoStartPage(firebaseAuth: _auth, firebaseUser: user.user));
     }
   }
 }

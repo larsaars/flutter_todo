@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:todo/main.dart';
+import 'package:todo/util/widget_utils.dart';
 
-import 'logged_in_page.dart';
+import '../todo_start.dart';
 
 class EmailPage extends StatefulWidget {
   final FirebaseAuth firebaseAuth;
@@ -25,9 +28,7 @@ class _EmailPageState extends State<EmailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(strings.login_sign_in_with_email),
-      ),
+      appBar: appBar(context, strings.login_sign_in_with_email),
       body: Form(
         key: _formKey,
         child: Column(
@@ -111,10 +112,11 @@ class _EmailPageState extends State<EmailPage> {
       setState(() {
         _success = true;
       });
-      Future.microtask(() => Navigator.push(
+
+      Future.microtask(() => Navigator.pushReplacement(
           context,
           MaterialPageRoute<void>(
-              builder: (_) => LoggedInPage(
+              builder: (_) => TodoStartPage(
                   firebaseAuth: widget.firebaseAuth,
                   firebaseUser: user.user))));
     } else {
@@ -154,10 +156,10 @@ class _EmailPageState extends State<EmailPage> {
         setState(() {
           _success = true;
         });
-        Navigator.push(
+        Navigator.pushReplacement(
             context,
             MaterialPageRoute<void>(
-                builder: (_) => LoggedInPage(
+                builder: (_) => TodoStartPage(
                     firebaseAuth: widget.firebaseAuth,
                     firebaseUser: user.user)));
       }

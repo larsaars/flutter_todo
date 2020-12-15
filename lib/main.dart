@@ -163,30 +163,6 @@ class _MyHomePageAfterLoadingState extends State<MyHomePageAfterLoading>
     return true;
   }
 
-  void _onAbout() async {
-    //show the about dialog
-    showAboutDialog(
-      context: context,
-      applicationVersion: version,
-      applicationIcon: Image.asset(
-        'res/drawable/ic_launcher.png',
-        width: 50,
-        height: 50,
-      ),
-      applicationLegalese: await rootBundle.loadString('res/licenses/this'),
-      children: [
-        FancyButton(
-          onPressed: () => launch(strings.privacy_url),
-          text: strings.privacy_title,
-        ),
-        FancyButton(
-          onPressed: () => launch(strings.terms_url),
-          text: strings.terms_title,
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     //set the update method
@@ -210,7 +186,9 @@ class _MyHomePageAfterLoadingState extends State<MyHomePageAfterLoading>
         child: SafeArea(
           child: Scaffold(
             backgroundColor: Colors.brown[50],
-            body: LogInPage(),
+            body: LogInPage(
+              title: app_name,
+            ),
           ),
         ),
       ),

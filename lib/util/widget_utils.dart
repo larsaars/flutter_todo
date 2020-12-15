@@ -1,11 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:todo/ui/widget/divider.dart';
+import 'package:todo/ui/widget/fancy_button.dart';
 import 'package:todo/util/utils.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../main.dart';
 
 RoundedRectangleBorder roundButtonShape =
-RoundedRectangleBorder(borderRadius: BorderRadius.circular(45));
+    RoundedRectangleBorder(borderRadius: BorderRadius.circular(45));
+
+AppBar appBar(BuildContext context, String title, [bool withIcon = false]) =>
+    AppBar(
+      leading: withIcon
+          ? Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.asset(
+                'res/drawable/ic_launcher.png',
+              ),
+            )
+          : null,
+      automaticallyImplyLeading: !withIcon,
+      title: Text(title,
+          style: Theme.of(context)
+              .textTheme
+              .subtitle1
+              .copyWith(color: Colors.white)),
+    );
 
 typedef void OnDialogCancelCallback(value);
 typedef void OnDialogReturnSetStateCallback(BuildContext context, setState);
@@ -73,62 +94,62 @@ void showAnimatedDialog({
                   (text == null)
                       ? SizedBox()
                       : Center(
-                    child: Container(
-                      constraints: BoxConstraints(maxWidth: 400),
-                      child: Text(
-                        text ?? "",
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.subtitle2,
-                      ),
-                    ),
-                  ),
+                          child: Container(
+                            constraints: BoxConstraints(maxWidth: 400),
+                            child: Text(
+                              text ?? "",
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.subtitle2,
+                            ),
+                          ),
+                        ),
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Visibility(
-                        visible: withInputField,
-                        child: TextFormField(
-                          maxLines: 1,
-                          onChanged: (value) => inputText = value,
-                          decoration: new InputDecoration(
-                              border: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              errorBorder: InputBorder.none,
-                              disabledBorder: InputBorder.none,
-                              contentPadding: EdgeInsets.only(
-                                  left: 15, bottom: 11, top: 11, right: 15),
-                              hintText: inputFieldHint),
-                        ),
-                      )
-                    ] +
+                          Visibility(
+                            visible: withInputField,
+                            child: TextFormField(
+                              maxLines: 1,
+                              onChanged: (value) => inputText = value,
+                              decoration: new InputDecoration(
+                                  border: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                  contentPadding: EdgeInsets.only(
+                                      left: 15, bottom: 11, top: 11, right: 15),
+                                  hintText: inputFieldHint),
+                            ),
+                          )
+                        ] +
                         children,
                   ),
                 ],
               ),
               actions: showAnyActionButton
                   ? [
-                FlatButton(
-                    shape: roundButtonShape,
-                    child: Text(forceCancelText != null
-                        ? forceCancelText
-                        : (onDone == null ? strings.ok : strings.cancel)),
-                    onPressed: () {
-                      _showing = false;
-                      Navigator.of(context)
-                          .pop(onDone == null ? 'ok' : null);
-                    }),
-                onDone != null
-                    ? FlatButton(
-                    shape: roundButtonShape,
-                    child: Text(onDoneText ?? ""),
-                    onPressed: () {
-                      _showing = false;
-                      Navigator.of(context).pop('ok');
-                    })
-                    : Container()
-              ]
+                      FlatButton(
+                          shape: roundButtonShape,
+                          child: Text(forceCancelText != null
+                              ? forceCancelText
+                              : (onDone == null ? strings.ok : strings.cancel)),
+                          onPressed: () {
+                            _showing = false;
+                            Navigator.of(context)
+                                .pop(onDone == null ? 'ok' : null);
+                          }),
+                      onDone != null
+                          ? FlatButton(
+                              shape: roundButtonShape,
+                              child: Text(onDoneText ?? ""),
+                              onPressed: () {
+                                _showing = false;
+                                Navigator.of(context).pop('ok');
+                              })
+                          : Container()
+                    ]
                   : [],
             );
           }),
@@ -141,10 +162,34 @@ void showAnimatedDialog({
     _showing = false;
     //execute the on done
     if (onDone != null && value != null) {
-      if(withInputField)
+      if (withInputField)
         onDone(inputText);
       else
         onDone(value);
     }
   });
+}
+
+void showAbout(BuildContext context) async {
+  //show the about dialog
+  showAboutDialog(
+    context: context,
+    applicationVersion: version,
+    applicationIcon: Image.asset(
+      'res/drawable/ic_launcher.png',
+      width: 50,
+      height: 50,
+    ),
+    applicationLegalese: await rootBundle.loadString('res/licenses/this'),
+    children: [
+      FancyButton(
+        onPressed: () => launch(strings.privacy_url),
+        text: strings.privacy_title,
+      ),
+      FancyButton(
+        onPressed: () => launch(strings.terms_url),
+        text: strings.terms_title,
+      ),
+    ],
+  );
 }

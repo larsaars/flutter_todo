@@ -5,9 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
-const version = '1.0';
-const app_name = 'todo';
-
 final Random random = Random();
 
 Future<String> get rootDir async {

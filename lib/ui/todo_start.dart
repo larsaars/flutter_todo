@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:todo/util/widget_utils.dart';
 
-class LoggedInPage extends StatelessWidget {
+class TodoStartPage extends StatelessWidget {
   final User firebaseUser;
   final FirebaseAuth firebaseAuth;
 
-  const LoggedInPage({
+  const TodoStartPage({
     Key key,
     @required this.firebaseUser,
     @required this.firebaseAuth,
@@ -14,10 +15,7 @@ class LoggedInPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Successfully Logged In'),
-        automaticallyImplyLeading: false,
-      ),
+      appBar: appBar(context, 'logged in', true),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
