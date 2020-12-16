@@ -17,5 +17,6 @@
   "login_sign_in_failed": "sign in failed: ${errorMsg}",
   "login_sign_in_with_google": "sign in with google",
   "login_bad_password": "bad password",
-  "account": "account"
+  "account": "account",
+  "log_off": "sign out"
 }

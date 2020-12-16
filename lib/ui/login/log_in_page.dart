@@ -4,8 +4,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:todo/main.dart';
 import 'package:todo/util/widget_utils.dart';
 
-import 'email_page.dart';
 import '../todo_start.dart';
+import 'email_page.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -58,7 +58,10 @@ class _LogInPageState extends State<LogInPage> {
               icon: Icon(Icons.email),
               label: Text(strings.login_sign_in_with_email),
               onPressed: () {
-                _pushPage(context, EmailPage(firebaseAuth: _auth));
+                Future.microtask(
+                    () => Navigator.of(context).push(MaterialPageRoute<void>(
+                          builder: (_) => EmailPage(firebaseAuth: _auth),
+                        )));
               },
             )
           ],

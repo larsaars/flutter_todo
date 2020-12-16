@@ -27,6 +27,7 @@ class $de extends MessageLookupByLibrary {
 		"login_sign_in_with_google" : MessageLookupByLibrary.simpleMessage("mit google anmelden"),
 		"login_bad_password" : MessageLookupByLibrary.simpleMessage("unsicheres Passwort"),
 		"account" : MessageLookupByLibrary.simpleMessage("account"),
+		"log_off" : MessageLookupByLibrary.simpleMessage("abmelden"),
 
   };
 }
@@ -56,6 +57,7 @@ class $en extends MessageLookupByLibrary {
 		"login_sign_in_with_google" : MessageLookupByLibrary.simpleMessage("sign in with google"),
 		"login_bad_password" : MessageLookupByLibrary.simpleMessage("bad password"),
 		"account" : MessageLookupByLibrary.simpleMessage("account"),
+		"log_off" : MessageLookupByLibrary.simpleMessage("sign out"),
 
   };
 }
