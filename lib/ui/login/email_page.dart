@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -102,11 +100,19 @@ class _EmailPageState extends State<EmailPage> {
   }
 
   void _signInWithEmailAndPassword() async {
-    final UserCredential user =
-        await widget.firebaseAuth.signInWithEmailAndPassword(
-      email: _emailController.text,
-      password: _passwordController.text,
-    );
+    UserCredential user;
+
+    try {
+      user = await widget.firebaseAuth.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+    } catch (e) {
+      setState(() {
+        _success = false;
+        _errorMessage = (e as FirebaseException).message;
+      });
+    }
 
     if (user != null) {
       setState(() {

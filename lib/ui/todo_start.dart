@@ -4,49 +4,78 @@ import 'package:todo/util/widget_utils.dart';
 
 import '../main.dart';
 
-class TodoStartPage extends StatelessWidget {
+enum _PopupMenuAccount { logOff }
+
+class TodoStartPage extends StatefulWidget {
   final User firebaseUser;
   final FirebaseAuth firebaseAuth;
 
-  const TodoStartPage({
+  TodoStartPage({
     Key key,
     @required this.firebaseUser,
     @required this.firebaseAuth,
   }) : super(key: key);
 
   @override
+  _TodoStartPageState createState() => _TodoStartPageState();
+}
+
+class _TodoStartPageState extends State<TodoStartPage> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(context, app_name, true, [
-        Padding(
+      appBar: AppBar(
+        leading: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Tooltip(
-            message: strings.account,
-            child: RawMaterialButton(
-              shape: CircleBorder(),
-              onPressed: () => print('pressed'),
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(45),
-                  child: Image.network(firebaseUser.photoURL)),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(45),
+            child: Material(
+              color: Colors.transparent,
+              child: PopupMenuButton(
+                tooltip: strings.account,
+                child: widget.firebaseUser.photoURL == null
+                    ? Image.asset('res/drawable/profile.png')
+                    : Image.network(widget.firebaseUser.photoURL),
+                itemBuilder: (context) => <PopupMenuEntry<_PopupMenuAccount>>[
+                  PopupMenuItem<_PopupMenuAccount>(
+                    value: _PopupMenuAccount.logOff,
+                    child: Text(strings.log_off),
+                  )
+                ],
+                onSelected: (value) {
+
+                },
+              ),
             ),
           ),
-        )
-      ]),
+        ),
+        automaticallyImplyLeading: false,
+        title: Text(widget.firebaseUser.displayName,
+            style: Theme.of(context)
+                .textTheme
+                .subtitle1
+                .copyWith(color: Colors.white)),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Signed in as: ${firebaseUser.email}'),
+            Text('Signed in as: ${widget.firebaseUser.email}'),
             RaisedButton(
               child: Text('Sign out'),
-              onPressed: () async {
-                await firebaseAuth.signOut();
-                Navigator.pop(context);
+              onPressed: () {
+                _logOut(context);
               },
             )
           ],
         ),
       ),
     );
+  }
+
+  void _logOut(BuildContext context) async {
+    await widget.firebaseAuth.signOut();
+    Navigator.pushReplacement(context,
+        MaterialPageRoute<void>(builder: (_) => MyHomePageAfterLoading()));
   }
 }

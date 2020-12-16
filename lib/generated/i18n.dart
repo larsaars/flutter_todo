@@ -102,6 +102,10 @@ class S {
     return Intl.message("account", name: 'account');
   }
 
+  String get log_off {
+    return Intl.message("sign out", name: 'log_off');
+  }
+
 
 }
 
