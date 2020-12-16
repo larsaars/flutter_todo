@@ -1,10 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:todo/util/widget_utils.dart';
 
 import '../main.dart';
 
-enum _PopupMenuAccount { logOff }
+enum _PopupMenuAccount { logOff, changePassword, changeEmail, deleteAccount }
 
 class TodoStartPage extends StatefulWidget {
   final User firebaseUser;
@@ -39,18 +38,46 @@ class _TodoStartPageState extends State<TodoStartPage> {
                 itemBuilder: (context) => <PopupMenuEntry<_PopupMenuAccount>>[
                   PopupMenuItem<_PopupMenuAccount>(
                     value: _PopupMenuAccount.logOff,
-                    child: Text(strings.log_off),
+                    child: Text(
+                      strings.log_off,
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                  ),
+                  PopupMenuItem<_PopupMenuAccount>(
+                    value: _PopupMenuAccount.changeEmail,
+                    child: Text(
+                      strings.change_email,
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                  ),
+                  PopupMenuItem<_PopupMenuAccount>(
+                    value: _PopupMenuAccount.changePassword,
+                    child: Text(
+                      strings.reset_password,
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                  ),
+                  PopupMenuItem<_PopupMenuAccount>(
+                    value: _PopupMenuAccount.deleteAccount,
+                    child: Text(
+                      strings.delete_account,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          .copyWith(color: Colors.red),
+                    ),
                   )
                 ],
-                onSelected: (value) {
-
-                },
+                onSelected: (value) {},
               ),
             ),
           ),
         ),
         automaticallyImplyLeading: false,
-        title: Text(widget.firebaseUser.displayName,
+        title: Text(
+            widget.firebaseUser.displayName == null
+                ? app_name
+                : widget.firebaseUser.displayName,
             style: Theme.of(context)
                 .textTheme
                 .subtitle1

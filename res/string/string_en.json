@@ -18,5 +18,8 @@
   "login_sign_in_with_google": "sign in with google",
   "login_bad_password": "bad password",
   "account": "account",
-  "log_off": "sign out"
+  "log_off": "sign out",
+  "delete_account": "delete account",
+  "change_email": "change e-mail",
+  "reset_password": "reset password"
 }
