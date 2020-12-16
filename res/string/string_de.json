@@ -13,5 +13,8 @@
   "login_sign_in_with_google": "mit google anmelden",
   "login_bad_password": "unsicheres Passwort",
   "account": "account",
-  "log_off": "abmelden"
+  "log_off": "abmelden",
+  "delete_account": "Account löschen",
+  "change_email": "E-Mail ändern",
+  "reset_password": "Passwort zurücksetzen"
 }
