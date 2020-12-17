@@ -34,7 +34,8 @@ void addLicenses() {
 }
 
 // ignore: non_constant_identifier_names
-Future<String> get EMAIL_REGEX async => await rootBundle.loadString('res/regex/email');
+Future<String> get EMAIL_REGEX async =>
+    await rootBundle.loadString('res/regex/email');
 
 bool passwordValidates(String pass) {
   int count = 0;
@@ -43,9 +44,26 @@ bool passwordValidates(String pass) {
     if (RegExp(".*\\d.*").hasMatch(pass)) count++;
     if (RegExp(".*[a-z].*").hasMatch(pass)) count++;
     if (RegExp(".*[A-Z].*").hasMatch(pass)) count++;
-    if (RegExp('^.*[*.!@#\$%^&(){}[]:\";\'<>,.?/~`_+-=|\\].*\$')
-        .hasMatch(pass)) count++;
+    if (RegExp('^.*[*.!@#\$%^&(){}[]:\";\'<>,.?/~`_+-=|\\].*\$').hasMatch(pass))
+      count++;
   }
 
   return count >= 3;
+}
+
+List makeNonNull(List list) =>
+    list.where((element) => (element != null)).toList();
+
+bool isEmpty(obj) {
+  if(obj == null)
+    return true;
+
+  if(obj is Iterable)
+    return obj.isEmpty;
+  else if(obj is String)
+    return obj.length == 0;
+  else if(obj is Map)
+    return obj.isEmpty;
+
+  return false;
 }

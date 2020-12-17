@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:todo/util/utils.dart';
 import 'package:todo/util/widget_utils.dart';
 
 import '../../main.dart';
@@ -33,10 +34,17 @@ class _TodoStartPageState extends State<TodoStartPage> {
               color: Colors.transparent,
               child: PopupMenuButton(
                 tooltip: strings.account,
-                child: widget.firebaseUser.photoURL == null
-                    ? Image.asset('res/drawable/profile.png')
+                child: isEmpty(widget.firebaseUser.photoURL)
+                    ? Container(
+                        child: Icon(
+                          Icons.person,
+                          color: Colors.black54,
+                        ),
+                        color: Colors.white54,
+                      )
                     : Image.network(widget.firebaseUser.photoURL),
-                itemBuilder: (context) => <PopupMenuEntry<_PopupMenuAccount>>[
+                itemBuilder: (context) =>
+                    makeNonNull(<PopupMenuEntry<_PopupMenuAccount>>[
                   PopupMenuItem<_PopupMenuAccount>(
                     value: _PopupMenuAccount.logOff,
                     child: Text(
@@ -44,13 +52,15 @@ class _TodoStartPageState extends State<TodoStartPage> {
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ),
-                  PopupMenuItem<_PopupMenuAccount>(
-                    value: _PopupMenuAccount.changeEmail,
-                    child: Text(
-                      strings.change_email,
-                      style: Theme.of(context).textTheme.bodyText1,
-                    ),
-                  ),
+                  widget.firebaseUser.photoURL != null
+                      ? null
+                      : PopupMenuItem<_PopupMenuAccount>(
+                          value: _PopupMenuAccount.changeEmail,
+                          child: Text(
+                            strings.change_email,
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                        ),
                   PopupMenuItem<_PopupMenuAccount>(
                     value: _PopupMenuAccount.changePassword,
                     child: Text(
@@ -68,7 +78,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
                           .copyWith(color: Colors.red),
                     ),
                   )
-                ],
+                ]),
                 onSelected: (value) {
                   switch (value) {
                     case _PopupMenuAccount.logOff:
@@ -93,7 +103,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
         ),
         automaticallyImplyLeading: false,
         title: Text(
-            widget.firebaseUser.displayName == null
+            isEmpty(widget.firebaseUser.displayName)
                 ? app_name
                 : widget.firebaseUser.displayName,
             style: Theme.of(context)
@@ -132,7 +142,5 @@ class _TodoStartPageState extends State<TodoStartPage> {
     );
   }
 
-  void _deleteAccount() {
-
-  }
+  void _deleteAccount() {}
 }
