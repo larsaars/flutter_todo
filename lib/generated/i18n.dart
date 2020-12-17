@@ -118,6 +118,10 @@ class S {
     return Intl.message("reset password", name: 'reset_password');
   }
 
+  String get bad_email {
+    return Intl.message("Bad e-mail.", name: 'bad_email');
+  }
+
 
 }
 

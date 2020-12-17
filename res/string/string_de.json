@@ -16,5 +16,6 @@
   "log_off": "abmelden",
   "delete_account": "Account löschen",
   "change_email": "E-Mail ändern",
-  "reset_password": "Passwort zurücksetzen"
+  "reset_password": "Passwort zurücksetzen",
+  "bad_email": "Bitte geben Sie eine valide E-Mail Adresse ein."
 }

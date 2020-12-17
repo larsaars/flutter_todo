@@ -82,6 +82,7 @@ flutter:
     - res/string/
     - res/drawable/
     - res/licenses/
+    - res/regex/
 
 #icons
 flutter_icons:

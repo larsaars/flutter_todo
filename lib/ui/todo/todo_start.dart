@@ -119,7 +119,10 @@ class _TodoStartPageState extends State<TodoStartPage> {
   }
 
   void _changeEmail() {
-
+    showAnimatedDialog(
+      title: strings.reset_password,
+      withInputField: true,
+    );
   }
 
   void _changePassword() {
