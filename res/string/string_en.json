@@ -21,6 +21,8 @@
   "log_off": "sign out",
   "delete_account": "delete account",
   "change_email": "change e-mail",
-  "reset_password": "reset password",
-  "bad_email": "bad e-mail"
+  "reset_password": "change password",
+  "bad_email": "bad e-mail",
+  "new_email": "new e-mail",
+  "confirm_password": "confirm password"
 }

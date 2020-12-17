@@ -20,9 +20,10 @@ void addLicenses() {
   });
 }
 
+RegExp _emailRegex;
 // ignore: non_constant_identifier_names
 Future<RegExp> get EMAIL_REGEX async =>
-    RegExp(await rootBundle.loadString('res/regex/email'));
+    _emailRegex == null ? _emailRegex = RegExp(await rootBundle.loadString('res/regex/email')) : _emailRegex;
 
 bool passwordValidates(String pass) {
   int count = 0;

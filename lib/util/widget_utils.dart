@@ -38,7 +38,8 @@ typedef void OnDialogReturnSetStateCallback(BuildContext context, setState);
 
 bool _showing = false;
 
-void showAnimatedDialog(BuildContext context, {
+void showAnimatedDialog(
+  BuildContext context, {
   String title,
   String text,
   String onDoneText,
@@ -49,14 +50,36 @@ void showAnimatedDialog(BuildContext context, {
   IconData icon,
   var update,
   bool showAnyActionButton = true,
-  bool withInputField = false,
-  String inputFieldHint,
+  int inputFields = 0,
+  List<String> inputFieldsHints = const [],
+  List<TextInputType> inputTypes = const [],
 }) async {
   if (_showing) return;
 
   _showing = true;
 
-  String inputText;
+  List<String> inputTexts = [];
+
+  //create input fields list
+  List<Widget> inputWidgets = [];
+  for(int i = 0; i < inputFields; i++) {
+    var isPassword = inputTypes[i] == TextInputType.visiblePassword;
+    TextFormField(
+      maxLines: 1,
+      keyboardType: isPassword ? TextInputType.text : (inputTypes[i] ?? TextInputType.text),
+      obscureText: isPassword,
+      onChanged: (value) => inputTexts[i] = value,
+      decoration: InputDecoration(
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          errorBorder: InputBorder.none,
+          disabledBorder: InputBorder.none,
+          contentPadding: EdgeInsets.only(
+              left: 15, bottom: 11, top: 11, right: 15),
+          hintText: inputFieldsHints[i]),
+    );
+  }
 
   //show dialog
   showGeneralDialog(
@@ -77,20 +100,18 @@ void showAnimatedDialog(BuildContext context, {
             if (setStateCallback != null) setStateCallback(context, setState);
             //create the alert dialog object
             return AlertDialog(
-              title: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      icon == null ? Container() : Icon(icon),
-                      Divider8(),
-                      Text(
-                        title ?? "",
-                        style: Theme.of(context).textTheme.subtitle1,
-                      ),
-                    ],
-                  )),
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  icon == null ? Container() : Icon(icon),
+                  Divider8(),
+                  Text(
+                    title ?? "",
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                ],
+              ),
               content: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -111,25 +132,7 @@ void showAnimatedDialog(BuildContext context, {
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                          Visibility(
-                            visible: withInputField,
-                            child: TextFormField(
-                              maxLines: 1,
-                              onChanged: (value) => inputText = value,
-                              decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                  enabledBorder: InputBorder.none,
-                                  errorBorder: InputBorder.none,
-                                  disabledBorder: InputBorder.none,
-                                  contentPadding: EdgeInsets.only(
-                                      left: 15, bottom: 11, top: 11, right: 15),
-                                  hintText: inputFieldHint),
-                            ),
-                          )
-                        ] +
-                        children,
+                    children: inputWidgets + children,
                   ),
                 ],
               ),
@@ -148,7 +151,7 @@ void showAnimatedDialog(BuildContext context, {
                       onDone != null
                           ? FlatButton(
                               shape: roundButtonShape,
-                              child: Text(onDoneText ?? ""),
+                              child: Text(onDoneText ?? strings.ok),
                               onPressed: () {
                                 _showing = false;
                                 Navigator.of(context).pop('ok');
@@ -167,10 +170,10 @@ void showAnimatedDialog(BuildContext context, {
     _showing = false;
     //execute the on done
     if (onDone != null && value != null) {
-      if (withInputField)
-        onDone(inputText);
-      else
+      if (isEmpty(inputFields))
         onDone(value);
+      else
+        onDone(inputTexts);
     }
   });
 }

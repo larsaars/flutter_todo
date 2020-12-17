@@ -38,6 +38,7 @@ class _EmailPageState extends State<EmailPage> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: TextFormField(
+                keyboardType: TextInputType.emailAddress,
                 controller: _emailController,
                 decoration: InputDecoration(labelText: strings.login_email),
                 validator: (String value) {
