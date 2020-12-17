@@ -4,7 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:todo/main.dart';
 import 'package:todo/util/widget_utils.dart';
 
-import '../todo_start.dart';
+import '../todo/todo_start.dart';
 import 'email_page.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
