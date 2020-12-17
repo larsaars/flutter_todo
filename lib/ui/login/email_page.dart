@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:todo/main.dart';
+import 'package:todo/ui/widget/standard_buttons.dart';
 import 'package:todo/util/utils.dart';
 import 'package:todo/util/widget_utils.dart';
 
@@ -61,30 +62,22 @@ class _EmailPageState extends State<EmailPage> {
                 alignment: Alignment.center,
                 child: ButtonBar(
                   children: <Widget>[
-                    FlatButton(
-                      child: Text(strings.login_register),
-                      shape: roundedButtonShape,
+                    StandardFlatButton(
+                      text: strings.login_register,
                       onPressed: () async {
                         if (_formKey.currentState.validate()) {
                           _createAccountWithEmailAndPassword();
                         }
                       },
                     ),
-                    RawMaterialButton(
-                        shape: roundedButtonShape,
-                        fillColor: Colors.indigo,
-                        splashColor: Colors.indigo[400],
-                        child: Text(
-                            strings.login_login,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText1
-                                .copyWith(color: Colors.white)),
-                        onPressed: () async {
-                          if (_formKey.currentState.validate()) {
-                            _signInWithEmailAndPassword();
-                          }
-                        }),
+                    StandardFilledButton(
+                      text: strings.login_login,
+                      onPressed: () async {
+                        if (_formKey.currentState.validate()) {
+                          _signInWithEmailAndPassword();
+                        }
+                      },
+                    ),
                   ],
                 )),
             Container(
@@ -143,7 +136,7 @@ class _EmailPageState extends State<EmailPage> {
 
   void _createAccountWithEmailAndPassword() async {
     //check email
-    if(!RegExp(await EMAIL_REGEX).hasMatch(_emailController.text)) {
+    if (!RegExp(await EMAIL_REGEX).hasMatch(_emailController.text)) {
       setState(() {
         _success = false;
         _errorMessage = strings.bad_email;
