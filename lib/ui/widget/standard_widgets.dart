@@ -48,3 +48,23 @@ class StandardFlatButton extends StatelessWidget {
     );
   }
 }
+
+class StandardIcon extends StatelessWidget {
+  final IconData icon;
+
+  StandardIcon(this.icon);
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(45),
+      child: Container(
+        color: Colors.white54,
+        child: Icon(
+          icon,
+          color: Colors.black54,
+        ),
+      ),
+    );
+  }
+}
