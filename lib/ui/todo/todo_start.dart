@@ -142,10 +142,8 @@ class _TodoStartPageState extends State<TodoStartPage> {
             .signInWithEmailAndPassword(
                 email: widget.firebaseUser.email, password: value[0]);
 
-        print('logging in with ${widget.firebaseUser.email} and ${value[0]}, value 1 is ${value[1]}');
-
         if (userCredential == null) {
-          showSnackBar(strings.login_bad_password);
+          showSnackBar(strings.wrong_password);
           return;
         }
 
@@ -156,7 +154,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
         }else
           showSnackBar(strings.bad_email);
       } catch (e) {
-        showSnackBar(strings.login_bad_password);
+        showSnackBar(strings.wrong_password);
         return;
       }
     });
@@ -167,10 +165,35 @@ class _TodoStartPageState extends State<TodoStartPage> {
   }
 
   void _changePassword() {
-    showAnimatedDialog(
-      context,
-      title: strings.reset_password,
-    );
+    showAnimatedDialog(context,
+        title: strings.reset_password,
+        inputFields: 2,
+        inputFieldsHints: [strings.confirm_password, strings.new_password],
+        inputTypes: [TextInputType.visiblePassword, TextInputType.visiblePassword],
+        onDone: (value) async {
+          print(value);
+          //re-authenticate needed to change the email, check the email
+          try {
+            UserCredential userCredential = await widget.firebaseAuth
+                .signInWithEmailAndPassword(
+                email: widget.firebaseUser.email, password: value[0]);
+
+            if (userCredential == null) {
+              showSnackBar(strings.wrong_password);
+              return;
+            }
+
+            //now check entered new password
+            if (passwordValidates(value[1])) {
+              widget.firebaseUser.updatePassword(value[1]);
+              showSnackBar(strings.password_changed);
+            }else
+              showSnackBar(strings.login_bad_password);
+          } catch (e) {
+            showSnackBar(strings.wrong_password);
+            return;
+          }
+        });
   }
 
   void _deleteAccount() {}
