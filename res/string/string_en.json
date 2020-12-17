@@ -28,5 +28,7 @@
   "email_changed": "e-mail updated.",
   "password_changed": "password updated",
   "new_password": "new password",
-  "wrong_password": "wrong password"
+  "wrong_password": "wrong password",
+  "delete_account_title": "Delete account?",
+  "delete_account_text": "Are you sure that you want to delete your account and with it all todo lists?"
 }

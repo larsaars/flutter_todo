@@ -146,6 +146,14 @@ class S {
     return Intl.message("wrong password", name: 'wrong_password');
   }
 
+  String get delete_account_title {
+    return Intl.message("Delete account?", name: 'delete_account_title');
+  }
+
+  String get delete_account_text {
+    return Intl.message("Are you sure that you want to delete your account and with it all todo lists?", name: 'delete_account_text');
+  }
+
 
 }
 

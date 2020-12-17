@@ -38,6 +38,8 @@ class $de extends MessageLookupByLibrary {
 		"password_changed" : MessageLookupByLibrary.simpleMessage("Passwort wurde geändert."),
 		"new_password" : MessageLookupByLibrary.simpleMessage("neues Passwort"),
 		"wrong_password" : MessageLookupByLibrary.simpleMessage("falsches Passwort"),
+		"delete_account_title" : MessageLookupByLibrary.simpleMessage("Account löschen?"),
+		"delete_account_text" : MessageLookupByLibrary.simpleMessage("Bist du dir sicher, dass du diesen Account löschen willst und damit auch alle gespeicherten Todo-Listen?"),
 
   };
 }
@@ -78,6 +80,8 @@ class $en extends MessageLookupByLibrary {
 		"password_changed" : MessageLookupByLibrary.simpleMessage("password updated"),
 		"new_password" : MessageLookupByLibrary.simpleMessage("new password"),
 		"wrong_password" : MessageLookupByLibrary.simpleMessage("wrong password"),
+		"delete_account_title" : MessageLookupByLibrary.simpleMessage("Delete account?"),
+		"delete_account_text" : MessageLookupByLibrary.simpleMessage("Are you sure that you want to delete your account and with it all todo lists?"),
 
   };
 }

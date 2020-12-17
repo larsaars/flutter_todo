@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:todo/ui/widget/divider.dart';
 import 'package:todo/ui/widget/fancy_button.dart';
+import 'package:todo/ui/widget/standard_widgets.dart';
 import 'package:todo/util/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -43,6 +44,7 @@ void showAnimatedDialog(
   String title,
   String text,
   String onDoneText,
+  bool warningOnDoneButton = false,
   String forceCancelText,
   List<Widget> children = const [],
   OnDialogCancelCallback onDone,
@@ -132,9 +134,8 @@ void showAnimatedDialog(
               ),
               actions: showAnyActionButton
                   ? [
-                      FlatButton(
-                          shape: roundButtonShape,
-                          child: Text(forceCancelText != null
+                      StandardFlatButton(
+                          text: (forceCancelText != null
                               ? forceCancelText
                               : (onDone == null ? strings.ok : strings.cancel)),
                           onPressed: () {
@@ -143,13 +144,14 @@ void showAnimatedDialog(
                                 .pop(onDone == null ? 'ok' : null);
                           }),
                       onDone != null
-                          ? FlatButton(
-                              shape: roundButtonShape,
-                              child: Text(onDoneText ?? strings.ok),
+                          ? StandardFilledButton(
+                              text: onDoneText ?? strings.ok,
                               onPressed: () {
                                 _showing = false;
                                 Navigator.of(context).pop('ok');
-                              })
+                              },
+                              warningButton: warningOnDoneButton,
+                            )
                           : Container()
                     ]
                   : [],

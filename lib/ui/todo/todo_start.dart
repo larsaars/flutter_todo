@@ -82,7 +82,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
                 onSelected: (value) {
                   switch (value) {
                     case _PopupMenuAccount.logOff:
-                      _logOut(context);
+                      _logOut();
                       break;
                     case _PopupMenuAccount.changeEmail:
                       _changeEmail();
@@ -122,8 +122,8 @@ class _TodoStartPageState extends State<TodoStartPage> {
     );
   }
 
-  void _logOut(BuildContext context) async {
-    await widget.firebaseAuth.signOut();
+  void _logOut([bool deleted = false]) async {
+    if (!deleted) await widget.firebaseAuth.signOut();
     Navigator.pushReplacement(context,
         MaterialPageRoute<void>(builder: (_) => MyHomePageAfterLoading()));
   }
@@ -135,7 +135,6 @@ class _TodoStartPageState extends State<TodoStartPage> {
         inputFieldsHints: [strings.confirm_password, strings.new_email],
         inputTypes: [TextInputType.visiblePassword, TextInputType.emailAddress],
         onDone: (value) async {
-      print(value);
       //re-authenticate needed to change the email, check the email
       try {
         UserCredential userCredential = await widget.firebaseAuth
@@ -151,7 +150,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
         if ((await EMAIL_REGEX).hasMatch(value[1])) {
           widget.firebaseUser.updateEmail(value[1]);
           showSnackBar(strings.email_changed);
-        }else
+        } else
           showSnackBar(strings.bad_email);
       } catch (e) {
         showSnackBar(strings.wrong_password);
@@ -168,33 +167,50 @@ class _TodoStartPageState extends State<TodoStartPage> {
     showAnimatedDialog(context,
         title: strings.reset_password,
         inputFields: 2,
-        inputFieldsHints: [strings.confirm_password, strings.new_password],
-        inputTypes: [TextInputType.visiblePassword, TextInputType.visiblePassword],
-        onDone: (value) async {
-          print(value);
-          //re-authenticate needed to change the email, check the email
-          try {
-            UserCredential userCredential = await widget.firebaseAuth
-                .signInWithEmailAndPassword(
+        inputFieldsHints: [
+          strings.confirm_password,
+          strings.new_password
+        ],
+        inputTypes: [
+          TextInputType.visiblePassword,
+          TextInputType.visiblePassword
+        ], onDone: (value) async {
+      //re-authenticate needed to change the email, check the email
+      try {
+        UserCredential userCredential = await widget.firebaseAuth
+            .signInWithEmailAndPassword(
                 email: widget.firebaseUser.email, password: value[0]);
 
-            if (userCredential == null) {
-              showSnackBar(strings.wrong_password);
-              return;
-            }
+        if (userCredential == null) {
+          showSnackBar(strings.wrong_password);
+          return;
+        }
 
-            //now check entered new password
-            if (passwordValidates(value[1])) {
-              widget.firebaseUser.updatePassword(value[1]);
-              showSnackBar(strings.password_changed);
-            }else
-              showSnackBar(strings.login_bad_password);
-          } catch (e) {
-            showSnackBar(strings.wrong_password);
-            return;
-          }
-        });
+        //now check entered new password
+        if (passwordValidates(value[1])) {
+          widget.firebaseUser.updatePassword(value[1]);
+          showSnackBar(strings.password_changed);
+        } else
+          showSnackBar(strings.login_bad_password);
+      } catch (e) {
+        showSnackBar(strings.wrong_password);
+        return;
+      }
+    });
   }
 
-  void _deleteAccount() {}
+  void _deleteAccount() {
+    showAnimatedDialog(context,
+        title: strings.delete_account_title,
+        text: strings.delete_account_text,
+        warningOnDoneButton: true, onDone: (value) {
+      if (value == 'ok') {
+        //delete the account
+        widget.firebaseUser.delete().then((value) {
+          //when deleted, log off
+          _logOut(true);
+        });
+      }
+    });
+  }
 }
