@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:todo/ui/widget/standard_widgets.dart';
 import 'package:todo/util/utils.dart';
 import 'package:todo/util/widget_utils.dart';
@@ -24,9 +25,12 @@ class TodoStartPage extends StatefulWidget {
 
 class _TodoStartPageState extends State<TodoStartPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  bool loggedInWithGoogle = false;
 
   @override
   Widget build(BuildContext context) {
+    loggedInWithGoogle = widget.firebaseUser.photoURL != null;
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -47,25 +51,22 @@ class _TodoStartPageState extends State<TodoStartPage> {
                     value: _PopupMenuAccount.logOff,
                     child: Text(
                       strings.log_off,
-                      style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ),
-                  widget.firebaseUser.photoURL != null
+                  !loggedInWithGoogle
                       ? null
                       : PopupMenuItem<_PopupMenuAccount>(
                           value: _PopupMenuAccount.changeEmail,
                           child: Text(
                             strings.change_email,
-                            style: Theme.of(context).textTheme.bodyText1,
                           ),
                         ),
-                  widget.firebaseUser.photoURL != null
+                  !loggedInWithGoogle
                       ? null
                       : PopupMenuItem<_PopupMenuAccount>(
                           value: _PopupMenuAccount.changePassword,
                           child: Text(
                             strings.reset_password,
-                            style: Theme.of(context).textTheme.bodyText1,
                           ),
                         ),
                   PopupMenuItem<_PopupMenuAccount>(
@@ -203,13 +204,54 @@ class _TodoStartPageState extends State<TodoStartPage> {
     showAnimatedDialog(context,
         title: strings.delete_account_title,
         text: strings.delete_account_text,
-        warningOnDoneButton: true, onDone: (value) {
-      if (value == 'ok') {
+        inputFields: loggedInWithGoogle ? 0 : 1,
+        inputTypes: [TextInputType.visiblePassword],
+        inputFieldsHints: [strings.confirm_password],
+        warningOnDoneButton: true, onDone: (value) async {
+      if (loggedInWithGoogle) {
+        //make sure that logged in with google properly to re-authenticate
+        final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+        final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+        final UserCredential user = await widget.firebaseAuth.signInWithCredential(credential);
+        assert(user.user.email != null);
+        assert(user.user.displayName != null);
+        assert(!user.user.isAnonymous);
+        assert(await user.user.getIdToken() != null);
+
+        final User currentUser = widget.firebaseAuth.currentUser;
+        assert(currentUser.uid == currentUser.uid);
+
         //delete the account
         widget.firebaseUser.delete().then((value) {
           //when deleted, log off
           _logOut(true);
         });
+      } else {
+        //re-authenticate needed to change the email, check the email
+        try {
+          UserCredential userCredential = await widget.firebaseAuth
+              .signInWithEmailAndPassword(
+                  email: widget.firebaseUser.email, password: value[0]);
+
+          if (userCredential == null) {
+            showSnackBar(strings.wrong_password);
+            return;
+          }
+
+          //delete the account
+          widget.firebaseUser.delete().then((value) {
+            //when deleted, log off
+            _logOut(true);
+          });
+        } catch (e) {
+          showSnackBar(strings.wrong_password);
+          return;
+        }
       }
     });
   }

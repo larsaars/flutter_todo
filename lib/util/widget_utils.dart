@@ -118,6 +118,7 @@ void showAnimatedDialog(
                       : Center(
                           child: Container(
                             constraints: BoxConstraints(maxWidth: 400),
+                            padding: EdgeInsets.all(8),
                             child: Text(
                               text ?? "",
                               textAlign: TextAlign.center,
@@ -128,7 +129,7 @@ void showAnimatedDialog(
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: inputWidgets + children,
+                    children: inputWidgets + makeNonNull(children),
                   ),
                 ],
               ),
