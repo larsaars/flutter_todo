@@ -24,5 +24,7 @@
   "reset_password": "change password",
   "bad_email": "bad e-mail",
   "new_email": "new e-mail",
-  "confirm_password": "confirm password"
+  "confirm_password": "confirm password",
+  "email_changed": "e-mail updated.",
+  "password_changed": "password updated"
 }

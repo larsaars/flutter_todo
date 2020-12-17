@@ -25,15 +25,17 @@ class $de extends MessageLookupByLibrary {
 		"login_enter_password" : MessageLookupByLibrary.simpleMessage("bitte ein Passwort eingeben"),
 		"login_password" : MessageLookupByLibrary.simpleMessage("Passwort"),
 		"login_sign_in_with_google" : MessageLookupByLibrary.simpleMessage("mit google anmelden"),
-		"login_bad_password" : MessageLookupByLibrary.simpleMessage("unsicheres Passwort"),
+		"login_bad_password" : MessageLookupByLibrary.simpleMessage("unsicheres oder falsches Passwort"),
 		"account" : MessageLookupByLibrary.simpleMessage("account"),
 		"log_off" : MessageLookupByLibrary.simpleMessage("abmelden"),
 		"delete_account" : MessageLookupByLibrary.simpleMessage("Account löschen"),
 		"change_email" : MessageLookupByLibrary.simpleMessage("E-Mail ändern"),
-		"reset_password" : MessageLookupByLibrary.simpleMessage("Passwort zurücksetzen"),
+		"reset_password" : MessageLookupByLibrary.simpleMessage("Passwort ändern"),
 		"bad_email" : MessageLookupByLibrary.simpleMessage("Bitte geben Sie eine valide E-Mail Adresse ein."),
 		"new_email" : MessageLookupByLibrary.simpleMessage("neue e-mail"),
 		"confirm_password" : MessageLookupByLibrary.simpleMessage("Passwort bestätigen"),
+		"email_changed" : MessageLookupByLibrary.simpleMessage("E-Mail Adresse wurde aktualisiert."),
+		"password_changed" : MessageLookupByLibrary.simpleMessage("Passwort wurde geändert."),
 
   };
 }
@@ -70,6 +72,8 @@ class $en extends MessageLookupByLibrary {
 		"bad_email" : MessageLookupByLibrary.simpleMessage("bad e-mail"),
 		"new_email" : MessageLookupByLibrary.simpleMessage("new e-mail"),
 		"confirm_password" : MessageLookupByLibrary.simpleMessage("confirm password"),
+		"email_changed" : MessageLookupByLibrary.simpleMessage("e-mail updated."),
+		"password_changed" : MessageLookupByLibrary.simpleMessage("password updated"),
 
   };
 }

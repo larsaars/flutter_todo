@@ -104,7 +104,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
         automaticallyImplyLeading: false,
         title: Text(
             isEmpty(widget.firebaseUser.displayName)
-                ? app_name
+                ? widget.firebaseUser.email
                 : widget.firebaseUser.displayName,
             style: Theme.of(context)
                 .textTheme
@@ -130,15 +130,19 @@ class _TodoStartPageState extends State<TodoStartPage> {
 
   void _changeEmail() {
     showAnimatedDialog(context,
+        title: strings.change_email,
         inputFields: 2,
-        inputFieldsHints: [strings.login_password, strings.new_email],
+        inputFieldsHints: [strings.confirm_password, strings.new_email],
         inputTypes: [TextInputType.visiblePassword, TextInputType.emailAddress],
         onDone: (value) async {
+      print(value);
       //re-authenticate needed to change the email, check the email
       try {
         UserCredential userCredential = await widget.firebaseAuth
             .signInWithEmailAndPassword(
                 email: widget.firebaseUser.email, password: value[0]);
+
+        print('logging in with ${widget.firebaseUser.email} and ${value[0]}, value 1 is ${value[1]}');
 
         if (userCredential == null) {
           showSnackBar(strings.login_bad_password);
@@ -146,10 +150,11 @@ class _TodoStartPageState extends State<TodoStartPage> {
         }
 
         //now check entered email
-        if ((await EMAIL_REGEX).hasMatch(value[1]))
+        if ((await EMAIL_REGEX).hasMatch(value[1])) {
           widget.firebaseUser.updateEmail(value[1]);
-        else
-          showSnackBar(strings.login_bad_password);
+          showSnackBar(strings.email_changed);
+        }else
+          showSnackBar(strings.bad_email);
       } catch (e) {
         showSnackBar(strings.login_bad_password);
         return;

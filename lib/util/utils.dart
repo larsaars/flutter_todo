@@ -36,7 +36,7 @@ bool passwordValidates(String pass) {
       count++;
   }
 
-  return count >= 3;
+  return count >= 2;
 }
 
 List makeNonNull(List list) =>
