@@ -136,7 +136,7 @@ class _EmailPageState extends State<EmailPage> {
 
   void _createAccountWithEmailAndPassword() async {
     //check email
-    if (!RegExp(await EMAIL_REGEX).hasMatch(_emailController.text)) {
+    if (!(await EMAIL_REGEX).hasMatch(_emailController.text)) {
       setState(() {
         _success = false;
         _errorMessage = strings.bad_email;
