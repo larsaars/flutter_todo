@@ -13,19 +13,6 @@ Future<String> get rootDir async {
   return directory.path;
 }
 
-class ContextSingleton {
-  static ContextSingleton _instance;
-  final BuildContext _context;
-
-  ContextSingleton(this._context) {
-    _instance = this;
-  }
-
-  static get context {
-    return _instance._context;
-  }
-}
-
 void addLicenses() {
   LicenseRegistry.addLicense(() async* {
     yield LicenseEntryWithLineBreaks(['modal_progress_hud'],
@@ -34,8 +21,8 @@ void addLicenses() {
 }
 
 // ignore: non_constant_identifier_names
-Future<String> get EMAIL_REGEX async =>
-    await rootBundle.loadString('res/regex/email');
+Future<RegExp> get EMAIL_REGEX async =>
+    RegExp(await rootBundle.loadString('res/regex/email'));
 
 bool passwordValidates(String pass) {
   int count = 0;

@@ -38,7 +38,7 @@ typedef void OnDialogReturnSetStateCallback(BuildContext context, setState);
 
 bool _showing = false;
 
-void showAnimatedDialog({
+void showAnimatedDialog(BuildContext context, {
   String title,
   String text,
   String onDoneText,
@@ -60,7 +60,7 @@ void showAnimatedDialog({
 
   //show dialog
   showGeneralDialog(
-    context: ContextSingleton.context,
+    context: context,
     barrierDismissible: true,
     barrierLabel: "showTextDialog",
     pageBuilder: (context, animation1, animation2) {

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:todo/ui/widget/standard_widgets.dart';
 import 'package:todo/util/utils.dart';
 import 'package:todo/util/widget_utils.dart';
 
@@ -35,13 +36,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
               child: PopupMenuButton(
                 tooltip: strings.account,
                 child: isEmpty(widget.firebaseUser.photoURL)
-                    ? Container(
-                        child: Icon(
-                          Icons.person,
-                          color: Colors.black54,
-                        ),
-                        color: Colors.white54,
-                      )
+                    ? StandardIcon(Icons.person)
                     : Image.network(widget.firebaseUser.photoURL),
                 itemBuilder: (context) =>
                     makeNonNull(<PopupMenuEntry<_PopupMenuAccount>>[
@@ -129,14 +124,20 @@ class _TodoStartPageState extends State<TodoStartPage> {
   }
 
   void _changeEmail() {
-    showAnimatedDialog(
-      title: strings.reset_password,
-      withInputField: true,
-    );
+    showAnimatedDialog(context,
+        title: strings.reset_password,
+        withInputField: true,
+        onDone: (value) async {
+          if ((await EMAIL_REGEX).hasMatch(value))
+            widget.firebaseUser.updateEmail(value);
+          else
+            Scaffold.of(context).showSnackBar(SnackBar(content: Text(strings.login_bad_password)));
+        });
   }
 
   void _changePassword() {
     showAnimatedDialog(
+      context,
       title: strings.reset_password,
       withInputField: true,
     );

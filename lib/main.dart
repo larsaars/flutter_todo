@@ -85,8 +85,6 @@ class _MyHomepageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     //set strings object
     strings ??= S.of(context);
-    //init the context singleton object
-    ContextSingleton(context);
     //build the chess controller,
     //if needed set context newly
     if (_controller == null)
