@@ -129,16 +129,31 @@ class _TodoStartPageState extends State<TodoStartPage> {
   }
 
   void _changeEmail() {
-    showAnimatedDialog(context, inputFields: 2,
+    showAnimatedDialog(context,
+        inputFields: 2,
         inputFieldsHints: [strings.login_password, strings.new_email],
         inputTypes: [TextInputType.visiblePassword, TextInputType.emailAddress],
         onDone: (value) async {
       //re-authenticate needed to change the email, check the email
-      UserCredential userCredential = await widget.firebaseAuth.signInWithEmailAndPassword(email: widget.firebaseUser.email, password: value[0]);
-      if ((await EMAIL_REGEX).hasMatch(value))
-        widget.firebaseUser.updateEmail(value);
-      else
+      try {
+        UserCredential userCredential = await widget.firebaseAuth
+            .signInWithEmailAndPassword(
+                email: widget.firebaseUser.email, password: value[0]);
+
+        if (userCredential == null) {
+          showSnackBar(strings.login_bad_password);
+          return;
+        }
+
+        //now check entered email
+        if ((await EMAIL_REGEX).hasMatch(value[1]))
+          widget.firebaseUser.updateEmail(value[1]);
+        else
+          showSnackBar(strings.login_bad_password);
+      } catch (e) {
         showSnackBar(strings.login_bad_password);
+        return;
+      }
     });
   }
 
