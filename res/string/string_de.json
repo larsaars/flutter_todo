@@ -23,5 +23,7 @@
   "email_changed": "E-Mail Adresse wurde aktualisiert.",
   "password_changed": "Passwort wurde geändert.",
   "new_password": "neues Passwort",
-  "wrong_password": "falsches Passwort"
+  "wrong_password": "falsches Passwort",
+  "delete_account_title": "Account löschen?",
+  "delete_account_text": "Bist du dir sicher, dass du diesen Account löschen willst und damit auch alle gespeicherten Todo-Listen?"
 }

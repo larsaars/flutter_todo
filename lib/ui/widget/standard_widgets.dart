@@ -4,18 +4,20 @@ import 'package:todo/util/widget_utils.dart';
 class StandardFilledButton extends StatelessWidget {
   final String text;
   final Function onPressed;
+  final bool warningButton;
 
   StandardFilledButton({
     @required this.text,
     @required this.onPressed,
+    this.warningButton = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return RawMaterialButton(
       shape: roundedButtonShape,
-      fillColor: Colors.indigo,
-      splashColor: Colors.indigo[400],
+      fillColor: warningButton ? Colors.red[800] : Colors.indigo,
+      splashColor: warningButton ? Colors.red[600] : Colors.indigo[400],
       child: Text(text,
           style: Theme.of(context)
               .textTheme
