@@ -31,6 +31,7 @@ class $de extends MessageLookupByLibrary {
 		"delete_account" : MessageLookupByLibrary.simpleMessage("Account löschen"),
 		"change_email" : MessageLookupByLibrary.simpleMessage("E-Mail ändern"),
 		"reset_password" : MessageLookupByLibrary.simpleMessage("Passwort zurücksetzen"),
+		"bad_email" : MessageLookupByLibrary.simpleMessage("Bitte geben Sie eine valide E-Mail Adresse ein."),
 
   };
 }
@@ -64,6 +65,7 @@ class $en extends MessageLookupByLibrary {
 		"delete_account" : MessageLookupByLibrary.simpleMessage("delete account"),
 		"change_email" : MessageLookupByLibrary.simpleMessage("change e-mail"),
 		"reset_password" : MessageLookupByLibrary.simpleMessage("reset password"),
+		"bad_email" : MessageLookupByLibrary.simpleMessage("Bad e-mail."),
 
   };
 }

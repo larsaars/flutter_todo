@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:todo/main.dart';
+import 'package:todo/util/utils.dart';
 import 'package:todo/util/widget_utils.dart';
 
 import '../todo/todo_start.dart';
@@ -61,19 +63,28 @@ class _EmailPageState extends State<EmailPage> {
                   children: <Widget>[
                     FlatButton(
                       child: Text(strings.login_register),
+                      shape: roundedButtonShape,
                       onPressed: () async {
                         if (_formKey.currentState.validate()) {
                           _createAccountWithEmailAndPassword();
                         }
                       },
                     ),
-                    RaisedButton(
-                        child: Text(strings.login_login),
+                    RawMaterialButton(
+                        shape: roundedButtonShape,
+                        fillColor: Colors.indigo,
+                        splashColor: Colors.indigo[400],
+                        child: Text(
+                            strings.login_login,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText1
+                                .copyWith(color: Colors.white)),
                         onPressed: () async {
                           if (_formKey.currentState.validate()) {
                             _signInWithEmailAndPassword();
                           }
-                        })
+                        }),
                   ],
                 )),
             Container(
@@ -130,25 +141,21 @@ class _EmailPageState extends State<EmailPage> {
     }
   }
 
-  bool _passwordValidates(String pass) {
-    int count = 0;
-
-    if (8 <= pass.length && pass.length <= 32) {
-      if (RegExp(".*\\d.*").hasMatch(pass)) count++;
-      if (RegExp(".*[a-z].*").hasMatch(pass)) count++;
-      if (RegExp(".*[A-Z].*").hasMatch(pass)) count++;
-      if (RegExp('^.*[*.!@#\$%^&(){}[]:\";\'<>,.?/~`_+-=|\\].*\$')
-          .hasMatch(pass)) count++;
-    }
-
-    return count >= 3;
-  }
-
   void _createAccountWithEmailAndPassword() async {
+    //check email
+    if(!RegExp(await EMAIL_REGEX).hasMatch(_emailController.text)) {
+      setState(() {
+        _success = false;
+        _errorMessage = strings.bad_email;
+      });
+      return;
+    }
     //check password
-    if (!_passwordValidates(_passwordController.text)) {
-      _success = false;
-      _errorMessage = strings.login_bad_password;
+    if (!passwordValidates(_passwordController.text)) {
+      setState(() {
+        _success = false;
+        _errorMessage = strings.login_bad_password;
+      });
       return;
     }
 

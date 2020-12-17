@@ -10,7 +10,11 @@ import '../main.dart';
 RoundedRectangleBorder roundButtonShape =
     RoundedRectangleBorder(borderRadius: BorderRadius.circular(45));
 
-AppBar appBar(BuildContext context, String title, [bool withIcon = false, List<Widget> actions]) =>
+RoundedRectangleBorder roundedButtonShape =
+    RoundedRectangleBorder(borderRadius: BorderRadius.circular(8));
+
+AppBar appBar(BuildContext context, String title,
+        [bool withIcon = false, List<Widget> actions]) =>
     AppBar(
       actions: actions,
       leading: withIcon
@@ -47,7 +51,6 @@ void showAnimatedDialog({
   bool showAnyActionButton = true,
   bool withInputField = false,
   String inputFieldHint,
-
 }) async {
   if (_showing) return;
 
@@ -114,7 +117,7 @@ void showAnimatedDialog({
                             child: TextFormField(
                               maxLines: 1,
                               onChanged: (value) => inputText = value,
-                              decoration: new InputDecoration(
+                              decoration: InputDecoration(
                                   border: InputBorder.none,
                                   focusedBorder: InputBorder.none,
                                   enabledBorder: InputBorder.none,
