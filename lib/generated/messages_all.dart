@@ -28,6 +28,9 @@ class $de extends MessageLookupByLibrary {
 		"login_bad_password" : MessageLookupByLibrary.simpleMessage("unsicheres Passwort"),
 		"account" : MessageLookupByLibrary.simpleMessage("account"),
 		"log_off" : MessageLookupByLibrary.simpleMessage("abmelden"),
+		"delete_account" : MessageLookupByLibrary.simpleMessage("Account löschen"),
+		"change_email" : MessageLookupByLibrary.simpleMessage("E-Mail ändern"),
+		"reset_password" : MessageLookupByLibrary.simpleMessage("Passwort zurücksetzen"),
 
   };
 }
@@ -58,6 +61,9 @@ class $en extends MessageLookupByLibrary {
 		"login_bad_password" : MessageLookupByLibrary.simpleMessage("bad password"),
 		"account" : MessageLookupByLibrary.simpleMessage("account"),
 		"log_off" : MessageLookupByLibrary.simpleMessage("sign out"),
+		"delete_account" : MessageLookupByLibrary.simpleMessage("delete account"),
+		"change_email" : MessageLookupByLibrary.simpleMessage("change e-mail"),
+		"reset_password" : MessageLookupByLibrary.simpleMessage("reset password"),
 
   };
 }

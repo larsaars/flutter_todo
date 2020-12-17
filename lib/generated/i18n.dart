@@ -106,6 +106,18 @@ class S {
     return Intl.message("sign out", name: 'log_off');
   }
 
+  String get delete_account {
+    return Intl.message("delete account", name: 'delete_account');
+  }
+
+  String get change_email {
+    return Intl.message("change e-mail", name: 'change_email');
+  }
+
+  String get reset_password {
+    return Intl.message("reset password", name: 'reset_password');
+  }
+
 
 }
 

@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../main.dart';
+import '../../main.dart';
 
 enum _PopupMenuAccount { logOff, changePassword, changeEmail, deleteAccount }
 
@@ -68,7 +68,15 @@ class _TodoStartPageState extends State<TodoStartPage> {
                     ),
                   )
                 ],
-                onSelected: (value) {},
+                onSelected: (value) {
+                  switch(value) {
+                    case _PopupMenuAccount.logOff:
+                      _logOut(context);
+                      break;
+                    default:
+                      break;
+                  }
+                },
               ),
             ),
           ),

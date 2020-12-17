@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:todo/main.dart';
 import 'package:todo/util/widget_utils.dart';
 
-import '../todo_start.dart';
+import '../todo/todo_start.dart';
 
 class EmailPage extends StatefulWidget {
   final FirebaseAuth firebaseAuth;
