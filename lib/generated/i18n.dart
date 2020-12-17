@@ -138,6 +138,14 @@ class S {
     return Intl.message("password updated", name: 'password_changed');
   }
 
+  String get new_password {
+    return Intl.message("new password", name: 'new_password');
+  }
+
+  String get wrong_password {
+    return Intl.message("wrong password", name: 'wrong_password');
+  }
+
 
 }
 
