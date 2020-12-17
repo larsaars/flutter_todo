@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:todo/util/widget_utils.dart';
 
 import '../../main.dart';
 
@@ -69,9 +70,18 @@ class _TodoStartPageState extends State<TodoStartPage> {
                   )
                 ],
                 onSelected: (value) {
-                  switch(value) {
+                  switch (value) {
                     case _PopupMenuAccount.logOff:
                       _logOut(context);
+                      break;
+                    case _PopupMenuAccount.changeEmail:
+                      _changeEmail();
+                      break;
+                    case _PopupMenuAccount.changePassword:
+                      _changePassword();
+                      break;
+                    case _PopupMenuAccount.deleteAccount:
+                      _deleteAccount();
                       break;
                     default:
                       break;
@@ -95,13 +105,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Signed in as: ${widget.firebaseUser.email}'),
-            RaisedButton(
-              child: Text('Sign out'),
-              onPressed: () {
-                _logOut(context);
-              },
-            )
+            //projects
           ],
         ),
       ),
@@ -112,5 +116,20 @@ class _TodoStartPageState extends State<TodoStartPage> {
     await widget.firebaseAuth.signOut();
     Navigator.pushReplacement(context,
         MaterialPageRoute<void>(builder: (_) => MyHomePageAfterLoading()));
+  }
+
+  void _changeEmail() {
+
+  }
+
+  void _changePassword() {
+    showAnimatedDialog(
+      title: strings.reset_password,
+      withInputField: true,
+    );
+  }
+
+  void _deleteAccount() {
+
   }
 }
