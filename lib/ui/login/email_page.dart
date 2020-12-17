@@ -112,6 +112,10 @@ class _EmailPageState extends State<EmailPage> {
         email: _emailController.text,
         password: _passwordController.text,
       );
+
+      setState(() {
+        _success = user != null;
+      });
     } catch (e) {
       setState(() {
         _success = false;
@@ -119,11 +123,7 @@ class _EmailPageState extends State<EmailPage> {
       });
     }
 
-    if (user != null) {
-      setState(() {
-        _success = true;
-      });
-
+    if (user != null && _success) {
       Future.microtask(() => Navigator.pushReplacement(
           context,
           MaterialPageRoute<void>(
