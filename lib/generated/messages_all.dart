@@ -32,6 +32,8 @@ class $de extends MessageLookupByLibrary {
 		"change_email" : MessageLookupByLibrary.simpleMessage("E-Mail ändern"),
 		"reset_password" : MessageLookupByLibrary.simpleMessage("Passwort zurücksetzen"),
 		"bad_email" : MessageLookupByLibrary.simpleMessage("Bitte geben Sie eine valide E-Mail Adresse ein."),
+		"new_email" : MessageLookupByLibrary.simpleMessage("neue e-mail"),
+		"confirm_password" : MessageLookupByLibrary.simpleMessage("Passwort bestätigen"),
 
   };
 }
@@ -64,8 +66,10 @@ class $en extends MessageLookupByLibrary {
 		"log_off" : MessageLookupByLibrary.simpleMessage("sign out"),
 		"delete_account" : MessageLookupByLibrary.simpleMessage("delete account"),
 		"change_email" : MessageLookupByLibrary.simpleMessage("change e-mail"),
-		"reset_password" : MessageLookupByLibrary.simpleMessage("reset password"),
-		"bad_email" : MessageLookupByLibrary.simpleMessage("Bad e-mail."),
+		"reset_password" : MessageLookupByLibrary.simpleMessage("change password"),
+		"bad_email" : MessageLookupByLibrary.simpleMessage("bad e-mail"),
+		"new_email" : MessageLookupByLibrary.simpleMessage("new e-mail"),
+		"confirm_password" : MessageLookupByLibrary.simpleMessage("confirm password"),
 
   };
 }

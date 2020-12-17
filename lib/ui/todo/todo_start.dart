@@ -23,9 +23,12 @@ class TodoStartPage extends StatefulWidget {
 }
 
 class _TodoStartPageState extends State<TodoStartPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -56,13 +59,15 @@ class _TodoStartPageState extends State<TodoStartPage> {
                             style: Theme.of(context).textTheme.bodyText1,
                           ),
                         ),
-                  PopupMenuItem<_PopupMenuAccount>(
-                    value: _PopupMenuAccount.changePassword,
-                    child: Text(
-                      strings.reset_password,
-                      style: Theme.of(context).textTheme.bodyText1,
-                    ),
-                  ),
+                  widget.firebaseUser.photoURL != null
+                      ? null
+                      : PopupMenuItem<_PopupMenuAccount>(
+                          value: _PopupMenuAccount.changePassword,
+                          child: Text(
+                            strings.reset_password,
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                        ),
                   PopupMenuItem<_PopupMenuAccount>(
                     value: _PopupMenuAccount.deleteAccount,
                     child: Text(
@@ -124,22 +129,27 @@ class _TodoStartPageState extends State<TodoStartPage> {
   }
 
   void _changeEmail() {
-    showAnimatedDialog(context,
-        title: strings.reset_password,
-        withInputField: true,
+    showAnimatedDialog(context, inputFields: 2,
+        inputFieldsHints: [strings.login_password, strings.new_email],
+        inputTypes: [TextInputType.visiblePassword, TextInputType.emailAddress],
         onDone: (value) async {
-          if ((await EMAIL_REGEX).hasMatch(value))
-            widget.firebaseUser.updateEmail(value);
-          else
-            Scaffold.of(context).showSnackBar(SnackBar(content: Text(strings.login_bad_password)));
-        });
+      //re-authenticate needed to change the email, check the email
+      UserCredential userCredential = await widget.firebaseAuth.signInWithEmailAndPassword(email: widget.firebaseUser.email, password: value[0]);
+      if ((await EMAIL_REGEX).hasMatch(value))
+        widget.firebaseUser.updateEmail(value);
+      else
+        showSnackBar(strings.login_bad_password);
+    });
+  }
+
+  void showSnackBar(String msg) {
+    _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(msg)));
   }
 
   void _changePassword() {
     showAnimatedDialog(
       context,
       title: strings.reset_password,
-      withInputField: true,
     );
   }
 

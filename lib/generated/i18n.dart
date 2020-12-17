@@ -115,11 +115,19 @@ class S {
   }
 
   String get reset_password {
-    return Intl.message("reset password", name: 'reset_password');
+    return Intl.message("change password", name: 'reset_password');
   }
 
   String get bad_email {
-    return Intl.message("Bad e-mail.", name: 'bad_email');
+    return Intl.message("bad e-mail", name: 'bad_email');
+  }
+
+  String get new_email {
+    return Intl.message("new e-mail", name: 'new_email');
+  }
+
+  String get confirm_password {
+    return Intl.message("confirm password", name: 'confirm_password');
   }
 
 
