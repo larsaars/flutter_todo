@@ -58,27 +58,21 @@ void showAnimatedDialog(
 
   _showing = true;
 
-  List<String> inputTexts = [];
+  List<String> inputTexts = List(inputFields);
 
   //create input fields list
   List<Widget> inputWidgets = [];
-  for(int i = 0; i < inputFields; i++) {
+  for (int i = 0; i < inputFields; i++) {
     var isPassword = inputTypes[i] == TextInputType.visiblePassword;
-    TextFormField(
+    inputWidgets.add(TextFormField(
       maxLines: 1,
-      keyboardType: isPassword ? TextInputType.text : (inputTypes[i] ?? TextInputType.text),
+      keyboardType: isPassword
+          ? TextInputType.text
+          : (inputTypes[i] ?? TextInputType.text),
       obscureText: isPassword,
       onChanged: (value) => inputTexts[i] = value,
-      decoration: InputDecoration(
-          border: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          errorBorder: InputBorder.none,
-          disabledBorder: InputBorder.none,
-          contentPadding: EdgeInsets.only(
-              left: 15, bottom: 11, top: 11, right: 15),
-          hintText: inputFieldsHints[i]),
-    );
+      decoration: InputDecoration(hintText: inputFieldsHints[i]),
+    ));
   }
 
   //show dialog

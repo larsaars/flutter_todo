@@ -130,6 +130,14 @@ class S {
     return Intl.message("confirm password", name: 'confirm_password');
   }
 
+  String get email_changed {
+    return Intl.message("e-mail updated.", name: 'email_changed');
+  }
+
+  String get password_changed {
+    return Intl.message("password updated", name: 'password_changed');
+  }
+
 
 }
 

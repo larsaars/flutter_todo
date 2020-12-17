@@ -11,13 +11,15 @@
   "login_enter_password": "bitte ein Passwort eingeben",
   "login_password": "Passwort",
   "login_sign_in_with_google": "mit google anmelden",
-  "login_bad_password": "unsicheres Passwort",
+  "login_bad_password": "unsicheres oder falsches Passwort",
   "account": "account",
   "log_off": "abmelden",
   "delete_account": "Account löschen",
   "change_email": "E-Mail ändern",
-  "reset_password": "Passwort zurücksetzen",
+  "reset_password": "Passwort ändern",
   "bad_email": "Bitte geben Sie eine valide E-Mail Adresse ein.",
   "new_email": "neue e-mail",
-  "confirm_password": "Passwort bestätigen"
+  "confirm_password": "Passwort bestätigen",
+  "email_changed": "E-Mail Adresse wurde aktualisiert.",
+  "password_changed": "Passwort wurde geändert."
 }
