@@ -174,6 +174,10 @@ class S {
     return Intl.message("undo", name: 'undo');
   }
 
+  String get project_name {
+    return Intl.message("project name", name: 'project_name');
+  }
+
 
 }
 

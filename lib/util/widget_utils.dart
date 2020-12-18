@@ -39,27 +39,32 @@ typedef void OnDialogReturnSetStateCallback(BuildContext context, setState);
 
 bool _showing = false;
 
-void showAnimatedDialog(
-  BuildContext context, {
-  String title,
-  String text,
-  String onDoneText,
-  bool warningOnDoneButton = false,
-  String forceCancelText,
-  List<Widget> children = const [],
-  OnDialogCancelCallback onDone,
-  OnDialogReturnSetStateCallback setStateCallback,
-  IconData icon,
-  var update,
-  bool showAnyActionButton = true,
-  int inputFields = 0,
-  List<String> inputFieldsHints = const [],
-  List<TextInputType> inputTypes = const [],
-}) async {
+void showAnimatedDialog(BuildContext context,
+    {String title,
+    String text,
+    String onDoneText,
+    bool warningOnDoneButton = false,
+    String forceCancelText,
+    List<Widget> children = const [],
+    OnDialogCancelCallback onDone,
+    OnDialogReturnSetStateCallback setStateCallback,
+    IconData icon,
+    var update,
+    bool showAnyActionButton = true,
+    int inputFields = 0,
+    List<String> inputFieldsHints,
+    List<TextInputType> inputTypes,
+    List<FormFieldValidator> inputValidators}) async {
   if (_showing) return;
 
   _showing = true;
 
+  //create lists with valid lengths
+  inputFieldsHints ??= List(inputFields);
+  inputTypes ??= List(inputFields);
+  inputValidators ??= List(inputFields);
+
+  //the input texts
   List<String> inputTexts = List(inputFields);
 
   //create input fields list
@@ -68,6 +73,7 @@ void showAnimatedDialog(
     var isPassword = inputTypes[i] == TextInputType.visiblePassword;
     inputWidgets.add(TextFormField(
       maxLines: 1,
+      validator: inputValidators[i],
       keyboardType: isPassword
           ? TextInputType.text
           : (inputTypes[i] ?? TextInputType.text),
