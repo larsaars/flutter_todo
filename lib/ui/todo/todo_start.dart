@@ -42,18 +42,18 @@ class _TodoStartPageState extends State<TodoStartPage> {
 
   @override
   void initState() {
-    //load projects
-    projects = [
-      Project('lars'),
-      Project('default'),
-      Project('lala'),
-    ];
+    //load projects from firebase
+    userDoc?.collection('pro')?.get()?.then((value) {
+      value.docs.map((e) {
+        return Project(e.id, e.data()['name']);
+      });
+    });
 
     //copy filtered to projects
     filteredProjects = [...projects];
 
     //load the root user doc
-    userDoc = firestore.doc(widget.firebaseUser.uid);
+    userDoc = firestore.collection('user').doc(widget.firebaseUser.uid);
 
     super.initState();
   }
@@ -239,16 +239,35 @@ class _TodoStartPageState extends State<TodoStartPage> {
                     projects.remove(project);
                     filteredProjects.removeAt(index);
                   });
-                  //remove project from database
-                  userDoc.collection('pro').doc(project.id).delete();
+                  //state of undone
+                  bool undone = false;
                   //show a snackbar with undo button
-                  _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text()
-                    ],
-                  )));
+                  _scaffoldKey.currentState
+                      .showSnackBar(SnackBar(
+                          content: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(strings.deleted_project(project.name)),
+                          StandardFlatButton(
+                              text: strings.undo,
+                              onPressed: () {
+                                //close the snack bar
+                                _scaffoldKey.currentState.hideCurrentSnackBar();
+                                //has been undone
+                                undone = true;
+                                //add again
+                                projects.add(project);
+                                filteredProjects.add(project);
+                              })
+                        ],
+                      )))
+                      .closed
+                      .then((value) {
+                    //remove project from database if not undone
+                    if (!undone) {
+                      userDoc?.collection('pro')?.doc(project.id)?.delete();
+                    }
+                  });
                   print('dismissed to $direction');
                 },
                 child:

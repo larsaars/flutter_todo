@@ -170,6 +170,10 @@ class S {
     return Intl.message("${projectName} deleted", name: 'deleted_project', args: [projectName]);
   }
 
+  String get undo {
+    return Intl.message("undo", name: 'undo');
+  }
+
 
 }
 

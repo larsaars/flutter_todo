@@ -29,5 +29,6 @@
   "add_project": "Projekt hinzufügen",
   "search": "Suche",
   "clear": "löschen",
-  "deleted_project": "${projectName} gelöscht"
+  "deleted_project": "${projectName} gelöscht",
+  "undo": "rückgängig"
 }
