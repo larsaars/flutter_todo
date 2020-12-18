@@ -44,6 +44,7 @@ class $de extends MessageLookupByLibrary {
 		"search" : MessageLookupByLibrary.simpleMessage("Suche"),
 		"clear" : MessageLookupByLibrary.simpleMessage("löschen"),
 		"deleted_project" : (projectName) => "${projectName} gelöscht",
+		"undo" : MessageLookupByLibrary.simpleMessage("rückgängig"),
 
   };
 }
@@ -90,6 +91,7 @@ class $en extends MessageLookupByLibrary {
 		"add_project" : MessageLookupByLibrary.simpleMessage("add project"),
 		"clear" : MessageLookupByLibrary.simpleMessage("clear"),
 		"deleted_project" : (projectName) => "${projectName} deleted",
+		"undo" : MessageLookupByLibrary.simpleMessage("undo"),
 
   };
 }

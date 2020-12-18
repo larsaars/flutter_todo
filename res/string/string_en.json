@@ -34,5 +34,6 @@
   "search": "search",
   "add_project": "add project",
   "clear": "clear",
-  "deleted_project": "${projectName} deleted"
+  "deleted_project": "${projectName} deleted",
+  "undo": "undo"
 }
