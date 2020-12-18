@@ -7,6 +7,8 @@ S strings;
 SharedPreferences prefs;
 AppRootController _controller;
 
+FirebaseFirestore firestore = FirebaseFirestore.instance;
+
 class AppRootController {
   BuildContext context;
   Function update;

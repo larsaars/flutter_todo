@@ -154,6 +154,22 @@ class S {
     return Intl.message("Are you sure that you want to delete your account and with it all todo lists?", name: 'delete_account_text');
   }
 
+  String get search {
+    return Intl.message("search", name: 'search');
+  }
+
+  String get add_project {
+    return Intl.message("add project", name: 'add_project');
+  }
+
+  String get clear {
+    return Intl.message("clear", name: 'clear');
+  }
+
+  String deleted_project(projectName) {
+    return Intl.message("${projectName} deleted", name: 'deleted_project', args: [projectName]);
+  }
+
 
 }
 

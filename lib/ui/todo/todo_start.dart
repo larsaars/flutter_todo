@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:todo/holder/project.dart';
@@ -30,11 +32,30 @@ class _TodoStartPageState extends State<TodoStartPage> {
   List<int> selectedProjects = [];
   List<Project> projects = [], filteredProjects = [];
   TextEditingController searchController = TextEditingController();
+  DocumentReference userDoc;
 
   @override
   void dispose() {
     searchController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    //load projects
+    projects = [
+      Project('lars'),
+      Project('default'),
+      Project('lala'),
+    ];
+
+    //copy filtered to projects
+    filteredProjects = [...projects];
+
+    //load the root user doc
+    userDoc = firestore.doc(widget.firebaseUser.uid);
+
+    super.initState();
   }
 
   @override
@@ -122,21 +143,43 @@ class _TodoStartPageState extends State<TodoStartPage> {
         automaticallyImplyLeading: false,
         centerTitle: true,
         title: searching
-            ? TextFormField(
-                controller: searchController,
-                decoration: InputDecoration(labelText: strings.login_email),
-                keyboardType: TextInputType.text,
-                onChanged: (value) => setState((){
-                  //filter the projects titles
-                  if(value.length == 0)
-                    //clone the projects list
-                    filteredProjects = [...projects];
-                  else
-                    filteredProjects = projects.where((element) => element.name.contains(searchController.text)).toList();
-                  //no selection while searching
-                  selectedProjects.clear();
-                }),
-              )
+            ? Stack(alignment: Alignment.centerRight, children: [
+                Icon(
+                  Icons.search,
+                  color: Colors.white54,
+                ),
+                TextFormField(
+                  textAlign: TextAlign.justify,
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    focusedErrorBorder: InputBorder.none,
+                  ),
+                  keyboardType: TextInputType.text,
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle1
+                      .copyWith(color: Colors.white),
+                  onChanged: (value) => setState(() {
+                    //filter the projects titles
+                    if (value.length == 0)
+                      //clone the projects list
+                      filteredProjects = [...projects];
+                    else
+                      filteredProjects = projects
+                          .where((element) => element.name
+                              .toLowerCase()
+                              .contains(searchController.text.toLowerCase()))
+                          .toList();
+                    //no selection while searching
+                    selectedProjects.clear();
+                  }),
+                ),
+              ])
             : Text(
                 isEmpty(widget.firebaseUser.displayName)
                     ? widget.firebaseUser.email
@@ -148,8 +191,8 @@ class _TodoStartPageState extends State<TodoStartPage> {
         actions: <Widget>[
           Visibility(
             visible: !searching,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
+            child: Tooltip(
+              message: strings.add_project,
               child: IconButton(
                 icon: Icon(
                   Icons.add,
@@ -159,32 +202,58 @@ class _TodoStartPageState extends State<TodoStartPage> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          Tooltip(
+            message: searching ? strings.clear : strings.search,
             child: IconButton(
               icon: Icon(
                 searching ? Icons.clear : Icons.search,
                 color: Colors.white54,
               ),
               onPressed: () => setState(() {
-                if (searching)
+                if (searching) {
+                  //clear the search
                   searchController.clear();
-                else
+                  //copy back the filtered items to normal
+                  filteredProjects = [...projects];
+                } else
                   searching = true;
               }),
             ),
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            TextFormField(
-              maxLines: 1,
-            ),
-            ListView()
-          ],
+      body: Align(
+        alignment: Alignment.topCenter,
+        child: ListView.builder(
+          itemCount: filteredProjects.length,
+          itemBuilder: (context, index) {
+            Project item = filteredProjects[index];
+            return Dismissible(
+                key: Key(item.id),
+                onDismissed: (direction) {
+                  //get the project
+                  var project = filteredProjects[index];
+                  //update the state
+                  setState(() {
+                    //remove project from both lists
+                    projects.remove(project);
+                    filteredProjects.removeAt(index);
+                  });
+                  //remove project from database
+                  userDoc.collection('pro').doc(project.id).delete();
+                  //show a snackbar with undo button
+                  _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text()
+                    ],
+                  )));
+                  print('dismissed to $direction');
+                },
+                child:
+                    ListTile(title: Text('${filteredProjects[index].name}')));
+          },
         ),
       ),
     );
