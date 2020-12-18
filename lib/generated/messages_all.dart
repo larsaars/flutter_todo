@@ -40,6 +40,10 @@ class $de extends MessageLookupByLibrary {
 		"wrong_password" : MessageLookupByLibrary.simpleMessage("falsches Passwort"),
 		"delete_account_title" : MessageLookupByLibrary.simpleMessage("Account löschen?"),
 		"delete_account_text" : MessageLookupByLibrary.simpleMessage("Bist du dir sicher, dass du diesen Account löschen willst und damit auch alle gespeicherten Todo-Listen?"),
+		"add_project" : MessageLookupByLibrary.simpleMessage("Projekt hinzufügen"),
+		"search" : MessageLookupByLibrary.simpleMessage("Suche"),
+		"clear" : MessageLookupByLibrary.simpleMessage("löschen"),
+		"deleted_project" : (projectName) => "${projectName} gelöscht",
 
   };
 }
@@ -82,6 +86,10 @@ class $en extends MessageLookupByLibrary {
 		"wrong_password" : MessageLookupByLibrary.simpleMessage("wrong password"),
 		"delete_account_title" : MessageLookupByLibrary.simpleMessage("Delete account?"),
 		"delete_account_text" : MessageLookupByLibrary.simpleMessage("Are you sure that you want to delete your account and with it all todo lists?"),
+		"search" : MessageLookupByLibrary.simpleMessage("search"),
+		"add_project" : MessageLookupByLibrary.simpleMessage("add project"),
+		"clear" : MessageLookupByLibrary.simpleMessage("clear"),
+		"deleted_project" : (projectName) => "${projectName} deleted",
 
   };
 }

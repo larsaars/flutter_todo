@@ -30,5 +30,9 @@
   "new_password": "new password",
   "wrong_password": "wrong password",
   "delete_account_title": "Delete account?",
-  "delete_account_text": "Are you sure that you want to delete your account and with it all todo lists?"
+  "delete_account_text": "Are you sure that you want to delete your account and with it all todo lists?",
+  "search": "search",
+  "add_project": "add project",
+  "clear": "clear",
+  "deleted_project": "${projectName} deleted"
 }
