@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:todo/holder/project.dart';
 import 'package:todo/ui/widget/standard_widgets.dart';
 import 'package:todo/util/utils.dart';
 import 'package:todo/util/widget_utils.dart';
@@ -25,7 +26,16 @@ class TodoStartPage extends StatefulWidget {
 
 class _TodoStartPageState extends State<TodoStartPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  bool loggedInWithGoogle = false;
+  bool loggedInWithGoogle = false, searching = false;
+  List<int> selectedProjects = [];
+  List<Project> projects = [], filteredProjects = [];
+  TextEditingController searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,99 +46,144 @@ class _TodoStartPageState extends State<TodoStartPage> {
       appBar: AppBar(
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(45),
-            child: Material(
-              color: Colors.transparent,
-              child: PopupMenuButton(
-                tooltip: strings.account,
-                child: isEmpty(widget.firebaseUser.photoURL)
-                    ? StandardIcon(Icons.person)
-                    : Image.network(widget.firebaseUser.photoURL),
-                itemBuilder: (context) =>
-                    makeNonNull(<PopupMenuEntry<_PopupMenuAccount>>[
-                  PopupMenuItem<_PopupMenuAccount>(
-                    value: _PopupMenuAccount.logOff,
-                    child: Text(
-                      strings.log_off,
+          child: searching
+              ? IconButton(
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Colors.white54,
+                  ),
+                  onPressed: () => setState(() => searching = false))
+              : ClipRRect(
+                  borderRadius: BorderRadius.circular(45),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: PopupMenuButton(
+                      tooltip: strings.account,
+                      child: isEmpty(widget.firebaseUser.photoURL)
+                          ? StandardIcon(Icons.person)
+                          : Image.network(widget.firebaseUser.photoURL),
+                      itemBuilder: (context) =>
+                          makeNonNull(<PopupMenuEntry<_PopupMenuAccount>>[
+                        PopupMenuItem<_PopupMenuAccount>(
+                          value: _PopupMenuAccount.logOff,
+                          child: Text(
+                            strings.log_off,
+                          ),
+                        ),
+                        !loggedInWithGoogle
+                            ? null
+                            : PopupMenuItem<_PopupMenuAccount>(
+                                value: _PopupMenuAccount.changeEmail,
+                                child: Text(
+                                  strings.change_email,
+                                ),
+                              ),
+                        !loggedInWithGoogle
+                            ? null
+                            : PopupMenuItem<_PopupMenuAccount>(
+                                value: _PopupMenuAccount.changePassword,
+                                child: Text(
+                                  strings.reset_password,
+                                ),
+                              ),
+                        PopupMenuItem<_PopupMenuAccount>(
+                          value: _PopupMenuAccount.deleteAccount,
+                          child: Text(
+                            strings.delete_account,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText1
+                                .copyWith(color: Colors.red),
+                          ),
+                        )
+                      ]),
+                      onSelected: (value) {
+                        switch (value) {
+                          case _PopupMenuAccount.logOff:
+                            logOut();
+                            break;
+                          case _PopupMenuAccount.changeEmail:
+                            changeEmail();
+                            break;
+                          case _PopupMenuAccount.changePassword:
+                            changePassword();
+                            break;
+                          case _PopupMenuAccount.deleteAccount:
+                            deleteAccount();
+                            break;
+                          default:
+                            break;
+                        }
+                      },
                     ),
                   ),
-                  !loggedInWithGoogle
-                      ? null
-                      : PopupMenuItem<_PopupMenuAccount>(
-                          value: _PopupMenuAccount.changeEmail,
-                          child: Text(
-                            strings.change_email,
-                          ),
-                        ),
-                  !loggedInWithGoogle
-                      ? null
-                      : PopupMenuItem<_PopupMenuAccount>(
-                          value: _PopupMenuAccount.changePassword,
-                          child: Text(
-                            strings.reset_password,
-                          ),
-                        ),
-                  PopupMenuItem<_PopupMenuAccount>(
-                    value: _PopupMenuAccount.deleteAccount,
-                    child: Text(
-                      strings.delete_account,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1
-                          .copyWith(color: Colors.red),
-                    ),
-                  )
-                ]),
-                onSelected: (value) {
-                  switch (value) {
-                    case _PopupMenuAccount.logOff:
-                      logOut();
-                      break;
-                    case _PopupMenuAccount.changeEmail:
-                      changeEmail();
-                      break;
-                    case _PopupMenuAccount.changePassword:
-                      changePassword();
-                      break;
-                    case _PopupMenuAccount.deleteAccount:
-                      deleteAccount();
-                      break;
-                    default:
-                      break;
-                  }
-                },
+                ),
+        ),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        title: searching
+            ? TextFormField(
+                controller: searchController,
+                decoration: InputDecoration(labelText: strings.login_email),
+                keyboardType: TextInputType.text,
+                onChanged: (value) => setState((){
+                  //filter the projects titles
+                  if(value.length == 0)
+                    //clone the projects list
+                    filteredProjects = [...projects];
+                  else
+                    filteredProjects = projects.where((element) => element.name.contains(searchController.text)).toList();
+                  //no selection while searching
+                  selectedProjects.clear();
+                }),
+              )
+            : Text(
+                isEmpty(widget.firebaseUser.displayName)
+                    ? widget.firebaseUser.email
+                    : widget.firebaseUser.displayName,
+                style: Theme.of(context)
+                    .textTheme
+                    .subtitle1
+                    .copyWith(color: Colors.white)),
+        actions: <Widget>[
+          Visibility(
+            visible: !searching,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: IconButton(
+                icon: Icon(
+                  Icons.add,
+                  color: Colors.white54,
+                ),
+                onPressed: addTodoProject,
               ),
             ),
           ),
-        ),
-        automaticallyImplyLeading: false,
-        title: Text(
-            isEmpty(widget.firebaseUser.displayName)
-                ? widget.firebaseUser.email
-                : widget.firebaseUser.displayName,
-            style: Theme.of(context)
-                .textTheme
-                .subtitle1
-                .copyWith(color: Colors.white)),
-        actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
               icon: Icon(
-                Icons.add,
+                searching ? Icons.clear : Icons.search,
                 color: Colors.white54,
               ),
-              onPressed: addTodoProject,
+              onPressed: () => setState(() {
+                if (searching)
+                  searchController.clear();
+                else
+                  searching = true;
+              }),
             ),
-          )
+          ),
         ],
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            //projects
+            TextFormField(
+              maxLines: 1,
+            ),
+            ListView()
           ],
         ),
       ),
@@ -269,7 +324,5 @@ class _TodoStartPageState extends State<TodoStartPage> {
     });
   }
 
-  void addTodoProject() {
-    
-  }
+  void addTodoProject() {}
 }
