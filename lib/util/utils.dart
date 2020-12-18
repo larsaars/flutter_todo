@@ -4,8 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 final Random random = Random();
+final uuid = Uuid();
 
 Future<String> get rootDir async {
   final directory = await getApplicationDocumentsDirectory();

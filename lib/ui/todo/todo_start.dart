@@ -412,5 +412,37 @@ class _TodoStartPageState extends State<TodoStartPage> {
     });
   }
 
-  void addTodoProject() {}
+  void addTodoProject() {
+    //show the dialog
+    showAnimatedDialog(
+      context,
+      title: strings.add_project,
+      inputFields: 1,
+      inputFieldsHints: [strings.project_name],
+      inputTypes: [TextInputType.text],
+      inputValidators: [
+        (value) => null
+      ],
+      onDone: (value) {
+        //create project with id
+        var project = Project(uuid.v4(), value[0]);
+        //add to firestore the object
+        Map projectMap = {
+          'name': value[0],
+          'tabs': [
+            {'title': 'todo', 'items': []},
+            {'title': 'doing', 'items': []},
+            {'title': 'done', 'items': []}
+          ]
+        };
+        userDoc.collection('pro').add(projectMap);
+        //new state
+        setState(() {
+          //add to the lists
+          projects.add(project);
+          filteredProjects.add(project);
+        });
+      }
+    );
+  }
 }

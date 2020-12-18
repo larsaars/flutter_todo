@@ -30,5 +30,6 @@
   "search": "Suche",
   "clear": "löschen",
   "deleted_project": "${projectName} gelöscht",
-  "undo": "rückgängig"
+  "undo": "rückgängig",
+  "project_name": "Projektname"
 }

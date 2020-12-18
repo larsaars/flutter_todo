@@ -35,5 +35,6 @@
   "add_project": "add project",
   "clear": "clear",
   "deleted_project": "${projectName} deleted",
-  "undo": "undo"
+  "undo": "undo",
+  "project_name": "project name"
 }
