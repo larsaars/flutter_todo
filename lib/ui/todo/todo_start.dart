@@ -83,16 +83,16 @@ class _TodoStartPageState extends State<TodoStartPage> {
                 onSelected: (value) {
                   switch (value) {
                     case _PopupMenuAccount.logOff:
-                      _logOut();
+                      logOut();
                       break;
                     case _PopupMenuAccount.changeEmail:
-                      _changeEmail();
+                      changeEmail();
                       break;
                     case _PopupMenuAccount.changePassword:
-                      _changePassword();
+                      changePassword();
                       break;
                     case _PopupMenuAccount.deleteAccount:
-                      _deleteAccount();
+                      deleteAccount();
                       break;
                     default:
                       break;
@@ -111,6 +111,18 @@ class _TodoStartPageState extends State<TodoStartPage> {
                 .textTheme
                 .subtitle1
                 .copyWith(color: Colors.white)),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              icon: Icon(
+                Icons.add,
+                color: Colors.white54,
+              ),
+              onPressed: addTodoProject,
+            ),
+          )
+        ],
       ),
       body: Center(
         child: Column(
@@ -123,13 +135,13 @@ class _TodoStartPageState extends State<TodoStartPage> {
     );
   }
 
-  void _logOut([bool deleted = false]) async {
+  void logOut([bool deleted = false]) async {
     if (!deleted) await widget.firebaseAuth.signOut();
     Navigator.pushReplacement(context,
         MaterialPageRoute<void>(builder: (_) => MyHomePageAfterLoading()));
   }
 
-  void _changeEmail() {
+  void changeEmail() {
     showAnimatedDialog(context,
         title: strings.change_email,
         inputFields: 2,
@@ -164,7 +176,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
     _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(msg)));
   }
 
-  void _changePassword() {
+  void changePassword() {
     showAnimatedDialog(context,
         title: strings.reset_password,
         inputFields: 2,
@@ -200,7 +212,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
     });
   }
 
-  void _deleteAccount() {
+  void deleteAccount() {
     showAnimatedDialog(context,
         title: strings.delete_account_title,
         text: strings.delete_account_text,
@@ -212,12 +224,13 @@ class _TodoStartPageState extends State<TodoStartPage> {
         //make sure that logged in with google properly to re-authenticate
         final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
         final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+            await googleUser.authentication;
         final AuthCredential credential = GoogleAuthProvider.credential(
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
         );
-        final UserCredential user = await widget.firebaseAuth.signInWithCredential(credential);
+        final UserCredential user =
+            await widget.firebaseAuth.signInWithCredential(credential);
         assert(user.user.email != null);
         assert(user.user.displayName != null);
         assert(!user.user.isAnonymous);
@@ -229,7 +242,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
         //delete the account
         widget.firebaseUser.delete().then((value) {
           //when deleted, log off
-          _logOut(true);
+          logOut(true);
         });
       } else {
         //re-authenticate needed to change the email, check the email
@@ -246,7 +259,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
           //delete the account
           widget.firebaseUser.delete().then((value) {
             //when deleted, log off
-            _logOut(true);
+            logOut(true);
           });
         } catch (e) {
           showSnackBar(strings.wrong_password);
@@ -254,5 +267,9 @@ class _TodoStartPageState extends State<TodoStartPage> {
         }
       }
     });
+  }
+
+  void addTodoProject() {
+    
   }
 }
