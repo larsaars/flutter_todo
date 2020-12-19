@@ -46,6 +46,7 @@ class $de extends MessageLookupByLibrary {
 		"deleted_project" : (projectName) => "${projectName} gelöscht",
 		"undo" : MessageLookupByLibrary.simpleMessage("rückgängig"),
 		"project_name" : MessageLookupByLibrary.simpleMessage("Projektname"),
+		"projects" : MessageLookupByLibrary.simpleMessage("Projekte"),
 
   };
 }
@@ -94,6 +95,7 @@ class $en extends MessageLookupByLibrary {
 		"deleted_project" : (projectName) => "${projectName} deleted",
 		"undo" : MessageLookupByLibrary.simpleMessage("undo"),
 		"project_name" : MessageLookupByLibrary.simpleMessage("project name"),
+		"projects" : MessageLookupByLibrary.simpleMessage("projects"),
 
   };
 }
