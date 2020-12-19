@@ -1,18 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class TodoTab extends StatefulWidget {
+class TodoTabWidget extends StatefulWidget {
   final DocumentReference proDoc;
 
-  TodoTab({
+  TodoTabWidget({
     this.proDoc,
   });
 
   @override
-  _TodoTabState createState() => _TodoTabState();
+  _TodoTabWidgetState createState() => _TodoTabWidgetState();
 }
 
-class _TodoTabState extends State<TodoTab> {
+class _TodoTabWidgetState extends State<TodoTabWidget> {
   @override
   Widget build(BuildContext context) {
     return Container();

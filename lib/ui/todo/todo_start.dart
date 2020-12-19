@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:todo/holder/project.dart';
@@ -239,58 +240,86 @@ class _TodoStartPageState extends State<TodoStartPage> {
         itemCount: filteredProjects.length,
         itemBuilder: (context, index) {
           Project item = filteredProjects[index];
-          return Dismissible(
-              key: Key(item.id ?? index.toString()),
-              onDismissed: (direction) {
-                //get the project
-                var project = filteredProjects[index];
-                //update the state
-                setState(() {
-                  //remove project from both lists
-                  projects.remove(project);
-                  filteredProjects.remove(project);
-                });
-                //state of undone
-                bool undone = false;
-                //show a snackbar with undo button
-                scaffoldKey.currentState
-                    .showSnackBar(SnackBar(
-                        content: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(strings.deleted_project(project.name)),
-                        StandardFlatButton(
-                            text: strings.undo,
-                            onPressed: () {
-                              //close the snack bar
-                              scaffoldKey.currentState.hideCurrentSnackBar();
-                              //has been undone
-                              undone = true;
-                              //set state
-                              setState(() {
-                                //add again
-                                projects.add(project);
-                                filteredProjects.add(project);
-                              });
-                            })
-                      ],
-                    )))
-                    .closed
-                    .then((value) {
-                  //remove project from database if not undone
-                  if (!undone) {
-                    userDoc?.collection('pro')?.doc(project.id)?.delete();
-                  }
-                });
+          return Slidable(
+            controller: SlidableController(),
+              actionExtentRatio: 0.25,
+              actionPane: SlidableBehindActionPane(),
+              /*key: Key(item.id ?? index.toString()),
+              background: Container(
+                color: Colors.indigoAccent,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(
+                      Icons.delete,
+                      color: Colors.red[800],
+                    ),
+                    Icon(
+                      Icons.drive_file_rename_outline,
+                      color: Colors.white54,
+                    )
+                  ],
+                ),
+              ),
+              dismissThresholds: {
+                //rename item
+                DismissDirection.endToStart: 1,
+                //delete item
+                DismissDirection.startToEnd: 0.6,
               },
+              onDismissed: (direction) {
+                //startToEnd == delete item
+                if (direction == DismissDirection.startToEnd) {
+                  //get the project
+                  var project = filteredProjects[index];
+                  //update the state
+                  setState(() {
+                    //remove project from both lists
+                    projects.remove(project);
+                    filteredProjects.remove(project);
+                  });
+                  //state of undone
+                  bool undone = false;
+                  //show a snackbar with undo button
+                  scaffoldKey.currentState
+                      .showSnackBar(SnackBar(
+                          content: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(strings.deleted_project(project.name)),
+                          StandardFlatButton(
+                              text: strings.undo,
+                              onPressed: () {
+                                //close the snack bar
+                                scaffoldKey.currentState.hideCurrentSnackBar();
+                                //has been undone
+                                undone = true;
+                                //set state
+                                setState(() {
+                                  //add again
+                                  projects.add(project);
+                                  filteredProjects.add(project);
+                                });
+                              })
+                        ],
+                      )))
+                      .closed
+                      .then((value) {
+                    //remove project from database if not undone
+                    if (!undone) {
+                      userDoc?.collection('pro')?.doc(project.id)?.delete();
+                    }
+                  });
+                  //endToStart == rename item
+                } else if (direction == DismissDirection.endToStart) {}
+              },*/
               child: ListTile(
                 title: Text(
-                  '${filteredProjects[index].name}',
+                  '${item.name}',
                 ),
                 subtitle: Text(
                   timeago.format(
-                      DateTime.fromMillisecondsSinceEpoch(
-                          filteredProjects[index].lastAccessed),
+                      DateTime.fromMillisecondsSinceEpoch(item.lastAccessed),
                       locale: Localizations.localeOf(context).countryCode),
                 ),
                 onTap: () => tapListTile(index),
@@ -317,7 +346,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
     Future.microtask(() => Navigator.push(
         context,
         MaterialPageRoute<void>(
-          builder: (_) => TodoProject(
+          builder: (_) => TodoProjectPage(
             proDoc: proDoc,
           ),
         )));
