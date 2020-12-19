@@ -31,5 +31,6 @@
   "clear": "löschen",
   "deleted_project": "${projectName} gelöscht",
   "undo": "rückgängig",
-  "project_name": "Projektname"
+  "project_name": "Projektname",
+  "projects": "Projekte"
 }
