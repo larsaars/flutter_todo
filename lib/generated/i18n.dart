@@ -178,6 +178,10 @@ class S {
     return Intl.message("project name", name: 'project_name');
   }
 
+  String get projects {
+    return Intl.message("projects", name: 'projects');
+  }
+
 
 }
 
