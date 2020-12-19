@@ -3,7 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'package:todo/holder/project.dart';
+import 'package:todo/ui/todo/todo_project.dart';
 import 'package:todo/ui/widget/standard_widgets.dart';
 import 'package:todo/util/utils.dart';
 import 'package:todo/util/widget_utils.dart';
@@ -45,7 +47,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
     //load projects from firebase
     userDoc?.collection('pro')?.get()?.then((value) {
       value.docs.map((e) {
-        return Project(e.id, e.data()['name']);
+        return Project(e.id, e.data()['name'], e.data()['lastAccessed']);
       });
     });
 
@@ -53,7 +55,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
     filteredProjects = [...projects];
 
     //load the root user doc
-    userDoc = firestore.collection('user').doc(widget.firebaseUser.uid);
+    userDoc = firestore.collection('users').doc(widget.firebaseUser.uid);
 
     super.initState();
   }
@@ -268,14 +270,42 @@ class _TodoStartPageState extends State<TodoStartPage> {
                       userDoc?.collection('pro')?.doc(project.id)?.delete();
                     }
                   });
-                  print('dismissed to $direction');
                 },
-                child:
-                    ListTile(title: Text('${filteredProjects[index].name}')));
+                child: ListTile(
+                  title: Text(
+                    '${filteredProjects[index].name}',
+                  ),
+                  subtitle: Text(
+                    timeago.format(DateTime.fromMicrosecondsSinceEpoch(
+                        filteredProjects[index].lastAccessed)),
+                  ),
+                  onTap: () => tapListTile(index),
+                ));
           },
         ),
       ),
     );
+  }
+
+  void tapListTile(int index) {
+    //current project
+    var pro = filteredProjects[index];
+    //current time
+    var time = timeNow;
+    //the project document
+    var proDoc = userDoc.collection('pro').doc(pro.id);
+    //tap list tile, write to firebase database and lists
+    proDoc.update(<String, dynamic>{'lastAccessed': time});
+    pro.lastAccessed = time;
+    projects[projects.indexOf(pro)].lastAccessed = time;
+    //open a new route
+    Future.microtask(() => Navigator.push(
+        context,
+        MaterialPageRoute<void>(
+          builder: (_) => TodoProject(
+            proDoc: proDoc,
+          ),
+        )));
   }
 
   void logOut([bool deleted = false]) async {
@@ -414,35 +444,37 @@ class _TodoStartPageState extends State<TodoStartPage> {
 
   void addTodoProject() {
     //show the dialog
-    showAnimatedDialog(
-      context,
-      title: strings.add_project,
-      inputFields: 1,
-      inputFieldsHints: [strings.project_name],
-      inputTypes: [TextInputType.text],
-      inputValidators: [
-        (value) => null
-      ],
-      onDone: (value) {
-        //create project with id
-        var project = Project(uuid.v4(), value[0]);
-        //add to firestore the object
-        Map projectMap = {
-          'name': value[0],
-          'tabs': [
-            {'title': 'todo', 'items': []},
-            {'title': 'doing', 'items': []},
-            {'title': 'done', 'items': []}
-          ]
-        };
-        userDoc.collection('pro').add(projectMap);
-        //new state
-        setState(() {
-          //add to the lists
-          projects.add(project);
-          filteredProjects.add(project);
-        });
-      }
-    );
+    showAnimatedDialog(context,
+        title: strings.add_project,
+        inputFields: 1,
+        inputFieldsHints: [
+          strings.project_name
+        ],
+        inputTypes: [
+          TextInputType.text
+        ],
+        inputValidators: [
+          (value) => (isEmpty(value) ? null : strings.project_name)
+        ], onDone: (value) {
+      //create project with id
+      var project = Project(uuid.v4(), value[0], timeNow);
+      //add to firestore the object
+      Map<String, dynamic> projectMap = {
+        'name': value[0],
+        'lastAccessed': timeNow,
+        'tabs': [
+          {'title': 'todo', 'items': []},
+          {'title': 'doing', 'items': []},
+          {'title': 'done', 'items': []},
+        ]
+      };
+      userDoc.collection('pro').add(projectMap);
+      //new state
+      setState(() {
+        //add to the lists
+        projects.add(project);
+        filteredProjects.add(project);
+      });
+    });
   }
 }
