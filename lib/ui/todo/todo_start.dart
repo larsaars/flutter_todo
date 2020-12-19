@@ -187,11 +187,6 @@ class _TodoStartPageState extends State<TodoStartPage> {
             : Column(
                 //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                    Text(strings.projects,
-                        style: Theme.of(context)
-                            .textTheme
-                            .subtitle1
-                            .copyWith(color: Colors.white)),
                     Text(
                         isEmpty(widget.firebaseUser.displayName)
                             ? widget.firebaseUser.email
@@ -199,6 +194,11 @@ class _TodoStartPageState extends State<TodoStartPage> {
                         style: Theme.of(context)
                             .textTheme
                             .subtitle2
+                            .copyWith(color: Colors.white)),
+                    Text(strings.projects,
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle1
                             .copyWith(color: Colors.white)),
                   ]),
         actions: <Widget>[
@@ -235,69 +235,67 @@ class _TodoStartPageState extends State<TodoStartPage> {
           ),
         ],
       ),
-      body: Expanded(
-        child: ListView.builder(
-          itemCount: filteredProjects.length,
-          itemBuilder: (context, index) {
-            Project item = filteredProjects[index];
-            return Dismissible(
-                key: Key(item.id ?? index.toString()),
-                onDismissed: (direction) {
-                  //get the project
-                  var project = filteredProjects[index];
-                  //update the state
-                  setState(() {
-                    //remove project from both lists
-                    projects.remove(project);
-                    filteredProjects.removeAt(index);
-                  });
-                  //state of undone
-                  bool undone = false;
-                  //show a snackbar with undo button
-                  scaffoldKey.currentState
-                      .showSnackBar(SnackBar(
-                          content: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(strings.deleted_project(project.name)),
-                          StandardFlatButton(
-                              text: strings.undo,
-                              onPressed: () {
-                                //close the snack bar
-                                scaffoldKey.currentState.hideCurrentSnackBar();
-                                //has been undone
-                                undone = true;
-                                //set state
-                                setState(() {
-                                  //add again
-                                  projects.add(project);
-                                  filteredProjects.add(project);
-                                });
-                              })
-                        ],
-                      )))
-                      .closed
-                      .then((value) {
-                    //remove project from database if not undone
-                    if (!undone) {
-                      userDoc?.collection('pro')?.doc(project.id)?.delete();
-                    }
-                  });
-                },
-                child: ListTile(
-                  title: Text(
-                    '${filteredProjects[index].name}',
-                  ),
-                  subtitle: Text(
-                    timeago.format(
-                        DateTime.fromMillisecondsSinceEpoch(
-                            filteredProjects[index].lastAccessed),
-                        locale: Localizations.localeOf(context).countryCode),
-                  ),
-                  onTap: () => tapListTile(index),
-                ));
-          },
-        ),
+      body: ListView.builder(
+        itemCount: filteredProjects.length,
+        itemBuilder: (context, index) {
+          Project item = filteredProjects[index];
+          return Dismissible(
+              key: Key(item.id ?? index.toString()),
+              onDismissed: (direction) {
+                //get the project
+                var project = filteredProjects[index];
+                //update the state
+                setState(() {
+                  //remove project from both lists
+                  projects.remove(project);
+                  filteredProjects.remove(project);
+                });
+                //state of undone
+                bool undone = false;
+                //show a snackbar with undo button
+                scaffoldKey.currentState
+                    .showSnackBar(SnackBar(
+                        content: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(strings.deleted_project(project.name)),
+                        StandardFlatButton(
+                            text: strings.undo,
+                            onPressed: () {
+                              //close the snack bar
+                              scaffoldKey.currentState.hideCurrentSnackBar();
+                              //has been undone
+                              undone = true;
+                              //set state
+                              setState(() {
+                                //add again
+                                projects.add(project);
+                                filteredProjects.add(project);
+                              });
+                            })
+                      ],
+                    )))
+                    .closed
+                    .then((value) {
+                  //remove project from database if not undone
+                  if (!undone) {
+                    userDoc?.collection('pro')?.doc(project.id)?.delete();
+                  }
+                });
+              },
+              child: ListTile(
+                title: Text(
+                  '${filteredProjects[index].name}',
+                ),
+                subtitle: Text(
+                  timeago.format(
+                      DateTime.fromMillisecondsSinceEpoch(
+                          filteredProjects[index].lastAccessed),
+                      locale: Localizations.localeOf(context).countryCode),
+                ),
+                onTap: () => tapListTile(index),
+              ));
+        },
       ),
     );
   }
