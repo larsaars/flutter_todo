@@ -44,18 +44,21 @@ class _TodoStartPageState extends State<TodoStartPage> {
 
   @override
   void initState() {
-    //load projects from firebase
-    userDoc?.collection('pro')?.get()?.then((value) {
-      value.docs.map((e) {
-        return Project(e.id, e.data()['name'], e.data()['lastAccessed']);
-      });
-    });
-
-    //copy filtered to projects
-    filteredProjects = [...projects];
-
     //load the root user doc
     userDoc = firestore.collection('users').doc(widget.firebaseUser.uid);
+    //load projects from firebase
+    userDoc?.collection('pro')?.get()?.then((snapshot) {
+      //set the state with future micro task
+      Future.microtask(() => setState(() {
+            //set the data list
+            projects = snapshot?.docs?.map((e) {
+              return Project(e.id, e.data()['name'], e.data()['lastAccessed']);
+            })?.toList();
+
+            //copy filtered to projects
+            filteredProjects = [...projects];
+          }));
+    });
 
     super.initState();
   }
@@ -224,65 +227,79 @@ class _TodoStartPageState extends State<TodoStartPage> {
           ),
         ],
       ),
-      body: Align(
-        alignment: Alignment.topCenter,
-        child: ListView.builder(
-          itemCount: filteredProjects.length,
-          itemBuilder: (context, index) {
-            Project item = filteredProjects[index];
-            return Dismissible(
-                key: Key(item.id),
-                onDismissed: (direction) {
-                  //get the project
-                  var project = filteredProjects[index];
-                  //update the state
-                  setState(() {
-                    //remove project from both lists
-                    projects.remove(project);
-                    filteredProjects.removeAt(index);
-                  });
-                  //state of undone
-                  bool undone = false;
-                  //show a snackbar with undo button
-                  _scaffoldKey.currentState
-                      .showSnackBar(SnackBar(
-                          content: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(strings.deleted_project(project.name)),
-                          StandardFlatButton(
-                              text: strings.undo,
-                              onPressed: () {
-                                //close the snack bar
-                                _scaffoldKey.currentState.hideCurrentSnackBar();
-                                //has been undone
-                                undone = true;
-                                //add again
-                                projects.add(project);
-                                filteredProjects.add(project);
-                              })
-                        ],
-                      )))
-                      .closed
-                      .then((value) {
-                    //remove project from database if not undone
-                    if (!undone) {
-                      userDoc?.collection('pro')?.doc(project.id)?.delete();
-                    }
-                  });
-                },
-                child: ListTile(
-                  title: Text(
-                    '${filteredProjects[index].name}',
-                  ),
-                  subtitle: Text(
-                    timeago.format(DateTime.fromMicrosecondsSinceEpoch(
-                        filteredProjects[index].lastAccessed)),
-                  ),
-                  onTap: () => tapListTile(index),
-                ));
-          },
-        ),
+      body: Column(
+        children: [
+          Text(
+            strings.projects,
+            style: Theme.of(context).textTheme.headline1,
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: filteredProjects.length,
+              itemBuilder: (context, index) {
+                Project item = filteredProjects[index];
+                return Dismissible(
+                    key: Key(item.id),
+                    onDismissed: (direction) {
+                      //get the project
+                      var project = filteredProjects[index];
+                      //update the state
+                      setState(() {
+                        //remove project from both lists
+                        projects.remove(project);
+                        filteredProjects.removeAt(index);
+                      });
+                      //state of undone
+                      bool undone = false;
+                      //show a snackbar with undo button
+                      _scaffoldKey.currentState
+                          .showSnackBar(SnackBar(
+                              content: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(strings.deleted_project(project.name)),
+                              StandardFlatButton(
+                                  text: strings.undo,
+                                  onPressed: () {
+                                    //close the snack bar
+                                    _scaffoldKey.currentState
+                                        .hideCurrentSnackBar();
+                                    //has been undone
+                                    undone = true;
+                                    //set state
+                                    setState(() {
+                                      //add again
+                                      projects.add(project);
+                                      filteredProjects.add(project);
+                                    });
+                                  })
+                            ],
+                          )))
+                          .closed
+                          .then((value) {
+                        //remove project from database if not undone
+                        if (!undone) {
+                          userDoc?.collection('pro')?.doc(project.id)?.delete();
+                        }
+                      });
+                    },
+                    child: ListTile(
+                      title: Text(
+                        '${filteredProjects[index].name}',
+                      ),
+                      subtitle: Text(
+                        timeago.format(
+                            DateTime.fromMillisecondsSinceEpoch(
+                                filteredProjects[index].lastAccessed),
+                            locale:
+                                Localizations.localeOf(context).countryCode),
+                      ),
+                      onTap: () => tapListTile(index),
+                    ));
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -291,13 +308,15 @@ class _TodoStartPageState extends State<TodoStartPage> {
     //current project
     var pro = filteredProjects[index];
     //current time
-    var time = timeNow;
+    var time = DateTime.now().millisecondsSinceEpoch;
     //the project document
     var proDoc = userDoc.collection('pro').doc(pro.id);
     //tap list tile, write to firebase database and lists
     proDoc.update(<String, dynamic>{'lastAccessed': time});
     pro.lastAccessed = time;
     projects[projects.indexOf(pro)].lastAccessed = time;
+    //update state once again
+    setState(() {});
     //open a new route
     Future.microtask(() => Navigator.push(
         context,
@@ -456,12 +475,14 @@ class _TodoStartPageState extends State<TodoStartPage> {
         inputValidators: [
           (value) => (isEmpty(value) ? null : strings.project_name)
         ], onDone: (value) {
+      //the time
+      var time = DateTime.now().millisecondsSinceEpoch;
       //create project with id
-      var project = Project(uuid.v4(), value[0], timeNow);
+      var project = Project(uuid.v4(), value[0], time);
       //add to firestore the object
       Map<String, dynamic> projectMap = {
         'name': value[0],
-        'lastAccessed': timeNow,
+        'lastAccessed': time,
         'tabs': [
           {'title': 'todo', 'items': []},
           {'title': 'doing', 'items': []},

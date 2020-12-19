@@ -9,8 +9,6 @@ import 'package:uuid/uuid.dart';
 final Random random = Random();
 final uuid = Uuid();
 
-int get timeNow =>  DateTime.now().millisecondsSinceEpoch;
-
 Future<String> get rootDir async {
   final directory = await getApplicationDocumentsDirectory();
   // For your reference print the AppDoc directory
