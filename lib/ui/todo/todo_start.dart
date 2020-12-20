@@ -6,6 +6,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:todo/holder/project.dart';
+import 'package:todo/holder/todo.dart';
 import 'package:todo/ui/todo/todo_project.dart';
 import 'package:todo/ui/widget/standard_widgets.dart';
 import 'package:todo/util/utils.dart';
@@ -65,11 +66,12 @@ class _TodoStartPageState extends State<TodoStartPage> {
       setState(() {
         //set the data list
         projects = snapshot?.docs?.map((e) {
+          var data = e.data();
           return Project(
             e.id,
-            e.data()['name'],
-            e.data()['lastAccessed'],
-            e.data()['itemCount'],
+            data['name'],
+            data['lastAccessed'],
+            data['itemCount'],
           );
         })?.toList();
 
@@ -565,12 +567,11 @@ class _TodoStartPageState extends State<TodoStartPage> {
         ], onDone: (value) {
       //the time
       var time = DateTime.now().millisecondsSinceEpoch;
-      //create project with id
-      var project = Project(uuid.v4(), value[0], time, 0);
       //add to firestore the object
       Map<String, dynamic> projectMap = {
         'name': value[0],
         'lastAccessed': time,
+        'sortingType': TodoItemSortingType.name,
         'itemCount': 0,
         'tabs': [
           {'title': 'todo', 'items': []},
@@ -579,14 +580,19 @@ class _TodoStartPageState extends State<TodoStartPage> {
         ]
       };
       //create max 100 projects
-      if (projects.length < 100) userDoc.collection('pro').add(projectMap);
-      else showSnackBar(strings.too_many_projects);
-      //new state
-      setState(() {
-        //add to the lists
-        projects.add(project);
-        filteredProjects.add(project);
-      });
+      if (projects.length < 100)
+        userDoc.collection('pro').add(projectMap).then((snapshot) {
+          //create project with id
+          var project = Project(snapshot.id, value[0], time, 0);
+          //new state
+          setState(() {
+            //add to the lists
+            projects.add(project);
+            filteredProjects.add(project);
+          });
+        });
+      else
+        showSnackBar(strings.too_many_projects);
     });
   }
 }

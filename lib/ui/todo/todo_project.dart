@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:todo/holder/todo.dart';
+import 'package:todo/main.dart';
 
 class TodoProjectPage extends StatefulWidget {
   final DocumentReference proDoc;
@@ -14,11 +15,12 @@ class TodoProjectPage extends StatefulWidget {
 }
 
 class _TodoProjectPageState extends State<TodoProjectPage> {
-  //sorting, search, move, add tab, add todo (deadline name), rename & change deadline
+  //sorting, search, move, add tab, add to do (deadline name), rename & change deadline
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   bool searching = false;
-  List<int> selectedProjects = [];
-  List<TodoTab> todos = [], filteredTodos = [];
+  List<TodoTab> tabs = [];
+  String appBarTitle = app_name;
+  int sortingType = 0;
   TextEditingController searchController = TextEditingController();
   DocumentReference proDoc;
 
@@ -32,7 +34,7 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
 
   int get countItems {
     int sum = 0;
-    for (var tab in todos) sum += tab.items.length;
+    for (var tab in tabs) sum += tab.items.length;
     return sum;
   }
 
@@ -42,22 +44,38 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
     //load the root user doc
     proDoc = widget.proDoc;
     //load todos from firebase
-    /*userDoc?.collection('pro')?.get()?.then((snapshot) {
-      //set the state with future micro task
+    proDoc?.get()?.then((snapshot) {
+      //set the task with with new to do tabs element
       setState(() {
-        //set the data list
-        todos = snapshot?.docs?.map((e) {
-          return Todo(e.id, e.data()['name'], e.data()['lastAccessed']);
-        })?.toList();
-
-        //copy filtered to projects
-        filteredTodos = [...todos];
+        if (snapshot.exists) {
+          //clear the init list
+          tabs = [];
+          //the data
+          var data = snapshot.data();
+          //the app bar title
+          appBarTitle = data['name'];
+          //sorting type
+          sortingType = data['sortingType'];
+          //set the data list
+          for (var tab in data['tabs']) {
+            //get the items
+            var items = [];
+            for (var item in tab['items'])
+              items.add(
+                  TodoItem(item['title'], item['deadline'], item['created']));
+            //add to to do tabs the title and items
+            tabs.add(TodoTab(tab['title'], items));
+          }
+        }
       });
-    });*/
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    //sort the lists every time before building
+    sort();
+    //return the widget
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
@@ -67,5 +85,10 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
         children: [],
       ),
     );
+  }
+
+  void sort() {
+    for(var tab in tabs)
+      tab.sort(sortingType);
   }
 }
