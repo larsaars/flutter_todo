@@ -13,7 +13,13 @@ import 'package:todo/util/widget_utils.dart';
 
 import '../../main.dart';
 
-enum _PopupMenuAccount { logOff, changePassword, changeEmail, deleteAccount }
+enum _PopupMenuAccount {
+  logOff,
+  changePassword,
+  changeEmail,
+  deleteAccount,
+  about
+}
 
 class TodoStartPage extends StatefulWidget {
   final User firebaseUser;
@@ -99,6 +105,12 @@ class _TodoStartPageState extends State<TodoStartPage> {
                       itemBuilder: (context) =>
                           makeNonNull(<PopupMenuEntry<_PopupMenuAccount>>[
                         PopupMenuItem<_PopupMenuAccount>(
+                          value: _PopupMenuAccount.about,
+                          child: Text(
+                            strings.about,
+                          ),
+                        ),
+                        PopupMenuItem<_PopupMenuAccount>(
                           value: _PopupMenuAccount.logOff,
                           child: Text(
                             strings.log_off,
@@ -144,6 +156,9 @@ class _TodoStartPageState extends State<TodoStartPage> {
                             break;
                           case _PopupMenuAccount.deleteAccount:
                             deleteAccount();
+                            break;
+                          case _PopupMenuAccount.about:
+                            showAbout(context);
                             break;
                           default:
                             break;

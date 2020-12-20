@@ -6,10 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo/ui/login/log_in_page.dart';
-import 'package:todo/ui/widget/fancy_button.dart';
 import 'package:todo/ui/widget/modal_progress_hud.dart';
 import 'package:todo/util/utils.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:todo/util/widget_utils.dart';
 
 import 'generated/i18n.dart';
 
@@ -185,8 +184,22 @@ class _MyHomePageAfterLoadingState extends State<MyHomePageAfterLoading>
         child: SafeArea(
           child: Scaffold(
             backgroundColor: Colors.brown[50],
-            body: LogInPage(
-              title: app_name,
+            body: Stack(
+              children: [
+                LogInPage(
+                  title: app_name,
+                ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.info,
+                      color: Colors.black54,
+                    ),
+                    onPressed: () => showAbout(context),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
