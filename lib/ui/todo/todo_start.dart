@@ -53,8 +53,10 @@ class _TodoStartPageState extends State<TodoStartPage> {
   @override
   void initState() {
     super.initState();
-    //the slidable controller in case of animation changes
+    //the slidable controller
     slidableController = SlidableController();
+    //load google login bool
+    loggedInWithGoogle = widget.firebaseUser.photoURL != null;
     //load the root user doc
     userDoc = firestore.collection('users').doc(widget.firebaseUser.uid);
     //load projects from firebase
@@ -79,8 +81,9 @@ class _TodoStartPageState extends State<TodoStartPage> {
 
   @override
   Widget build(BuildContext context) {
-    loggedInWithGoogle = widget.firebaseUser.photoURL != null;
-
+    //before every build resort the lists
+    sort();
+    //then build the widget
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
@@ -311,6 +314,15 @@ class _TodoStartPageState extends State<TodoStartPage> {
         },
       ),
     );
+  }
+
+  void sort() {
+    sort0(projects);
+    sort0(filteredProjects);
+  }
+
+  void sort0(List<Project> pro) {
+    pro.sort((a, b) => b.lastAccessed.compareTo(a.lastAccessed));
   }
 
   void renameItem(Project project) {
@@ -567,7 +579,9 @@ class _TodoStartPageState extends State<TodoStartPage> {
           {'title': 'done', 'items': []},
         ]
       };
-      userDoc.collection('pro').add(projectMap);
+      //create max 100 projects
+      if (projects.length < 100) userDoc.collection('pro').add(projectMap);
+      else showSnackBar(strings.too_many_projects);
       //new state
       setState(() {
         //add to the lists

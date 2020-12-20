@@ -44,15 +44,15 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
     //load todos from firebase
     /*userDoc?.collection('pro')?.get()?.then((snapshot) {
       //set the state with future micro task
-      Future.microtask(() => setState(() {
+      setState(() {
         //set the data list
         todos = snapshot?.docs?.map((e) {
-          return Project(e.id, e.data()['name'], e.data()['lastAccessed']);
+          return Todo(e.id, e.data()['name'], e.data()['lastAccessed']);
         })?.toList();
 
         //copy filtered to projects
         filteredTodos = [...todos];
-      }));
+      });
     });*/
   }
 
