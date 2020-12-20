@@ -39,5 +39,6 @@
   "project_name": "project name",
   "projects": "projects",
   "rename": "rename",
-  "delete": "delete"
+  "delete": "delete",
+  "rename_project": "rename project"
 }

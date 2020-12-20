@@ -190,6 +190,10 @@ class S {
     return Intl.message("delete", name: 'delete');
   }
 
+  String get rename_project {
+    return Intl.message("rename project", name: 'rename_project');
+  }
+
 
 }
 
