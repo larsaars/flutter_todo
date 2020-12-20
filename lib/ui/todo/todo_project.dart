@@ -26,6 +26,14 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
   void dispose() {
     super.dispose();
     searchController.dispose();
+    //update the item count of project
+    proDoc.update(<String, dynamic>{'itemCount': countItems});
+  }
+
+  int get countItems {
+    int sum = 0;
+    for (var tab in todos) sum += tab.items.length;
+    return sum;
   }
 
   @override
