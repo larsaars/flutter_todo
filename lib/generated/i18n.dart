@@ -198,6 +198,10 @@ class S {
     return Intl.message("about", name: 'about');
   }
 
+  String get too_many_projects {
+    return Intl.message("too many projects", name: 'too_many_projects');
+  }
+
 
 }
 
