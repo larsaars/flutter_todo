@@ -1,8 +1,8 @@
 class Project {
   String name, id;
-  int lastAccessed;
+  int lastAccessed, itemCount;
 
-  Project(this.id, this.name, this.lastAccessed);
+  Project(this.id, this.name, this.lastAccessed, this.itemCount);
 
   @override
   int get hashCode => id.hashCode;

@@ -182,6 +182,14 @@ class S {
     return Intl.message("projects", name: 'projects');
   }
 
+  String get rename {
+    return Intl.message("rename", name: 'rename');
+  }
+
+  String get delete {
+    return Intl.message("delete", name: 'delete');
+  }
+
 
 }
 

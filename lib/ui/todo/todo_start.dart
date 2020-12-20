@@ -36,6 +36,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
   List<Project> projects = [], filteredProjects = [];
   TextEditingController searchController = TextEditingController();
   DocumentReference userDoc;
+  SlidableController slidableController;
 
   @override
   void dispose() {
@@ -46,20 +47,27 @@ class _TodoStartPageState extends State<TodoStartPage> {
   @override
   void initState() {
     super.initState();
+    //the slidable controller in case of animation changes
+    slidableController = SlidableController();
     //load the root user doc
     userDoc = firestore.collection('users').doc(widget.firebaseUser.uid);
     //load projects from firebase
     userDoc?.collection('pro')?.get()?.then((snapshot) {
       //set the state with future micro task
-      Future.microtask(() => setState(() {
-            //set the data list
-            projects = snapshot?.docs?.map((e) {
-              return Project(e.id, e.data()['name'], e.data()['lastAccessed']);
-            })?.toList();
+      setState(() {
+        //set the data list
+        projects = snapshot?.docs?.map((e) {
+          return Project(
+            e.id,
+            e.data()['name'],
+            e.data()['lastAccessed'],
+            e.data()['itemCount'],
+          );
+        })?.toList();
 
-            //copy filtered to projects
-            filteredProjects = [...projects];
-          }));
+        //copy filtered to projects
+        filteredProjects = [...projects];
+      });
     });
   }
 
@@ -241,92 +249,104 @@ class _TodoStartPageState extends State<TodoStartPage> {
         itemBuilder: (context, index) {
           Project item = filteredProjects[index];
           return Slidable(
-            controller: SlidableController(),
-              actionExtentRatio: 0.25,
-              actionPane: SlidableBehindActionPane(),
-              /*key: Key(item.id ?? index.toString()),
-              background: Container(
-                color: Colors.indigoAccent,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Icon(
-                      Icons.delete,
-                      color: Colors.red[800],
-                    ),
-                    Icon(
-                      Icons.drive_file_rename_outline,
-                      color: Colors.white54,
-                    )
-                  ],
+            key: Key(item.id ?? index.toString()),
+            controller: slidableController,
+            actionExtentRatio: 0.25,
+            direction: Axis.horizontal,
+            actionPane: SlidableStrechActionPane(),
+            dismissal: SlidableDismissal(
+                child: SlidableDrawerDismissal(),
+                dismissThresholds: <SlideActionType, double>{
+                  SlideActionType.primary: 0.6,
+                  SlideActionType.secondary: 1,
+                },
+                onDismissed: (actionType) {
+                  if (actionType == SlideActionType.primary)
+                    //could have new index if list changed, so get it newly
+                    deleteItem(filteredProjects.indexOf(item));
+                }),
+            child: ListTile(
+              leading: ClipRRect(
+                borderRadius: BorderRadius.circular(45),
+                child: Text(
+                  item.itemCount.toString(),
+                  style: Theme.of(context).textTheme.subtitle2,
+                  textAlign: TextAlign.center,
                 ),
               ),
-              dismissThresholds: {
-                //rename item
-                DismissDirection.endToStart: 1,
-                //delete item
-                DismissDirection.startToEnd: 0.6,
-              },
-              onDismissed: (direction) {
-                //startToEnd == delete item
-                if (direction == DismissDirection.startToEnd) {
-                  //get the project
-                  var project = filteredProjects[index];
-                  //update the state
-                  setState(() {
-                    //remove project from both lists
-                    projects.remove(project);
-                    filteredProjects.remove(project);
-                  });
-                  //state of undone
-                  bool undone = false;
-                  //show a snackbar with undo button
-                  scaffoldKey.currentState
-                      .showSnackBar(SnackBar(
-                          content: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(strings.deleted_project(project.name)),
-                          StandardFlatButton(
-                              text: strings.undo,
-                              onPressed: () {
-                                //close the snack bar
-                                scaffoldKey.currentState.hideCurrentSnackBar();
-                                //has been undone
-                                undone = true;
-                                //set state
-                                setState(() {
-                                  //add again
-                                  projects.add(project);
-                                  filteredProjects.add(project);
-                                });
-                              })
-                        ],
-                      )))
-                      .closed
-                      .then((value) {
-                    //remove project from database if not undone
-                    if (!undone) {
-                      userDoc?.collection('pro')?.doc(project.id)?.delete();
-                    }
-                  });
-                  //endToStart == rename item
-                } else if (direction == DismissDirection.endToStart) {}
-              },*/
-              child: ListTile(
-                title: Text(
-                  '${item.name}',
-                ),
-                subtitle: Text(
-                  timeago.format(
-                      DateTime.fromMillisecondsSinceEpoch(item.lastAccessed),
-                      locale: Localizations.localeOf(context).countryCode),
-                ),
-                onTap: () => tapListTile(index),
-              ));
+              title: Text(
+                '${item.name}',
+              ),
+              subtitle: Text(
+                timeago.format(
+                    DateTime.fromMillisecondsSinceEpoch(item.lastAccessed),
+                    locale: Localizations.localeOf(context).countryCode),
+              ),
+              onTap: () => tapListTile(index),
+            ),
+            actions: <Widget>[
+              IconSlideAction(
+                caption: strings.delete,
+                color: Colors.red[800],
+                icon: Icons.delete,
+                onTap: () => deleteItem(filteredProjects.indexOf(item)),
+              ),
+            ],
+            secondaryActions: [
+              IconSlideAction(
+                caption: strings.rename,
+                color: Colors.indigoAccent,
+                icon: Icons.drive_file_rename_outline,
+                onTap: () => print('Share'),
+              ),
+            ],
+          );
         },
       ),
     );
+  }
+
+  void deleteItem(int index) {
+    //get the project
+    var project = filteredProjects[index];
+    //update the state
+    setState(() {
+      //remove project from both lists
+      projects.remove(project);
+      filteredProjects.remove(project);
+    });
+    //state of undone
+    bool undone = false;
+    //show a snackbar with undo button
+    scaffoldKey.currentState
+        .showSnackBar(SnackBar(
+            content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(strings.deleted_project(project.name)),
+            StandardFlatButton(
+                text: strings.undo,
+                onPressed: () {
+                  //close the snack bar
+                  scaffoldKey.currentState.hideCurrentSnackBar();
+                  //has been undone
+                  undone = true;
+                  //set state
+                  setState(() {
+                    //add again
+                    projects.add(project);
+                    filteredProjects.add(project);
+                  });
+                })
+          ],
+        )))
+        .closed
+        .then((value) {
+      //remove project from database if not undone
+      if (!undone) {
+        userDoc?.collection('pro')?.doc(project.id)?.delete();
+      }
+    });
   }
 
   void tapListTile(int index) {
@@ -503,11 +523,12 @@ class _TodoStartPageState extends State<TodoStartPage> {
       //the time
       var time = DateTime.now().millisecondsSinceEpoch;
       //create project with id
-      var project = Project(uuid.v4(), value[0], time);
+      var project = Project(uuid.v4(), value[0], time, 0);
       //add to firestore the object
       Map<String, dynamic> projectMap = {
         'name': value[0],
         'lastAccessed': time,
+        'itemCount': 0,
         'tabs': [
           {'title': 'todo', 'items': []},
           {'title': 'doing', 'items': []},
