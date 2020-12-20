@@ -263,17 +263,9 @@ class _TodoStartPageState extends State<TodoStartPage> {
                 onDismissed: (actionType) {
                   if (actionType == SlideActionType.primary)
                     //could have new index if list changed, so get it newly
-                    deleteItem(filteredProjects.indexOf(item));
+                    deleteItem(item);
                 }),
             child: ListTile(
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(45),
-                child: Text(
-                  item.itemCount.toString(),
-                  style: Theme.of(context).textTheme.subtitle2,
-                  textAlign: TextAlign.center,
-                ),
-              ),
               title: Text(
                 '${item.name}',
               ),
@@ -289,7 +281,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
                 caption: strings.delete,
                 color: Colors.red[800],
                 icon: Icons.delete,
-                onTap: () => deleteItem(filteredProjects.indexOf(item)),
+                onTap: () => deleteItem(item),
               ),
             ],
             secondaryActions: [
@@ -297,7 +289,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
                 caption: strings.rename,
                 color: Colors.indigoAccent,
                 icon: Icons.drive_file_rename_outline,
-                onTap: () => print('Share'),
+                onTap: () => renameItem(item),
               ),
             ],
           );
@@ -306,9 +298,34 @@ class _TodoStartPageState extends State<TodoStartPage> {
     );
   }
 
-  void deleteItem(int index) {
-    //get the project
-    var project = filteredProjects[index];
+  void renameItem(Project project) {
+    showAnimatedDialog(context,
+        title: strings.rename_project,
+        inputFields: 1,
+        inputFieldsHints: [
+          strings.project_name
+        ],
+        inputTypes: [
+          TextInputType.text
+        ],
+        inputValidators: [
+          (value) => (isEmpty(value) ? null : strings.project_name)
+        ], onDone: (value) {
+      //rename the project in db
+      userDoc
+          .collection('pro')
+          .doc(project.id)
+          .update(<String, dynamic>{'name': value[0]});
+      //new state
+      setState(() {
+        //edit the lists
+        projects[projects.indexOf(project)].name = value[0];
+        filteredProjects[filteredProjects.indexOf(project)].name = value[0];
+      });
+    });
+  }
+
+  void deleteItem(Project project) {
     //update the state
     setState(() {
       //remove project from both lists

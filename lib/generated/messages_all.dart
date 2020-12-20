@@ -49,6 +49,7 @@ class $de extends MessageLookupByLibrary {
 		"projects" : MessageLookupByLibrary.simpleMessage("Projekte"),
 		"rename" : MessageLookupByLibrary.simpleMessage("umbenennen"),
 		"delete" : MessageLookupByLibrary.simpleMessage("löschen"),
+		"rename_project" : MessageLookupByLibrary.simpleMessage("Projekt umbenennen"),
 
   };
 }
@@ -100,6 +101,7 @@ class $en extends MessageLookupByLibrary {
 		"projects" : MessageLookupByLibrary.simpleMessage("projects"),
 		"rename" : MessageLookupByLibrary.simpleMessage("rename"),
 		"delete" : MessageLookupByLibrary.simpleMessage("delete"),
+		"rename_project" : MessageLookupByLibrary.simpleMessage("rename project"),
 
   };
 }
