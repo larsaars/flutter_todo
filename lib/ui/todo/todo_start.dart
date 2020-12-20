@@ -289,8 +289,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
               ),
               subtitle: Text(
                 timeago.format(
-                    DateTime.fromMillisecondsSinceEpoch(item.lastAccessed),
-                    locale: Localizations.localeOf(context).countryCode),
+                    DateTime.fromMillisecondsSinceEpoch(item.lastAccessed)),
               ),
               onTap: () => tapListTile(index),
             ),

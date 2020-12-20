@@ -23,7 +23,7 @@ class _EmailPageState extends State<EmailPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  bool _success;
+  bool _success = false;
   String _errorMessage;
 
   @override
@@ -85,9 +85,7 @@ class _EmailPageState extends State<EmailPage> {
               alignment: Alignment.center,
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                _success == null
-                    ? ''
-                    : strings.login_sign_in_failed(_errorMessage),
+                _success ? strings.login_sign_in_failed(_errorMessage) : '',
                 style: TextStyle(color: Colors.red),
               ),
             ),
