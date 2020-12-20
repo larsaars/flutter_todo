@@ -41,5 +41,6 @@
   "rename": "rename",
   "delete": "delete",
   "rename_project": "rename project",
-  "about": "about"
+  "about": "about",
+  "too_many_projects": "too many projects"
 }

@@ -36,5 +36,6 @@
   "rename": "umbenennen",
   "delete": "löschen",
   "rename_project": "Projekt umbenennen",
-  "about": "Über"
+  "about": "Über",
+  "too_many_projects": "zu viele Projekte"
 }
