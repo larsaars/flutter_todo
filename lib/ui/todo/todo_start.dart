@@ -104,7 +104,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
                             strings.log_off,
                           ),
                         ),
-                        !loggedInWithGoogle
+                        loggedInWithGoogle
                             ? null
                             : PopupMenuItem<_PopupMenuAccount>(
                                 value: _PopupMenuAccount.changeEmail,
@@ -112,7 +112,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
                                   strings.change_email,
                                 ),
                               ),
-                        !loggedInWithGoogle
+                        loggedInWithGoogle
                             ? null
                             : PopupMenuItem<_PopupMenuAccount>(
                                 value: _PopupMenuAccount.changePassword,
