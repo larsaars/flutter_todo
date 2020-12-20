@@ -193,11 +193,11 @@ void showAbout(BuildContext context) async {
     ),
     applicationLegalese: await rootBundle.loadString('res/licenses/this'),
     children: [
-      FancyButton(
+      StandardFlatButton(
         onPressed: () => launch(strings.privacy_url),
         text: strings.privacy_title,
       ),
-      FancyButton(
+      StandardFlatButton(
         onPressed: () => launch(strings.terms_url),
         text: strings.terms_title,
       ),

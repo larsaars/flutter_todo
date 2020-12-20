@@ -194,6 +194,10 @@ class S {
     return Intl.message("rename project", name: 'rename_project');
   }
 
+  String get about {
+    return Intl.message("about", name: 'about');
+  }
+
 
 }
 
