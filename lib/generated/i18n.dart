@@ -210,6 +210,14 @@ class S {
     return Intl.message("sorting", name: 'sorting');
   }
 
+  String get sort_by {
+    return Intl.message("sort by", name: 'sort_by');
+  }
+
+  String get sort_options {
+    return Intl.message("added,name,deadline", name: 'sort_options');
+  }
+
 
 }
 
