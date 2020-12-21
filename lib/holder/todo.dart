@@ -36,5 +36,5 @@ class TodoTab {
 }
 
 class TodoItemSortingType {
-  static const int deadline = 0, name = 1, added = 2;
+  static const int deadline = 2, name = 1, added = 0;
 }

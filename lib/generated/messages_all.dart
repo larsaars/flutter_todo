@@ -54,6 +54,8 @@ class $de extends MessageLookupByLibrary {
 		"too_many_projects" : MessageLookupByLibrary.simpleMessage("zu viele Projekte"),
 		"add_item" : MessageLookupByLibrary.simpleMessage("Element hinzufügen"),
 		"sorting" : MessageLookupByLibrary.simpleMessage("Sortierung"),
+		"sort_by" : MessageLookupByLibrary.simpleMessage("sortieren nach"),
+		"sort_options" : MessageLookupByLibrary.simpleMessage("Datum hinzugefügt,Name,Datum der Deadline"),
 
   };
 }
@@ -110,6 +112,8 @@ class $en extends MessageLookupByLibrary {
 		"too_many_projects" : MessageLookupByLibrary.simpleMessage("too many projects"),
 		"add_item" : MessageLookupByLibrary.simpleMessage("add item"),
 		"sorting" : MessageLookupByLibrary.simpleMessage("sorting"),
+		"sort_by" : MessageLookupByLibrary.simpleMessage("sort by"),
+		"sort_options" : MessageLookupByLibrary.simpleMessage("added,name,deadline"),
 
   };
 }

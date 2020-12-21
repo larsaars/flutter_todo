@@ -44,5 +44,7 @@
   "about": "about",
   "too_many_projects": "too many projects",
   "add_item": "add item",
-  "sorting": "sorting"
+  "sorting": "sorting",
+  "sort_by": "sort by",
+  "sort_options": "added,name,deadline"
 }

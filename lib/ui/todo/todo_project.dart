@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:group_radio_button/group_radio_button.dart';
 import 'package:todo/holder/todo.dart';
 import 'package:todo/main.dart';
+import 'package:todo/util/widget_utils.dart';
 
 class TodoProjectPage extends StatefulWidget {
   final DocumentReference proDoc;
@@ -182,7 +184,30 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
 
   void addItem() {}
 
-  void changeSorting() {}
+  void changeSorting() {
+    List options = strings.sort_options.split(',');
+    BuildContext ctx;
+
+    showAnimatedDialog(context, title: strings.sort_by,
+        setStateCallback: (ctx0, setState) {
+      ctx = ctx0;
+    }, children: [
+      RadioGroup.builder(
+          direction: Axis.vertical,
+          onChanged: (value) {
+            //get diff int
+            sortingType = options.indexOf(value);
+            //save in the database online
+            proDoc.update(<String, dynamic>{'sortingType': sortingType});
+            //then pop the nav
+            Navigator.of(ctx).pop();
+          },
+          groupValue: options[sortingType],
+          items: options,
+          itemBuilder: (item) => RadioButtonBuilder(item,
+              textPosition: RadioButtonTextPosition.right))
+    ]);
+  }
 
   void sort() {
     for (var tab in tabs) tab.sort(sortingType);

@@ -39,5 +39,7 @@
   "about": "Über",
   "too_many_projects": "zu viele Projekte",
   "add_item": "Element hinzufügen",
-  "sorting": "Sortierung"
+  "sorting": "Sortierung",
+  "sort_by": "sortieren nach",
+  "sort_options": "Datum hinzugefügt,Name,Datum der Deadline"
 }
