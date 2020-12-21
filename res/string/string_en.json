@@ -42,5 +42,7 @@
   "delete": "delete",
   "rename_project": "rename project",
   "about": "about",
-  "too_many_projects": "too many projects"
+  "too_many_projects": "too many projects",
+  "add_item": "add item",
+  "sorting": "sorting"
 }

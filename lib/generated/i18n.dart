@@ -202,6 +202,14 @@ class S {
     return Intl.message("too many projects", name: 'too_many_projects');
   }
 
+  String get add_item {
+    return Intl.message("add item", name: 'add_item');
+  }
+
+  String get sorting {
+    return Intl.message("sorting", name: 'sorting');
+  }
+
 
 }
 

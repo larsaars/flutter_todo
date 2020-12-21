@@ -9,23 +9,25 @@ class TodoTab {
   String title;
   List<TodoItem> items = [], filteredItems = [];
 
-  TodoTab(this.title, this.items);
+  TodoTab(this.title, this.items, this.filteredItems);
+
+  void copyFullToFiltered() => filteredItems = [...items];
 
   void sort(int sortingType) {
     _sort0(items, sortingType);
     _sort0(filteredItems, sortingType);
   }
 
-  void _sort0(List<TodoItem> pro, int sortingType) {
+  void _sort0(List<TodoItem> items, int sortingType) {
     switch (sortingType) {
       case TodoItemSortingType.added:
-        pro.sort((a, b) => b.created.compareTo(a.created));
+        items.sort((a, b) => b.created.compareTo(a.created));
         break;
       case TodoItemSortingType.deadline:
-        pro.sort((a, b) => b.deadline.compareTo(a.deadline));
+        items.sort((a, b) => b.deadline.compareTo(a.deadline));
         break;
       case TodoItemSortingType.name:
-        pro.sort((a, b) => a.title.compareTo(a.title));
+        items.sort((a, b) => a.title.compareTo(a.title));
         break;
       default:
         break;

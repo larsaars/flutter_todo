@@ -52,6 +52,8 @@ class $de extends MessageLookupByLibrary {
 		"rename_project" : MessageLookupByLibrary.simpleMessage("Projekt umbenennen"),
 		"about" : MessageLookupByLibrary.simpleMessage("Über"),
 		"too_many_projects" : MessageLookupByLibrary.simpleMessage("zu viele Projekte"),
+		"add_item" : MessageLookupByLibrary.simpleMessage("Element hinzufügen"),
+		"sorting" : MessageLookupByLibrary.simpleMessage("Sortierung"),
 
   };
 }
@@ -106,6 +108,8 @@ class $en extends MessageLookupByLibrary {
 		"rename_project" : MessageLookupByLibrary.simpleMessage("rename project"),
 		"about" : MessageLookupByLibrary.simpleMessage("about"),
 		"too_many_projects" : MessageLookupByLibrary.simpleMessage("too many projects"),
+		"add_item" : MessageLookupByLibrary.simpleMessage("add item"),
+		"sorting" : MessageLookupByLibrary.simpleMessage("sorting"),
 
   };
 }

@@ -37,5 +37,7 @@
   "delete": "löschen",
   "rename_project": "Projekt umbenennen",
   "about": "Über",
-  "too_many_projects": "zu viele Projekte"
+  "too_many_projects": "zu viele Projekte",
+  "add_item": "Element hinzufügen",
+  "sorting": "Sortierung"
 }

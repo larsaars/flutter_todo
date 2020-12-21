@@ -39,7 +39,6 @@ class TodoStartPage extends StatefulWidget {
 class _TodoStartPageState extends State<TodoStartPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   bool loggedInWithGoogle = false, searching = false;
-  List<int> selectedProjects = [];
   List<Project> projects = [], filteredProjects = [];
   TextEditingController searchController = TextEditingController();
   DocumentReference userDoc;
@@ -97,7 +96,14 @@ class _TodoStartPageState extends State<TodoStartPage> {
                     Icons.arrow_back,
                     color: Colors.white54,
                   ),
-                  onPressed: () => setState(() => searching = false))
+                  onPressed: () => setState(() {
+                        //not searching anymore
+                        searching = false;
+                        //also clear the search controller
+                        searchController.clear();
+                        //copy back the filtered items to normal
+                        filteredProjects = [...projects];
+                      }))
               : ClipRRect(
                   borderRadius: BorderRadius.circular(45),
                   child: Material(
@@ -208,8 +214,6 @@ class _TodoStartPageState extends State<TodoStartPage> {
                               .toLowerCase()
                               .contains(searchController.text.toLowerCase()))
                           .toList();
-                    //no selection while searching
-                    selectedProjects.clear();
                   }),
                 ),
               ])
