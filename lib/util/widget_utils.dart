@@ -141,7 +141,7 @@ void showAnimatedDialog(BuildContext context,
               ),
               actions: showAnyActionButton
                   ? [
-                      StandardFlatButton(
+                      DefaultFlatButton(
                           text: (forceCancelText != null
                               ? forceCancelText
                               : (onDone == null ? strings.ok : strings.cancel)),
@@ -151,7 +151,7 @@ void showAnimatedDialog(BuildContext context,
                                 .pop(onDone == null ? 'ok' : null);
                           }),
                       onDone != null
-                          ? StandardFilledButton(
+                          ? DefaultFilledButton(
                               text: onDoneText ?? strings.ok,
                               onPressed: () {
                                 _showing = false;
@@ -193,11 +193,11 @@ void showAbout(BuildContext context) async {
     ),
     applicationLegalese: await rootBundle.loadString('res/licenses/this'),
     children: [
-      StandardFlatButton(
+      DefaultFlatButton(
         onPressed: () => launch(strings.privacy_url),
         text: strings.privacy_title,
       ),
-      StandardFlatButton(
+      DefaultFlatButton(
         onPressed: () => launch(strings.terms_url),
         text: strings.terms_title,
       ),

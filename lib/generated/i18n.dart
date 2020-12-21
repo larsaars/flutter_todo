@@ -218,6 +218,14 @@ class S {
     return Intl.message("added,name,deadline", name: 'sort_options');
   }
 
+  String get add_item_or_tab {
+    return Intl.message("add item or tab", name: 'add_item_or_tab');
+  }
+
+  String get add_tab {
+    return Intl.message("add tab", name: 'add_tab');
+  }
+
 
 }
 

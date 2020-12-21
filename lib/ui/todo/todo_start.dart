@@ -111,7 +111,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
                     child: PopupMenuButton(
                       tooltip: strings.account,
                       child: isEmpty(widget.firebaseUser.photoURL)
-                          ? StandardIcon(Icons.person)
+                          ? DefaultIcon(Icons.person)
                           : Image.network(widget.firebaseUser.photoURL),
                       itemBuilder: (context) =>
                           makeNonNull(<PopupMenuEntry<_PopupMenuAccount>>[
@@ -297,7 +297,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
                 timeago.format(
                     DateTime.fromMillisecondsSinceEpoch(item.lastAccessed)),
               ),
-              onTap: () => tapListTile(index),
+              onTap: () => tapListTile(item),
             ),
             actions: <Widget>[
               IconSlideAction(
@@ -373,7 +373,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(strings.deleted_project(project.name)),
-            StandardFlatButton(
+            DefaultFlatButton(
                 text: strings.undo,
                 onPressed: () {
                   //close the snack bar
@@ -398,9 +398,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
     });
   }
 
-  void tapListTile(int index) {
-    //current project
-    var pro = filteredProjects[index];
+  void tapListTile(Project pro) {
     //current time
     var time = DateTime.now().millisecondsSinceEpoch;
     //the project document

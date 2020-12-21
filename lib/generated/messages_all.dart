@@ -56,6 +56,8 @@ class $de extends MessageLookupByLibrary {
 		"sorting" : MessageLookupByLibrary.simpleMessage("Sortierung"),
 		"sort_by" : MessageLookupByLibrary.simpleMessage("sortieren nach"),
 		"sort_options" : MessageLookupByLibrary.simpleMessage("Datum hinzugefügt,Name,Datum der Deadline"),
+		"add_item_or_tab" : MessageLookupByLibrary.simpleMessage("Element oder Tab hinzufügen"),
+		"add_tab" : MessageLookupByLibrary.simpleMessage("Tab hinzufügen"),
 
   };
 }
@@ -114,6 +116,8 @@ class $en extends MessageLookupByLibrary {
 		"sorting" : MessageLookupByLibrary.simpleMessage("sorting"),
 		"sort_by" : MessageLookupByLibrary.simpleMessage("sort by"),
 		"sort_options" : MessageLookupByLibrary.simpleMessage("added,name,deadline"),
+		"add_item_or_tab" : MessageLookupByLibrary.simpleMessage("add item or tab"),
+		"add_tab" : MessageLookupByLibrary.simpleMessage("add tab"),
 
   };
 }

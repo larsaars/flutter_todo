@@ -44,8 +44,8 @@ bool passwordValidates(String pass) {
 List makeNonNull(List list) =>
     list.where((element) => (element != null)).toList();
 
-bool isEmpty(obj) {
-  if(obj == null)
+bool isEmpty(obj, [emptyObj]) {
+  if(obj == null || (emptyObj != null && obj == emptyObj))
     return true;
 
   if(obj is Iterable)
