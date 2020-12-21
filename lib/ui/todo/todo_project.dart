@@ -137,7 +137,7 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
                   Icons.sort,
                   color: Colors.white54,
                 ),
-                onPressed: addItem,
+                onPressed: changeSorting,
               ),
             ),
           ),
@@ -181,6 +181,8 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
   }
 
   void addItem() {}
+
+  void changeSorting() {}
 
   void sort() {
     for (var tab in tabs) tab.sort(sortingType);
