@@ -41,5 +41,7 @@
   "add_item": "Element hinzufügen",
   "sorting": "Sortierung",
   "sort_by": "sortieren nach",
-  "sort_options": "Datum hinzugefügt,Name,Datum der Deadline"
+  "sort_options": "Datum hinzugefügt,Name,Datum der Deadline",
+  "add_item_or_tab": "Element oder Tab hinzufügen",
+  "add_tab": "Tab hinzufügen"
 }

@@ -63,7 +63,7 @@ class _EmailPageState extends State<EmailPage> {
                 alignment: Alignment.center,
                 child: ButtonBar(
                   children: <Widget>[
-                    StandardFlatButton(
+                    DefaultFlatButton(
                       text: strings.login_register,
                       onPressed: () async {
                         if (_formKey.currentState.validate()) {
@@ -71,7 +71,7 @@ class _EmailPageState extends State<EmailPage> {
                         }
                       },
                     ),
-                    StandardFilledButton(
+                    DefaultFilledButton(
                       text: strings.login_login,
                       onPressed: () async {
                         if (_formKey.currentState.validate()) {

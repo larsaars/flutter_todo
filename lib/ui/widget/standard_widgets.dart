@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:todo/util/widget_utils.dart';
 
-class StandardFilledButton extends StatelessWidget {
+class DefaultFilledButton extends StatelessWidget {
   final String text;
   final Function onPressed;
   final bool warningButton;
 
-  StandardFilledButton({
+  DefaultFilledButton({
     @required this.text,
     @required this.onPressed,
     this.warningButton = false,
@@ -28,11 +28,11 @@ class StandardFilledButton extends StatelessWidget {
   }
 }
 
-class StandardFlatButton extends StatelessWidget {
+class DefaultFlatButton extends StatelessWidget {
   final String text;
   final Function onPressed;
 
-  StandardFlatButton({
+  DefaultFlatButton({
     @required this.text,
     @required this.onPressed,
   });
@@ -51,10 +51,10 @@ class StandardFlatButton extends StatelessWidget {
   }
 }
 
-class StandardIcon extends StatelessWidget {
+class DefaultIcon extends StatelessWidget {
   final IconData icon;
 
-  StandardIcon(this.icon);
+  DefaultIcon(this.icon);
 
   @override
   Widget build(BuildContext context) {

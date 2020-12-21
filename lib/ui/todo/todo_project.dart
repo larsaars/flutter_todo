@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:group_radio_button/group_radio_button.dart';
 import 'package:todo/holder/todo.dart';
 import 'package:todo/main.dart';
+import 'package:todo/ui/widget/standard_widgets.dart';
 import 'package:todo/util/widget_utils.dart';
 
 class TodoProjectPage extends StatefulWidget {
@@ -145,15 +146,33 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
           ),
           Visibility(
             visible: !searching,
-            child: Tooltip(
-              message: strings.add_item,
-              child: IconButton(
-                icon: Icon(
-                  Icons.add,
-                  color: Colors.white54,
+            child: PopupMenuButton(
+              tooltip: strings.add_item_or_tab,
+              child: DefaultIcon(Icons.add),
+              itemBuilder: (context) => <PopupMenuEntry<int>>[
+                PopupMenuItem<int>(
+                  value: 0,
+                  child: Text(strings.add_item),
                 ),
-                onPressed: addItem,
-              ),
+                PopupMenuItem<int>(
+                  value: 1,
+                  child: Text(strings.add_tab),
+                ),
+              ],
+              onSelected: (value) {
+                switch (value) {
+                  case 0:
+                    //add item
+                    addItem();
+                    break;
+                  case 1:
+                    //add tab
+                    addTab();
+                    break;
+                  default:
+                    break;
+                }
+              },
             ),
           ),
           Tooltip(
@@ -176,11 +195,13 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
           ),
         ],
       ),
-      body: Column(
-        children: [],
-      ),
+      body: Row(),
     );
   }
+
+  Widget get addTabWidget {}
+
+  void addTab() {}
 
   void addItem() {}
 
