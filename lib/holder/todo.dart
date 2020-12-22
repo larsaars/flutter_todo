@@ -1,3 +1,5 @@
+import 'package:todo/ui/todo/todo_tab.dart';
+
 class TodoItem {
   String title;
   int deadline, created;
@@ -6,8 +8,10 @@ class TodoItem {
 }
 
 class TodoTab {
-  String title;
+  final String title;
   List<TodoItem> items = [], filteredItems = [];
+  TodoTabWidget widget;
+  int index;
 
   TodoTab(this.title, this.items, this.filteredItems);
 
