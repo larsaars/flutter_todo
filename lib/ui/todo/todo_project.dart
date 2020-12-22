@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:group_radio_button/group_radio_button.dart';
 import 'package:todo/holder/todo.dart';
 import 'package:todo/main.dart';
-import 'package:todo/ui/widget/standard_widgets.dart';
+import 'package:todo/ui/todo/todo_tab.dart';
 import 'package:todo/util/widget_utils.dart';
 
 class TodoProjectPage extends StatefulWidget {
@@ -19,7 +19,7 @@ class TodoProjectPage extends StatefulWidget {
 
 class _TodoProjectPageState extends State<TodoProjectPage> {
   //sorting, search, move, add tab, add to do (deadline name), rename & change deadline
-  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
   bool searching = false;
   List<TodoTab> tabs = [];
   String appBarTitle = strings.loading_web;
@@ -61,7 +61,14 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
               items.add(
                   TodoItem(item['title'], item['deadline'], item['created']));
             //add to to do tabs the title and items, with filtered items as a copy
-            tabs.add(TodoTab(tab['title'], items, [...items]));
+            var todoTab = TodoTab(tab['title'], items, [...items]);
+            //set widget
+            todoTab.widget = TodoTabWidget(
+              tab: todoTab,
+              proDoc: proDoc,
+            );
+            //add to list
+            tabs.add(todoTab);
           }
         }
       });
@@ -148,7 +155,10 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
             visible: !searching,
             child: PopupMenuButton(
               tooltip: strings.add_item_or_tab,
-              child: DefaultIcon(Icons.add),
+              child: Icon(
+                Icons.add,
+                color: Colors.white54,
+              ),
               itemBuilder: (context) => <PopupMenuEntry<int>>[
                 PopupMenuItem<int>(
                   value: 0,
@@ -198,8 +208,6 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
       body: Row(),
     );
   }
-
-  Widget get addTabWidget {}
 
   void addTab() {}
 
