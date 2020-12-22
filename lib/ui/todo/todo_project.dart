@@ -80,132 +80,145 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
     //sort the lists every time before building
     sort();
     //return the widget
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_outlined,
-            color: Colors.white54,
+    return DefaultTabController(
+      length: tabs.length,
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_outlined,
+              color: Colors.white54,
+            ),
+            onPressed: () => searching
+                ? setState(() {
+                    //not searching anymore
+                    searching = false;
+                    //also clear the search controller
+                    searchController.clear();
+                    //copy back the filtered items to normal
+                    curTab.copyFullToFiltered();
+                  })
+                : Navigator.of(context).pop(),
           ),
-          onPressed: () => searching
-              ? setState(() {
-                  //not searching anymore
-                  searching = false;
-                  //also clear the search controller
-                  searchController.clear();
-                  //copy back the filtered items to normal
-                  curTab.copyFullToFiltered();
-                })
-              : Navigator.of(context).pop(),
-        ),
-        title: searching
-            ? Stack(alignment: Alignment.centerRight, children: [
-                Icon(
-                  Icons.search,
+          title: searching
+              ? Stack(alignment: Alignment.centerRight, children: [
+                  Icon(
+                    Icons.search,
+                    color: Colors.white54,
+                  ),
+                  TextFormField(
+                    textAlign: TextAlign.justify,
+                    controller: searchController,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      focusedErrorBorder: InputBorder.none,
+                    ),
+                    keyboardType: TextInputType.text,
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle1
+                        .copyWith(color: Colors.white),
+                    onChanged: (value) => setState(() {
+                      //filter the projects titles
+                      if (value.length == 0)
+                        //clone the projects list
+                        curTab.copyFullToFiltered();
+                      else
+                        curTab.filteredItems = curTab.items
+                            .where((element) => element.title
+                                .toLowerCase()
+                                .contains(searchController.text.toLowerCase()))
+                            .toList();
+                    }),
+                  ),
+                ])
+              : Text(appBarTitle),
+          actions: <Widget>[
+            Visibility(
+              visible: !searching,
+              child: Tooltip(
+                message: strings.sorting,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.sort,
+                    color: Colors.white54,
+                  ),
+                  onPressed: changeSorting,
+                ),
+              ),
+            ),
+            Visibility(
+              visible: !searching,
+              child: PopupMenuButton(
+                tooltip: strings.add_item_or_tab,
+                child: Icon(
+                  Icons.add,
                   color: Colors.white54,
                 ),
-                TextFormField(
-                  textAlign: TextAlign.justify,
-                  controller: searchController,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    focusedErrorBorder: InputBorder.none,
+                itemBuilder: (context) => <PopupMenuEntry<int>>[
+                  PopupMenuItem<int>(
+                    value: 0,
+                    child: Text(strings.add_item),
                   ),
-                  keyboardType: TextInputType.text,
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle1
-                      .copyWith(color: Colors.white),
-                  onChanged: (value) => setState(() {
-                    //filter the projects titles
-                    if (value.length == 0)
-                      //clone the projects list
-                      curTab.copyFullToFiltered();
-                    else
-                      curTab.filteredItems = curTab.items
-                          .where((element) => element.title
-                              .toLowerCase()
-                              .contains(searchController.text.toLowerCase()))
-                          .toList();
-                  }),
-                ),
-              ])
-            : Text(appBarTitle),
-        actions: <Widget>[
-          Visibility(
-            visible: !searching,
-            child: Tooltip(
-              message: strings.sorting,
+                  PopupMenuItem<int>(
+                    value: 1,
+                    child: Text(strings.add_tab),
+                  ),
+                ],
+                onSelected: (value) {
+                  switch (value) {
+                    case 0:
+                      //add item
+                      addItem();
+                      break;
+                    case 1:
+                      //add tab
+                      addTab();
+                      break;
+                    default:
+                      break;
+                  }
+                },
+              ),
+            ),
+            Tooltip(
+              message: searching ? strings.clear : strings.search,
               child: IconButton(
                 icon: Icon(
-                  Icons.sort,
+                  searching ? Icons.clear : Icons.search,
                   color: Colors.white54,
                 ),
-                onPressed: changeSorting,
+                onPressed: () => setState(() {
+                  if (searching) {
+                    //clear the search
+                    searchController.clear();
+                    //copy back the filtered items to normal
+                    curTab.copyFullToFiltered();
+                  } else
+                    searching = true;
+                }),
               ),
             ),
+          ],
+          bottom: TabBar(
+            isScrollable: tabs.length > 4,
+            tabs: tabs
+                .map((tab) => Tab(
+                      text: tab.title,
+                    ))
+                .toList(),
           ),
-          Visibility(
-            visible: !searching,
-            child: PopupMenuButton(
-              tooltip: strings.add_item_or_tab,
-              child: Icon(
-                Icons.add,
-                color: Colors.white54,
-              ),
-              itemBuilder: (context) => <PopupMenuEntry<int>>[
-                PopupMenuItem<int>(
-                  value: 0,
-                  child: Text(strings.add_item),
-                ),
-                PopupMenuItem<int>(
-                  value: 1,
-                  child: Text(strings.add_tab),
-                ),
-              ],
-              onSelected: (value) {
-                switch (value) {
-                  case 0:
-                    //add item
-                    addItem();
-                    break;
-                  case 1:
-                    //add tab
-                    addTab();
-                    break;
-                  default:
-                    break;
-                }
-              },
-            ),
-          ),
-          Tooltip(
-            message: searching ? strings.clear : strings.search,
-            child: IconButton(
-              icon: Icon(
-                searching ? Icons.clear : Icons.search,
-                color: Colors.white54,
-              ),
-              onPressed: () => setState(() {
-                if (searching) {
-                  //clear the search
-                  searchController.clear();
-                  //copy back the filtered items to normal
-                  curTab.copyFullToFiltered();
-                } else
-                  searching = true;
-              }),
-            ),
-          ),
-        ],
+        ),
+        body: TabBarView(
+          children: tabs.map((tab) => tab.widget).toList(),
+        ),
       ),
-      body: Row(),
     );
   }
 
