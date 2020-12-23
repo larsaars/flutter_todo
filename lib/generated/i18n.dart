@@ -215,7 +215,7 @@ class S {
   }
 
   String get sort_options {
-    return Intl.message("added,name,deadline", name: 'sort_options');
+    return Intl.message("custom,name,deadline", name: 'sort_options');
   }
 
   String get add_item_or_tab {

@@ -92,7 +92,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
             ),
             child: ListTile(
               title: Text(
-                '${item.title}',
+                '${item.name}',
               ),
               subtitle: Text(
                 timeago
@@ -107,7 +107,10 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
   }
 
   void addItem(String value) {
+    //add the item to firebase and then set the state
+    setState(() {
 
+    });
   }
 
   void tapListTile(TodoItem item) {}

@@ -46,7 +46,7 @@
   "add_item": "add item",
   "sorting": "sorting",
   "sort_by": "sort by",
-  "sort_options": "added,name,deadline",
+  "sort_options": "custom,name,deadline",
   "add_item_or_tab": "add item or tab",
   "add_tab": "add tab"
 }
