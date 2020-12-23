@@ -58,6 +58,7 @@ class $de extends MessageLookupByLibrary {
 		"sort_options" : MessageLookupByLibrary.simpleMessage("benutzerdefiniert,Name,Datum der Deadline"),
 		"add_item_or_tab" : MessageLookupByLibrary.simpleMessage("Element oder Tab hinzufügen"),
 		"add_tab" : MessageLookupByLibrary.simpleMessage("Tab hinzufügen"),
+		"deadline" : MessageLookupByLibrary.simpleMessage("deadline"),
 
   };
 }
@@ -118,6 +119,7 @@ class $en extends MessageLookupByLibrary {
 		"sort_options" : MessageLookupByLibrary.simpleMessage("custom,name,deadline"),
 		"add_item_or_tab" : MessageLookupByLibrary.simpleMessage("add item or tab"),
 		"add_tab" : MessageLookupByLibrary.simpleMessage("add tab"),
+		"deadline" : MessageLookupByLibrary.simpleMessage("deadline"),
 
   };
 }

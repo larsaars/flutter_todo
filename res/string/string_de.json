@@ -43,5 +43,6 @@
   "sort_by": "sortieren nach",
   "sort_options": "benutzerdefiniert,Name,Datum der Deadline",
   "add_item_or_tab": "Element oder Tab hinzufügen",
-  "add_tab": "Tab hinzufügen"
+  "add_tab": "Tab hinzufügen",
+  "deadline": "deadline"
 }

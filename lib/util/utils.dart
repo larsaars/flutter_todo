@@ -54,6 +54,8 @@ bool isEmpty(obj, [emptyObj]) {
     return obj.length == 0;
   else if(obj is Map)
     return obj.isEmpty;
+  else if(obj is num)
+    return obj == 0;
 
   return false;
 }
