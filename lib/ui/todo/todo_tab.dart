@@ -1,6 +1,5 @@
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:todo/holder/todo.dart';
 import 'package:todo/util/utils.dart';
 import 'package:todo/util/widget_utils.dart';
@@ -74,7 +73,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
                 Text(
                   isEmpty(currentDeadline)
                       ? ''
-                      : timeago.format(
+                      : formatTime(context,
                           DateTime.fromMillisecondsSinceEpoch(currentDeadline)),
                   style: Theme.of(context).textTheme.bodyText2,
                 ),
@@ -118,8 +117,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
                 '${item.name}',
               ),
               subtitle: Text(
-                timeago
-                    .format(DateTime.fromMillisecondsSinceEpoch(item.deadline)),
+                formatTime(context, DateTime.fromMillisecondsSinceEpoch(item.deadline)),
               ),
               onTap: () => tapListTile(item),
             ),
