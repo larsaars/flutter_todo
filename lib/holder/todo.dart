@@ -40,6 +40,13 @@ class TodoItem {
     deadline = snapshot.get('dl');
     changed = snapshot.get('c');
   }
+
+  @override
+  int get hashCode => doc?.id?.hashCode ?? super.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      (other is TodoItem) && (doc?.id == other.doc?.id);
 }
 
 class TodoTab {
@@ -129,6 +136,13 @@ class TodoTab {
         return 0;
     });
   }
+
+  @override
+  int get hashCode => doc?.id?.hashCode ?? super.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      (other is TodoTab) && (doc?.id == other.doc?.id);
 }
 
 class TodoItemSortingType {
