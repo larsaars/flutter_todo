@@ -67,8 +67,8 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
           //read the values from the db
           //when done reading add to tabs list and set state
           tab.read(queryDocSnapshot).then((value) => setState(() {
-                tabs.sort((a, b) => a.position.compareTo(b.position));
                 tabs.add(tab);
+                tabs.sort((a, b) => a.position.compareTo(b.position));
               }));
         }
       });
@@ -224,7 +224,11 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
 
   void addTab() {}
 
-  void addItem() {}
+  void addItem() {
+    setState(() {
+
+    });
+  }
 
   void changeSorting() {
     List options = strings.sort_options.split(',');

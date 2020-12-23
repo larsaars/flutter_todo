@@ -117,7 +117,10 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
                 '${item.name}',
               ),
               subtitle: Text(
-                formatTime(context, DateTime.fromMillisecondsSinceEpoch(item.deadline)),
+                isEmpty(item.deadline)
+                    ? strings.no_deadline
+                    : formatTime(context,
+                        DateTime.fromMillisecondsSinceEpoch(item.deadline)),
               ),
               onTap: () => tapListTile(item),
             ),
@@ -144,7 +147,6 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
       if (value == 'ok' && ms != 0) {
         setState(() {
           currentDeadline = ms;
-          print(currentDeadline.toString());
         });
       }
     });
@@ -153,14 +155,16 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
   void addItem(final String name) {
     //clear the text
     addController.clear();
-    //and current deadline
-    currentDeadline = 0;
+
     //add the item to firebase and then set the state
-    TodoItem.addNew(tab, name).then((item) {
+    TodoItem.addNew(tab, name, isEmpty(currentDeadline) ? 0 : currentDeadline)
+        .then((item) {
       setState(() {
         //add to the lists
         tab.items.add(item);
         tab.filteredItems.add(item);
+        //clear current deadline
+        currentDeadline = 0;
       });
     });
   }
