@@ -33,7 +33,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
 
   @override
   Widget build(BuildContext context) {
-    //sort the lists every time before building
+    //sort the tab
     tab.sort();
     //determine if is custom sorting
     bool customSorting = tab.sortingType == TodoItemSortingType.custom;
@@ -48,7 +48,27 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
     return customSorting
         ? ReorderableListView(
             children: children,
-            onReorder: null,
+            onReorder: (int oldIndex, int newIndex) {
+              //if the old index is the last item, ignore
+              if(oldIndex == filteredItems.length)
+                return;
+              //set the state newly
+              setState(() {
+                //set the changed item to the lower item + 1
+                var item = filteredItems[oldIndex];
+                if((oldIndex + 1) < filteredItems.length) {
+                  var lowerItem = filteredItems[oldIndex + 1].changed - 1;
+                  filteredItems[oldIndex].changed = lowerItem;
+                  tab.items[tab.items.indexOf(item)].changed = lowerItem;
+                }else if((oldIndex  -1) >= 0) {
+                  var upperItem = filteredItems[oldIndex - 1].changed + 1;
+                  filteredItems[oldIndex].changed = upperItem;
+                  tab.items[tab.items.indexOf(item)].changed = upperItem;
+                }
+                //update in database
+                tab.items[tab.items.indexOf(item)].update();
+              });
+            },
           )
         : ListView.builder(
             key: listKey,
@@ -62,6 +82,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
     //the last item, the add item edit text
     if (index == filteredItems.length) {
       return Container(
+        key: Key(filteredItems.length.toString()),
         padding: EdgeInsets.all(2),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
