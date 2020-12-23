@@ -59,6 +59,8 @@ class $de extends MessageLookupByLibrary {
 		"add_item_or_tab" : MessageLookupByLibrary.simpleMessage("Element oder Tab hinzufügen"),
 		"add_tab" : MessageLookupByLibrary.simpleMessage("Tab hinzufügen"),
 		"deadline" : MessageLookupByLibrary.simpleMessage("deadline"),
+		"date" : MessageLookupByLibrary.simpleMessage("Datum"),
+		"time" : MessageLookupByLibrary.simpleMessage("Uhrzeit"),
 
   };
 }
@@ -120,6 +122,8 @@ class $en extends MessageLookupByLibrary {
 		"add_item_or_tab" : MessageLookupByLibrary.simpleMessage("add item or tab"),
 		"add_tab" : MessageLookupByLibrary.simpleMessage("add tab"),
 		"deadline" : MessageLookupByLibrary.simpleMessage("deadline"),
+		"date" : MessageLookupByLibrary.simpleMessage("date"),
+		"time" : MessageLookupByLibrary.simpleMessage("time"),
 
   };
 }

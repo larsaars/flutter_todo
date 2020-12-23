@@ -49,5 +49,7 @@
   "sort_options": "custom,name,deadline",
   "add_item_or_tab": "add item or tab",
   "add_tab": "add tab",
-  "deadline": "deadline"
+  "deadline": "deadline",
+  "date": "date",
+  "time": "time"
 }
