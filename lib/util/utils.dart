@@ -73,5 +73,5 @@ String formatTime(BuildContext context, DateTime dateTime) {
       .millisecondsSinceEpoch)
     return timeago.format(dateTime);
   else
-    return loc.formatFullDate(dateTime);
+    return loc.formatCompactDate(dateTime);
 }

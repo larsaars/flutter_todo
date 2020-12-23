@@ -238,6 +238,10 @@ class S {
     return Intl.message("time", name: 'time');
   }
 
+  String get no_deadline {
+    return Intl.message("no deadline", name: 'no_deadline');
+  }
+
 
 }
 

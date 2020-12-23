@@ -61,6 +61,7 @@ class $de extends MessageLookupByLibrary {
 		"deadline" : MessageLookupByLibrary.simpleMessage("deadline"),
 		"date" : MessageLookupByLibrary.simpleMessage("Datum"),
 		"time" : MessageLookupByLibrary.simpleMessage("Uhrzeit"),
+		"no_deadline" : MessageLookupByLibrary.simpleMessage("keine deadline"),
 
   };
 }
@@ -124,6 +125,7 @@ class $en extends MessageLookupByLibrary {
 		"deadline" : MessageLookupByLibrary.simpleMessage("deadline"),
 		"date" : MessageLookupByLibrary.simpleMessage("date"),
 		"time" : MessageLookupByLibrary.simpleMessage("time"),
+		"no_deadline" : MessageLookupByLibrary.simpleMessage("no deadline"),
 
   };
 }

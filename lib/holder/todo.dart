@@ -8,21 +8,21 @@ class TodoItem {
 
   TodoItem([this.doc]);
 
-  static Future<TodoItem> addNew(TodoTab tab, String name) async {
+  static Future<TodoItem> addNew(TodoTab tab, String name, int deadline) async {
     //current time
     int time = DateTime.now().millisecondsSinceEpoch;
     //create database object
     Map<String, dynamic> data = {
       'n': name,
       'c': time,
-      'dl': time,
+      'dl': deadline,
     };
     //add to list database
     var thisDoc = await tab.doc.collection('items').add(data);
     //then generate local object
     return TodoItem(thisDoc)
       ..changed = time
-      ..deadline = time
+      ..deadline = deadline
       ..name = name;
   }
 
