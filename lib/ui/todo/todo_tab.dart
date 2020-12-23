@@ -1,8 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:todo/holder/todo.dart';
 import 'package:todo/util/utils.dart';
+
+import '../../main.dart';
 
 class TodoTabWidget extends StatefulWidget {
   final TodoTab tab;
@@ -14,15 +15,13 @@ class TodoTabWidget extends StatefulWidget {
 }
 
 class _TodoTabWidgetState extends State<TodoTabWidget> {
-  var tempTabId;
   TextEditingController addController = TextEditingController();
   final listKey = GlobalKey<AnimatedListState>();
+  int currentDeadline;
 
   @override
   void initState() {
     super.initState();
-
-    tempTabId = uuid.v4();
   }
 
   @override
@@ -33,62 +32,83 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedList(
+    return ListView.builder(
       key: listKey,
-      initialItemCount: filteredItems.length + 1,
-      itemBuilder: (context, index, animation) {
+      itemCount: filteredItems.length + 1,
+      itemBuilder: (context, index) {
         //the last item, the add item edit text
         if (index == filteredItems.length) {
           return Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: Colors.white54,
-                width: 8,
-              ),
-            ),
-            child: TextFormField(
-              maxLines: 1,
-              textAlign: TextAlign.justify,
-              controller: addController,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                disabledBorder: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                errorBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                focusedErrorBorder: InputBorder.none,
-              ),
-              textInputAction: TextInputAction.go,
-              keyboardType: TextInputType.text,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyText1
-                  .copyWith(color: Colors.white),
-              onFieldSubmitted: addItem,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey, width: 0.7)),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.add,
+                  color: Colors.grey,
+                ),
+                Expanded(
+                  child: TextFormField(
+                    maxLines: 1,
+                    textAlign: TextAlign.justify,
+                    controller: addController,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      focusedErrorBorder: InputBorder.none,
+                      contentPadding: EdgeInsets.all(2),
+                    ),
+                    textInputAction: TextInputAction.go,
+                    keyboardType: TextInputType.text,
+                    onFieldSubmitted: addItem,
+                    autofocus: true,
+                  ),
+                ),
+                Text(
+                  isEmpty(currentDeadline)
+                      ? ''
+                      : timeago.format(
+                          DateTime.fromMillisecondsSinceEpoch(currentDeadline)),
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+                IconButton(
+                    tooltip: strings.deadline,
+                    icon: Icon(
+                      Icons.date_range,
+                      color: Colors.grey,
+                    ),
+                    onPressed: () {})
+              ],
             ),
           );
         } else {
           //every other item
           TodoItem item = filteredItems[index];
           return Dismissible(
-            key: Key(index.toString() + tempTabId),
+            key: Key(item.doc.id ?? index),
             background: Container(
               color: Colors.indigoAccent,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Icon(
-                    Icons.keyboard_arrow_left_outlined,
+                    Icons.keyboard_arrow_right_outlined,
                     color: Colors.white54,
                   ),
                   Icon(
-                    Icons.keyboard_arrow_right_outlined,
+                    Icons.keyboard_arrow_left_outlined,
                     color: Colors.white54,
                   ),
                 ],
               ),
             ),
+            onDismissed: (direction) {
+              //move it to the next / previous tab
+            },
             child: ListTile(
               title: Text(
                 '${item.name}',
@@ -105,10 +125,16 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
     );
   }
 
-  void addItem(String value) {
+  void addItem(final String name) {
+    //clear the text
+    addController.clear();
     //add the item to firebase and then set the state
-    setState(() {
-
+    TodoItem.addNew(tab, name).then((item) {
+      setState(() {
+        //add to the lists
+        tab.items.add(item);
+        tab.filteredItems.add(item);
+      });
     });
   }
 
@@ -118,7 +144,5 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
 
   List<TodoItem> get filteredItems => tab.filteredItems;
 
-  void updateTabDoc() {
-
-  }
+  void updateTabDoc() {}
 }

@@ -226,6 +226,10 @@ class S {
     return Intl.message("add tab", name: 'add_tab');
   }
 
+  String get deadline {
+    return Intl.message("deadline", name: 'deadline');
+  }
+
 
 }
 

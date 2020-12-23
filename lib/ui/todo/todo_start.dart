@@ -578,7 +578,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
       Map<String, dynamic> projectMap = {
         'name': value[0],
         'lastAccessed': time,
-        'sortingType': TodoItemSortingType.name,
+        'sortingType': TodoItemSortingType.custom,
         'itemCount': 0,
       };
       //create max 100 projects
