@@ -62,6 +62,7 @@ class $de extends MessageLookupByLibrary {
 		"date" : MessageLookupByLibrary.simpleMessage("Datum"),
 		"time" : MessageLookupByLibrary.simpleMessage("Uhrzeit"),
 		"no_deadline" : MessageLookupByLibrary.simpleMessage("keine deadline"),
+		"change_tab_positions" : MessageLookupByLibrary.simpleMessage("Tabpositionen verändern"),
 
   };
 }
@@ -126,6 +127,7 @@ class $en extends MessageLookupByLibrary {
 		"date" : MessageLookupByLibrary.simpleMessage("date"),
 		"time" : MessageLookupByLibrary.simpleMessage("time"),
 		"no_deadline" : MessageLookupByLibrary.simpleMessage("no deadline"),
+		"change_tab_positions" : MessageLookupByLibrary.simpleMessage("rearrange tabs"),
 
   };
 }

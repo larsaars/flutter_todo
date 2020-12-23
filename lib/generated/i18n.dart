@@ -242,6 +242,10 @@ class S {
     return Intl.message("no deadline", name: 'no_deadline');
   }
 
+  String get change_tab_positions {
+    return Intl.message("rearrange tabs", name: 'change_tab_positions');
+  }
+
 
 }
 
