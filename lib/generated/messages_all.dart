@@ -55,7 +55,7 @@ class $de extends MessageLookupByLibrary {
 		"add_item" : MessageLookupByLibrary.simpleMessage("Element hinzufügen"),
 		"sorting" : MessageLookupByLibrary.simpleMessage("Sortierung"),
 		"sort_by" : MessageLookupByLibrary.simpleMessage("sortieren nach"),
-		"sort_options" : MessageLookupByLibrary.simpleMessage("Datum hinzugefügt,Name,Datum der Deadline"),
+		"sort_options" : MessageLookupByLibrary.simpleMessage("benutzerdefiniert,Name,Datum der Deadline"),
 		"add_item_or_tab" : MessageLookupByLibrary.simpleMessage("Element oder Tab hinzufügen"),
 		"add_tab" : MessageLookupByLibrary.simpleMessage("Tab hinzufügen"),
 
@@ -115,7 +115,7 @@ class $en extends MessageLookupByLibrary {
 		"add_item" : MessageLookupByLibrary.simpleMessage("add item"),
 		"sorting" : MessageLookupByLibrary.simpleMessage("sorting"),
 		"sort_by" : MessageLookupByLibrary.simpleMessage("sort by"),
-		"sort_options" : MessageLookupByLibrary.simpleMessage("added,name,deadline"),
+		"sort_options" : MessageLookupByLibrary.simpleMessage("custom,name,deadline"),
 		"add_item_or_tab" : MessageLookupByLibrary.simpleMessage("add item or tab"),
 		"add_tab" : MessageLookupByLibrary.simpleMessage("add tab"),
 

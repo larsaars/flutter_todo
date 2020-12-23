@@ -53,23 +53,22 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
           appBarTitle = data['name'];
           //sorting type
           sortingType = data['sortingType'];
-          //set the data list
-          for (var tab in data['tabs']) {
-            //get the items
-            var items = <TodoItem>[];
-            for (var item in tab['items'])
-              items.add(
-                  TodoItem(item['title'], item['deadline'], item['created']));
-            //add to to do tabs the title and items, with filtered items as a copy
-            var todoTab = TodoTab(tab['title'], items, [...items]);
-            //set widget
-            todoTab.widget = TodoTabWidget(
-              tab: todoTab,
-              proDoc: proDoc,
-            );
-            //add to list
-            tabs.add(todoTab);
-          }
+        }
+      });
+
+      //after setting state load asynchronously all tabs and set state each time
+      //first, for that the collection reference must be loaded
+      proDoc.collection('tabs').get().then((querySnapshots) {
+        for(var queryDocSnapshot in querySnapshots.docs) {
+          //set state each time
+          setState(() {
+            //create the new tab object
+            var tab = TodoTab(proDoc.collection('tabs').doc(queryDocSnapshot.id));
+            //read the values from the db
+            tab.read(queryDocSnapshot);
+            //add to tabs
+            tabs.add(tab);
+          });
         }
       });
     });
@@ -131,7 +130,7 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
                         curTab.copyFullToFiltered();
                       else
                         curTab.filteredItems = curTab.items
-                            .where((element) => element.title
+                            .where((element) => element.name
                                 .toLowerCase()
                                 .contains(searchController.text.toLowerCase()))
                             .toList();
@@ -210,7 +209,7 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
             isScrollable: tabs.length > 4,
             tabs: tabs
                 .map((tab) => Tab(
-                      text: tab.title,
+                      text: tab.name,
                     ))
                 .toList(),
           ),
