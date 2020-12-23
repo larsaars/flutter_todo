@@ -33,100 +33,126 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      key: listKey,
-      itemCount: filteredItems.length + 1,
-      itemBuilder: (context, index) {
-        //the last item, the add item edit text
-        if (index == filteredItems.length) {
-          return Container(
-            padding: EdgeInsets.all(2),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey, width: 0.7)),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.add,
+    //sort the lists every time before building
+    tab.sort();
+    //determine if is custom sorting
+    bool customSorting = tab.sortingType == TodoItemSortingType.custom;
+    //if is custom sorting, create list of children for reorderable list
+    List<Widget> children = [];
+    if (customSorting) {
+      //<= because the list shall have one item too much for the edit text in the end
+      for (int i = 0; i <= filteredItems.length; i++)
+        children.add(buildListTile(i, customSorting));
+    }
+    //build the widget with simple list view or in case of custom list make it reorderable
+    return customSorting
+        ? ReorderableListView(
+            children: children,
+            onReorder: null,
+          )
+        : ListView.builder(
+            key: listKey,
+            itemCount: filteredItems.length + 1,
+            itemBuilder: (context, index) =>
+                buildListTile(index, customSorting),
+          );
+  }
+
+  Widget buildListTile(int index, bool customSorting) {
+    //the last item, the add item edit text
+    if (index == filteredItems.length) {
+      return Container(
+        padding: EdgeInsets.all(2),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.grey, width: 0.7)),
+        child: Row(
+          children: [
+            Icon(
+              Icons.add,
+              color: Colors.grey,
+            ),
+            Expanded(
+              child: TextFormField(
+                maxLines: 1,
+                textAlign: TextAlign.justify,
+                controller: addController,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  disabledBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  errorBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  focusedErrorBorder: InputBorder.none,
+                  contentPadding: EdgeInsets.all(2),
+                ),
+                textInputAction: TextInputAction.go,
+                keyboardType: TextInputType.text,
+                onFieldSubmitted: addItem,
+              ),
+            ),
+            Text(
+              isEmpty(currentDeadline)
+                  ? ''
+                  : formatTime(context,
+                      DateTime.fromMillisecondsSinceEpoch(currentDeadline)),
+              style: Theme.of(context).textTheme.bodyText2,
+            ),
+            IconButton(
+              tooltip: strings.deadline,
+              icon: Icon(
+                Icons.date_range,
+                color: Colors.grey,
+              ),
+              onPressed: pickDeadline,
+            )
+          ],
+        ),
+      );
+    } else {
+      //every other item
+      TodoItem item = filteredItems[index];
+      return Dismissible(
+        key: Key(item.doc.id ?? index),
+        background: Container(
+          color: Colors.indigoAccent,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Icon(
+                Icons.keyboard_arrow_right_outlined,
+                color: Colors.white54,
+              ),
+              Icon(
+                Icons.keyboard_arrow_left_outlined,
+                color: Colors.white54,
+              ),
+            ],
+          ),
+        ),
+        onDismissed: (direction) {
+          //move it to the next / previous tab
+        },
+        child: ListTile(
+          trailing: customSorting
+              ? Icon(
+                  Icons.menu,
                   color: Colors.grey,
-                ),
-                Expanded(
-                  child: TextFormField(
-                    maxLines: 1,
-                    textAlign: TextAlign.justify,
-                    controller: addController,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      errorBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      focusedErrorBorder: InputBorder.none,
-                      contentPadding: EdgeInsets.all(2),
-                    ),
-                    textInputAction: TextInputAction.go,
-                    keyboardType: TextInputType.text,
-                    onFieldSubmitted: addItem,
-                  ),
-                ),
-                Text(
-                  isEmpty(currentDeadline)
-                      ? ''
-                      : formatTime(context,
-                          DateTime.fromMillisecondsSinceEpoch(currentDeadline)),
-                  style: Theme.of(context).textTheme.bodyText2,
-                ),
-                IconButton(
-                  tooltip: strings.deadline,
-                  icon: Icon(
-                    Icons.date_range,
-                    color: Colors.grey,
-                  ),
-                  onPressed: pickDeadline,
                 )
-              ],
-            ),
-          );
-        } else {
-          //every other item
-          TodoItem item = filteredItems[index];
-          return Dismissible(
-            key: Key(item.doc.id ?? index),
-            background: Container(
-              color: Colors.indigoAccent,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(
-                    Icons.keyboard_arrow_right_outlined,
-                    color: Colors.white54,
-                  ),
-                  Icon(
-                    Icons.keyboard_arrow_left_outlined,
-                    color: Colors.white54,
-                  ),
-                ],
-              ),
-            ),
-            onDismissed: (direction) {
-              //move it to the next / previous tab
-            },
-            child: ListTile(
-              title: Text(
-                '${item.name}',
-              ),
-              subtitle: Text(
-                isEmpty(item.deadline)
-                    ? strings.no_deadline
-                    : formatTime(context,
-                        DateTime.fromMillisecondsSinceEpoch(item.deadline)),
-              ),
-              onTap: () => tapListTile(item),
-            ),
-          );
-        }
-      },
-    );
+              : null,
+          title: Text(
+            '${item.name}',
+          ),
+          subtitle: Text(
+            isEmpty(item.deadline)
+                ? strings.no_deadline
+                : formatTime(context,
+                    DateTime.fromMillisecondsSinceEpoch(item.deadline)),
+          ),
+          onTap: () => tapListTile(item),
+        ),
+      );
+    }
   }
 
   void pickDeadline() {

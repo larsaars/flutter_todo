@@ -47,6 +47,7 @@ class TodoTab {
   List<TodoItem> items = [], filteredItems = [];
   TodoTabWidget widget;
   int position = 0;
+  int sortingType = 0;
 
   DocumentReference doc;
 
@@ -89,7 +90,7 @@ class TodoTab {
 
   void copyFullToFiltered() => filteredItems = [...items];
 
-  void sort(int sortingType) {
+  void sort() {
     _sort0(items, sortingType);
     _sort0(filteredItems, sortingType);
   }
