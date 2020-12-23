@@ -59,3 +59,7 @@ bool isEmpty(obj, [emptyObj]) {
 
   return false;
 }
+
+String formatTime(DateTime dateTime) {
+
+}

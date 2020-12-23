@@ -230,6 +230,14 @@ class S {
     return Intl.message("deadline", name: 'deadline');
   }
 
+  String get date {
+    return Intl.message("date", name: 'date');
+  }
+
+  String get time {
+    return Intl.message("time", name: 'time');
+  }
+
 
 }
 

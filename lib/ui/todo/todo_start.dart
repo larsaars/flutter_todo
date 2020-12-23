@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:todo/holder/project.dart';
 import 'package:todo/holder/todo.dart';
 import 'package:todo/ui/todo/todo_project.dart';

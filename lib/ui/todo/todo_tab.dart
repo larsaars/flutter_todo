@@ -1,7 +1,9 @@
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:todo/holder/todo.dart';
 import 'package:todo/util/utils.dart';
+import 'package:todo/util/widget_utils.dart';
 
 import '../../main.dart';
 
@@ -39,6 +41,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
         //the last item, the add item edit text
         if (index == filteredItems.length) {
           return Container(
+            padding: EdgeInsets.all(2),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.grey, width: 0.7)),
@@ -76,12 +79,13 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
                   style: Theme.of(context).textTheme.bodyText2,
                 ),
                 IconButton(
-                    tooltip: strings.deadline,
-                    icon: Icon(
-                      Icons.date_range,
-                      color: Colors.grey,
-                    ),
-                    onPressed: () {})
+                  tooltip: strings.deadline,
+                  icon: Icon(
+                    Icons.date_range,
+                    color: Colors.grey,
+                  ),
+                  onPressed: pickDeadline,
+                )
               ],
             ),
           );
@@ -125,9 +129,34 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
     );
   }
 
+  void pickDeadline() {
+    int ms = 0;
+    showAnimatedDialog(context, children: [
+      DateTimePicker(
+        type: DateTimePickerType.dateTimeSeparate,
+        initialValue: DateTime.now().toString(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2100),
+        icon: Icon(Icons.event),
+        dateLabelText: strings.date,
+        timeLabelText: strings.time,
+        onChanged: (value) => ms = DateTime.parse(value).millisecondsSinceEpoch,
+      ),
+    ], onDone: (value) {
+      if (value == 'ok' && ms != 0) {
+        setState(() {
+          currentDeadline = ms;
+          print(currentDeadline.toString());
+        });
+      }
+    });
+  }
+
   void addItem(final String name) {
     //clear the text
     addController.clear();
+    //and current deadline
+    currentDeadline = 0;
     //add the item to firebase and then set the state
     TodoItem.addNew(tab, name).then((item) {
       setState(() {
