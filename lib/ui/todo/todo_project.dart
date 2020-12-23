@@ -66,9 +66,10 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
           tab.widget = TodoTabWidget(tab: tab);
           //read the values from the db
           //when done reading add to tabs list and set state
-          tab
-              .read(queryDocSnapshot)
-              .then((value) => setState(() => tabs.add(tab)));
+          tab.read(queryDocSnapshot).then((value) => setState(() {
+                tabs.sort((a, b) => a.position.compareTo(b.position));
+                tabs.add(tab);
+              }));
         }
       });
     });

@@ -292,7 +292,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
                 '${item.name}',
               ),
               subtitle: Text(
-                timeago.format(
+                formatTime(context,
                     DateTime.fromMillisecondsSinceEpoch(item.lastAccessed)),
               ),
               onTap: () => tapListTile(item),
@@ -553,8 +553,9 @@ class _TodoStartPageState extends State<TodoStartPage> {
 
   void addTodoProject() {
     Future<void> createTabs(DocumentReference proDoc) async {
+      int pos = 0;
       for (var name in ['todo', 'doing', 'done']) {
-        await TodoTab.addNew(proDoc, name);
+        await TodoTab.addNew(proDoc, name, (++pos) * 1000);
       }
     }
 

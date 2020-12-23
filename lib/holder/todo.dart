@@ -46,18 +46,21 @@ class TodoTab {
   String name;
   List<TodoItem> items = [], filteredItems = [];
   TodoTabWidget widget;
+  int position = 0;
+
   DocumentReference doc;
 
   TodoTab([this.doc]);
 
   void update() async {
     //update the database
-    await doc.update(<String, dynamic>{'n': name});
+    await doc.update(<String, dynamic>{'n': name, 'p': position});
   }
 
-  static Future<TodoTab> addNew(DocumentReference proDoc, String name) async {
+  static Future<TodoTab> addNew(
+      DocumentReference proDoc, String name, int position) async {
     //create database object
-    Map<String, dynamic> data = {'n': name};
+    Map<String, dynamic> data = {'n': name, 'p': position};
     //add to list database
     var thisDoc = await proDoc.collection('tabs').add(data);
     //then generate local object
@@ -69,6 +72,7 @@ class TodoTab {
     docSnapshot ??= await doc.get();
     //set values locally
     name = docSnapshot.get('n');
+    position = docSnapshot.get('p');
     //load items collection snapshot
     QuerySnapshot querySnapshots = await doc.collection('items').get();
     //loop through all the query snapshots and make them to items
