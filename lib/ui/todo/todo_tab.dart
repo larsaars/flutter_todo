@@ -5,10 +5,9 @@ import 'package:todo/holder/todo.dart';
 import 'package:todo/util/utils.dart';
 
 class TodoTabWidget extends StatefulWidget {
-  final DocumentReference proDoc;
   final TodoTab tab;
 
-  TodoTabWidget({this.proDoc, this.tab});
+  TodoTabWidget({this.tab});
 
   @override
   _TodoTabWidgetState createState() => _TodoTabWidgetState();

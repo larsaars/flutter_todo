@@ -59,11 +59,14 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
       //after setting state load asynchronously all tabs and set state each time
       //first, for that the collection reference must be loaded
       proDoc.collection('tabs').get().then((querySnapshots) {
-        for(var queryDocSnapshot in querySnapshots.docs) {
+        for (var queryDocSnapshot in querySnapshots.docs) {
           //set state each time
           setState(() {
             //create the new tab object
-            var tab = TodoTab(proDoc.collection('tabs').doc(queryDocSnapshot.id));
+            var tab =
+                TodoTab(proDoc.collection('tabs').doc(queryDocSnapshot.id));
+            //set the widget
+            tab.widget = TodoTabWidget(tab: tab);
             //read the values from the db
             tab.read(queryDocSnapshot);
             //add to tabs
