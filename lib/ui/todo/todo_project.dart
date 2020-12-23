@@ -158,13 +158,13 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
               child: PopupMenuButton(
                 tooltip: strings.add_item_or_tab,
                 child: Icon(
-                  Icons.add,
+                  Icons.tab,
                   color: Colors.white54,
                 ),
                 itemBuilder: (context) => <PopupMenuEntry<int>>[
                   PopupMenuItem<int>(
                     value: 0,
-                    child: Text(strings.add_item),
+                    child: Text(strings.change_tab_positions),
                   ),
                   PopupMenuItem<int>(
                     value: 1,
@@ -174,8 +174,8 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
                 onSelected: (value) {
                   switch (value) {
                     case 0:
-                      //add item
-                      addItem();
+                      //change positions
+                      changeTabPositions();
                       break;
                     case 1:
                       //add tab
@@ -224,11 +224,7 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
 
   void addTab() {}
 
-  void addItem() {
-    setState(() {
-
-    });
-  }
+  void changeTabPositions() {}
 
   void changeSorting() {
     List options = strings.sort_options.split(',');
@@ -247,6 +243,8 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
             proDoc.update(<String, dynamic>{'sortingType': sortingType});
             //then pop the nav
             Navigator.of(ctx).pop();
+            //then reset state
+            setState(() {});
           },
           groupValue: options[sortingType],
           items: options,

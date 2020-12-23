@@ -52,5 +52,6 @@
   "deadline": "deadline",
   "date": "date",
   "time": "time",
-  "no_deadline": "no deadline"
+  "no_deadline": "no deadline",
+  "change_tab_positions": "rearrange tabs"
 }

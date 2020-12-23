@@ -47,5 +47,6 @@
   "deadline": "deadline",
   "date": "Datum",
   "time": "Uhrzeit",
-  "no_deadline": "keine deadline"
+  "no_deadline": "keine deadline",
+  "change_tab_positions": "Tabpositionen verändern"
 }

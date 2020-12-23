@@ -67,7 +67,6 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
                     textInputAction: TextInputAction.go,
                     keyboardType: TextInputType.text,
                     onFieldSubmitted: addItem,
-                    autofocus: true,
                   ),
                 ),
                 Text(
