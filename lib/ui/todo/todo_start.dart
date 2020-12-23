@@ -553,6 +553,12 @@ class _TodoStartPageState extends State<TodoStartPage> {
   }
 
   void addTodoProject() {
+    Future<void> createTabs(DocumentReference proDoc) async {
+      for (var name in ['todo', 'doing', 'done']) {
+        await TodoTab.addNew(proDoc, name);
+      }
+    }
+
     //show the dialog
     showAnimatedDialog(context,
         title: strings.add_project,
@@ -574,23 +580,20 @@ class _TodoStartPageState extends State<TodoStartPage> {
         'lastAccessed': time,
         'sortingType': TodoItemSortingType.name,
         'itemCount': 0,
-        'tabs': [
-          {'title': 'todo', 'items': []},
-          {'title': 'doing', 'items': []},
-          {'title': 'done', 'items': []},
-        ]
       };
       //create max 100 projects
       if (projects.length < 100)
         userDoc.collection('pro').add(projectMap).then((snapshot) {
           //create project with id
           var project = Project(snapshot.id, value[0], time, 0);
-          //new state
-          setState(() {
-            //add to the lists
-            projects.add(project);
-            filteredProjects.add(project);
-          });
+          //create the tabs
+          createTabs(userDoc.collection('pro').doc(project.id)).then((value) =>
+              //new state
+              setState(() {
+                //add to the lists
+                projects.add(project);
+                filteredProjects.add(project);
+              }));
         });
       else
         showSnackBar(strings.too_many_projects);
