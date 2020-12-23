@@ -63,7 +63,11 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
           //create the new tab object
           var tab = TodoTab(proDoc.collection('tabs').doc(queryDocSnapshot.id));
           //set the widget
-          tab.widget = TodoTabWidget(tab: tab);
+          tab.widget = TodoTabWidget(
+            tab: tab,
+          );
+          //and sorting type
+          tab.sortingType = sortingType;
           //read the values from the db
           //when done reading add to tabs list and set state
           tab.read(queryDocSnapshot).then((value) => setState(() {
@@ -77,8 +81,6 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
 
   @override
   Widget build(BuildContext context) {
-    //sort the lists every time before building
-    sort();
     //return the widget
     return DefaultTabController(
       length: tabs.length,
@@ -244,17 +246,16 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
             //then pop the nav
             Navigator.of(ctx).pop();
             //then reset state
-            setState(() {});
+            setState(() {
+              //all tabs shall have new sorting type info
+              for (var tab in tabs) tab.sortingType = sortingType;
+            });
           },
           groupValue: options[sortingType],
           items: options,
           itemBuilder: (item) => RadioButtonBuilder(item,
               textPosition: RadioButtonTextPosition.right))
     ]);
-  }
-
-  void sort() {
-    for (var tab in tabs) tab.sort(sortingType);
   }
 
   int get countItems {
