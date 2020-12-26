@@ -6,6 +6,8 @@ import 'package:todo/main.dart';
 import 'package:todo/ui/todo/todo_tab.dart';
 import 'package:todo/util/widget_utils.dart';
 
+List<TodoTab> tabs = [];
+
 class TodoProjectPage extends StatefulWidget {
   final DocumentReference proDoc;
 
@@ -21,7 +23,6 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
   //sorting, search, move, add tab, add to do (deadline name), rename & change deadline
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   bool searching = false;
-  List<TodoTab> tabs = [];
   String appBarTitle = strings.loading_web;
   int sortingType = 0, curTabIdx = 0;
   TextEditingController searchController = TextEditingController();
@@ -33,6 +34,8 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
     searchController.dispose();
     //update the item count of project
     proDoc.update(<String, dynamic>{'itemCount': countItems});
+    //dispose tab list
+    tabs.clear();
   }
 
   @override
@@ -46,7 +49,7 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
       setState(() {
         if (snapshot.exists) {
           //clear the init list
-          tabs = [];
+          tabs.clear();
           //the data
           var data = snapshot.data();
           //the app bar title
@@ -104,43 +107,52 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
                   })
                 : Navigator.of(context).pop(),
           ),
-          title: searching
-              ? Stack(alignment: Alignment.centerRight, children: [
-                  Icon(
-                    Icons.search,
-                    color: Colors.white54,
-                  ),
-                  TextFormField(
-                    textAlign: TextAlign.justify,
-                    controller: searchController,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      errorBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      focusedErrorBorder: InputBorder.none,
+          title: AnimatedSwitcher(
+            duration: Duration(milliseconds: 170),
+            transitionBuilder: (child, animation) => ScaleTransition(
+              child: child,
+              scale: animation,
+            ),
+            child: searching
+                ? Stack(alignment: Alignment.centerRight, children: [
+                    Icon(
+                      Icons.search,
+                      color: Colors.white54,
                     ),
-                    keyboardType: TextInputType.text,
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1
-                        .copyWith(color: Colors.white),
-                    onChanged: (value) => setState(() {
-                      //filter the projects titles
-                      if (value.length == 0)
-                        //clone the projects list
-                        curTab.copyFullToFiltered();
-                      else
-                        curTab.filteredItems = curTab.items
-                            .where((element) => element.name
-                                .toLowerCase()
-                                .contains(searchController.text.toLowerCase()))
-                            .toList();
-                    }),
-                  ),
-                ])
-              : Text(appBarTitle),
+                    TextFormField(
+                      textAlign: TextAlign.justify,
+                      controller: searchController,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        focusedErrorBorder: InputBorder.none,
+                      ),
+                      keyboardType: TextInputType.text,
+                      autofocus: true,
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle1
+                          .copyWith(color: Colors.white),
+                      onChanged: (value) => setState(() {
+                        //filter the projects titles
+                        if (value.length == 0)
+                          //clone the projects list
+                          curTab.copyFullToFiltered();
+                        else
+                          curTab.filteredItems = curTab.items
+                              .where((element) => element.name
+                                  .toLowerCase()
+                                  .contains(
+                                      searchController.text.toLowerCase()))
+                              .toList();
+                      }),
+                    ),
+                  ])
+                : Text(appBarTitle),
+          ),
           actions: <Widget>[
             Visibility(
               visible: !searching,
@@ -232,31 +244,40 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
     List options = strings.sort_options.split(',');
     BuildContext ctx;
 
-    showAnimatedDialog(context, title: strings.sort_by,
+    showAnimatedDialog(context,
+        title: strings.sort_by,
         setStateCallback: (ctx0, setState) {
-      ctx = ctx0;
-    }, children: [
-      RadioGroup.builder(
-          direction: Axis.vertical,
-          onChanged: (value) {
-            //get diff int
-            sortingType = options.indexOf(value);
-            //save in the database online
-            proDoc.update(<String, dynamic>{'sortingType': sortingType});
-            //then pop the nav
-            Navigator.of(ctx).pop();
-            //then reset state
-            setState(() {
-              //all tabs shall have new sorting type info
-              for (var tab in tabs) tab.sortingType = sortingType;
-            });
-          },
-          groupValue: options[sortingType],
-          items: options,
-          itemBuilder: (item) => RadioButtonBuilder(item,
-              textPosition: RadioButtonTextPosition.right))
-    ]);
+          ctx = ctx0;
+        },
+        children: [
+          RadioGroup.builder(
+              direction: Axis.vertical,
+              onChanged: (value) {
+                //get diff int
+                sortingType = options.indexOf(value);
+                //save in the database online
+                proDoc.update(<String, dynamic>{'sortingType': sortingType});
+                //then pop the nav
+                Navigator.of(ctx).pop('ok');
+              },
+              groupValue: options[sortingType],
+              items: options,
+              itemBuilder: (item) => RadioButtonBuilder(item,
+                  textPosition: RadioButtonTextPosition.right))
+        ],
+        onDone: (value) {
+          //then reset state
+          setState(() {
+            //all tabs shall have new sorting type info
+            for (var tab in tabs) tab.sortingType = sortingType;
+          });
+        });
   }
+
+  /*void update(Function() state) {
+    state ??= () {};
+    setState(state);
+  }*/
 
   int get countItems {
     int sum = 0;

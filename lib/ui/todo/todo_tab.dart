@@ -1,6 +1,7 @@
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:todo/holder/todo.dart';
+import 'package:todo/ui/todo/todo_project.dart';
 import 'package:todo/util/utils.dart';
 import 'package:todo/util/widget_utils.dart';
 
@@ -42,7 +43,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
     if (customSorting) {
       //<= because the list shall have one item too much for the edit text in the end
       for (int i = 0; i <= filteredItems.length; i++)
-        children.add(buildListTile(i, customSorting));
+        children.add(buildListTile(i, true));
     }
     //build the widget with simple list view or in case of custom list make it reorderable
     return customSorting
@@ -50,17 +51,16 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
             children: children,
             onReorder: (int oldIndex, int newIndex) {
               //if the old index is the last item, ignore
-              if(oldIndex == filteredItems.length)
-                return;
+              if (oldIndex == filteredItems.length) return;
               //set the state newly
               setState(() {
                 //set the changed item to the lower item + 1
                 var item = filteredItems[oldIndex];
-                if((oldIndex + 1) < filteredItems.length) {
+                if ((oldIndex + 1) < filteredItems.length) {
                   var lowerItem = filteredItems[oldIndex + 1].changed - 1;
                   filteredItems[oldIndex].changed = lowerItem;
                   tab.items[tab.items.indexOf(item)].changed = lowerItem;
-                }else if((oldIndex  -1) >= 0) {
+                } else if ((oldIndex - 1) >= 0) {
                   var upperItem = filteredItems[oldIndex - 1].changed + 1;
                   filteredItems[oldIndex].changed = upperItem;
                   tab.items[tab.items.indexOf(item)].changed = upperItem;
@@ -73,8 +73,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
         : ListView.builder(
             key: listKey,
             itemCount: filteredItems.length + 1,
-            itemBuilder: (context, index) =>
-                buildListTile(index, customSorting),
+            itemBuilder: (context, index) => buildListTile(index, false),
           );
   }
 
@@ -110,6 +109,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
                 textInputAction: TextInputAction.go,
                 keyboardType: TextInputType.text,
                 onFieldSubmitted: addItem,
+                autofocus: false,
               ),
             ),
             Text(
@@ -141,11 +141,15 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Icon(
-                Icons.keyboard_arrow_right_outlined,
+                isRightestTab
+                    ? Icons.delete
+                    : Icons.keyboard_arrow_right_outlined,
                 color: Colors.white54,
               ),
               Icon(
-                Icons.keyboard_arrow_left_outlined,
+                isLeftestTab
+                    ? Icons.delete
+                    : Icons.keyboard_arrow_left_outlined,
                 color: Colors.white54,
               ),
             ],
@@ -221,5 +225,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
 
   List<TodoItem> get filteredItems => tab.filteredItems;
 
-  void updateTabDoc() {}
+  bool get isRightestTab => tabs.indexOf(tab) == (tabs.length - 1);
+
+  bool get isLeftestTab => tabs.indexOf(tab) == 0;
 }

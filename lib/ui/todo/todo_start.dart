@@ -88,150 +88,165 @@ class _TodoStartPageState extends State<TodoStartPage> {
       appBar: AppBar(
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: searching
-              ? IconButton(
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: Colors.white54,
-                  ),
-                  onPressed: () => setState(() {
-                        //not searching anymore
-                        searching = false;
-                        //also clear the search controller
-                        searchController.clear();
-                        //copy back the filtered items to normal
-                        filteredProjects = [...projects];
-                      }))
-              : ClipRRect(
-                  borderRadius: BorderRadius.circular(45),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: PopupMenuButton(
-                      tooltip: strings.account,
-                      child: isEmpty(widget.firebaseUser.photoURL)
-                          ? DefaultIcon(Icons.person)
-                          : Image.network(widget.firebaseUser.photoURL),
-                      itemBuilder: (context) =>
-                          makeNonNull(<PopupMenuEntry<_PopupMenuAccount>>[
-                        PopupMenuItem<_PopupMenuAccount>(
-                          value: _PopupMenuAccount.about,
-                          child: Text(
-                            strings.about,
+          child: AnimatedSwitcher(
+            duration: Duration(milliseconds: 170),
+            transitionBuilder: (child, animation) => ScaleTransition(
+              child: child,
+              scale: animation,
+            ),
+            child: searching
+                ? IconButton(
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: Colors.white54,
+                    ),
+                    onPressed: () => setState(() {
+                          //not searching anymore
+                          searching = false;
+                          //also clear the search controller
+                          searchController.clear();
+                          //copy back the filtered items to normal
+                          filteredProjects = [...projects];
+                        }))
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(45),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: PopupMenuButton(
+                        tooltip: strings.account,
+                        child: isEmpty(widget.firebaseUser.photoURL)
+                            ? DefaultIcon(Icons.person)
+                            : Image.network(widget.firebaseUser.photoURL),
+                        itemBuilder: (context) =>
+                            makeNonNull(<PopupMenuEntry<_PopupMenuAccount>>[
+                          PopupMenuItem<_PopupMenuAccount>(
+                            value: _PopupMenuAccount.about,
+                            child: Text(
+                              strings.about,
+                            ),
                           ),
-                        ),
-                        PopupMenuItem<_PopupMenuAccount>(
-                          value: _PopupMenuAccount.logOff,
-                          child: Text(
-                            strings.log_off,
+                          PopupMenuItem<_PopupMenuAccount>(
+                            value: _PopupMenuAccount.logOff,
+                            child: Text(
+                              strings.log_off,
+                            ),
                           ),
-                        ),
-                        loggedInWithGoogle
-                            ? null
-                            : PopupMenuItem<_PopupMenuAccount>(
-                                value: _PopupMenuAccount.changeEmail,
-                                child: Text(
-                                  strings.change_email,
+                          loggedInWithGoogle
+                              ? null
+                              : PopupMenuItem<_PopupMenuAccount>(
+                                  value: _PopupMenuAccount.changeEmail,
+                                  child: Text(
+                                    strings.change_email,
+                                  ),
                                 ),
-                              ),
-                        loggedInWithGoogle
-                            ? null
-                            : PopupMenuItem<_PopupMenuAccount>(
-                                value: _PopupMenuAccount.changePassword,
-                                child: Text(
-                                  strings.reset_password,
+                          loggedInWithGoogle
+                              ? null
+                              : PopupMenuItem<_PopupMenuAccount>(
+                                  value: _PopupMenuAccount.changePassword,
+                                  child: Text(
+                                    strings.reset_password,
+                                  ),
                                 ),
-                              ),
-                        PopupMenuItem<_PopupMenuAccount>(
-                          value: _PopupMenuAccount.deleteAccount,
-                          child: Text(
-                            strings.delete_account,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText1
-                                .copyWith(color: Colors.red),
-                          ),
-                        )
-                      ]),
-                      onSelected: (value) {
-                        switch (value) {
-                          case _PopupMenuAccount.logOff:
-                            logOut();
-                            break;
-                          case _PopupMenuAccount.changeEmail:
-                            changeEmail();
-                            break;
-                          case _PopupMenuAccount.changePassword:
-                            changePassword();
-                            break;
-                          case _PopupMenuAccount.deleteAccount:
-                            deleteAccount();
-                            break;
-                          case _PopupMenuAccount.about:
-                            showAbout(context);
-                            break;
-                          default:
-                            break;
-                        }
-                      },
+                          PopupMenuItem<_PopupMenuAccount>(
+                            value: _PopupMenuAccount.deleteAccount,
+                            child: Text(
+                              strings.delete_account,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  .copyWith(color: Colors.red),
+                            ),
+                          )
+                        ]),
+                        onSelected: (value) {
+                          switch (value) {
+                            case _PopupMenuAccount.logOff:
+                              logOut();
+                              break;
+                            case _PopupMenuAccount.changeEmail:
+                              changeEmail();
+                              break;
+                            case _PopupMenuAccount.changePassword:
+                              changePassword();
+                              break;
+                            case _PopupMenuAccount.deleteAccount:
+                              deleteAccount();
+                              break;
+                            case _PopupMenuAccount.about:
+                              showAbout(context);
+                              break;
+                            default:
+                              break;
+                          }
+                        },
+                      ),
                     ),
                   ),
-                ),
+          ),
         ),
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: searching
-            ? Stack(alignment: Alignment.centerRight, children: [
-                Icon(
-                  Icons.search,
-                  color: Colors.white54,
-                ),
-                TextFormField(
-                  textAlign: TextAlign.justify,
-                  controller: searchController,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    focusedErrorBorder: InputBorder.none,
+        title: AnimatedSwitcher(
+          duration: Duration(milliseconds: 170),
+          transitionBuilder: (child, animation) => ScaleTransition(
+            child: child,
+            scale: animation,
+          ),
+          child: searching
+              ? Stack(alignment: Alignment.centerRight, children: [
+                  Icon(
+                    Icons.search,
+                    color: Colors.white54,
                   ),
-                  keyboardType: TextInputType.text,
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle1
-                      .copyWith(color: Colors.white),
-                  onChanged: (value) => setState(() {
-                    //filter the projects titles
-                    if (value.length == 0)
-                      //clone the projects list
-                      filteredProjects = [...projects];
-                    else
-                      filteredProjects = projects
-                          .where((element) => element.name
-                              .toLowerCase()
-                              .contains(searchController.text.toLowerCase()))
-                          .toList();
-                  }),
-                ),
-              ])
-            : Column(
-                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                    Text(
-                        isEmpty(widget.firebaseUser.displayName)
-                            ? widget.firebaseUser.email
-                            : widget.firebaseUser.displayName,
-                        style: Theme.of(context)
-                            .textTheme
-                            .subtitle2
-                            .copyWith(color: Colors.white)),
-                    Text(strings.projects,
-                        style: Theme.of(context)
-                            .textTheme
-                            .subtitle1
-                            .copyWith(color: Colors.white)),
-                  ]),
+                  TextFormField(
+                    textAlign: TextAlign.justify,
+                    controller: searchController,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      focusedErrorBorder: InputBorder.none,
+                    ),
+                    keyboardType: TextInputType.text,
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle1
+                        .copyWith(color: Colors.white),
+                    autofocus: true,
+                    onChanged: (value) => setState(() {
+                      //filter the projects titles
+                      if (value.length == 0)
+                        //clone the projects list
+                        filteredProjects = [...projects];
+                      else
+                        filteredProjects = projects
+                            .where((element) => element.name
+                                .toLowerCase()
+                                .contains(searchController.text.toLowerCase()))
+                            .toList();
+                    }),
+                  ),
+                ])
+              : Column(
+                  //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                      Text(
+                          isEmpty(widget.firebaseUser.displayName)
+                              ? widget.firebaseUser.email
+                              : widget.firebaseUser.displayName,
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle2
+                              .copyWith(color: Colors.white)),
+                      Text(strings.projects,
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle1
+                              .copyWith(color: Colors.white)),
+                    ]),
+        ),
         actions: <Widget>[
           Visibility(
             visible: !searching,

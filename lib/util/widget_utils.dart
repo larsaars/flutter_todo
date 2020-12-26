@@ -109,7 +109,7 @@ void showAnimatedDialog(BuildContext context,
                   icon == null ? Container() : Icon(icon),
                   Divider8(),
                   Text(
-                    title ?? "",
+                    title ?? '',
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                 ],
