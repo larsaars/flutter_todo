@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:todo/ui/widget/divider.dart';
-import 'package:todo/ui/widget/fancy_button.dart';
 import 'package:todo/ui/widget/standard_widgets.dart';
 import 'package:todo/util/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -25,8 +24,13 @@ AppBar appBar(BuildContext context, String title,
                 'res/drawable/ic_launcher.png',
               ),
             )
-          : null,
-      automaticallyImplyLeading: !withIcon,
+          : IconButton(
+              icon: Icon(
+                Icons.arrow_back_ios,
+                color: Colors.white54,
+              ),
+              onPressed: Navigator.of(context).pop,
+            ),
       title: Text(title,
           style: Theme.of(context)
               .textTheme
