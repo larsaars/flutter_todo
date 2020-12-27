@@ -7,13 +7,19 @@ import 'package:todo/util/widget_utils.dart';
 
 import '../../main.dart';
 
+_TodoTabWidgetState _state00;
+
 class TodoTabWidget extends StatefulWidget {
   final TodoTab tab;
 
   TodoTabWidget({this.tab});
 
+  void update([Function() state]) {
+    _state00?.update(state);
+  }
+
   @override
-  _TodoTabWidgetState createState() => _TodoTabWidgetState();
+  _TodoTabWidgetState createState() => _state00 = _TodoTabWidgetState();
 }
 
 class _TodoTabWidgetState extends State<TodoTabWidget> {
@@ -178,6 +184,11 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
         ),
       );
     }
+  }
+
+  void update(Function() state) {
+    state ??= () {};
+    setState(state);
   }
 
   void pickDeadline() {

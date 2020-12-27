@@ -266,18 +266,14 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
                   textPosition: RadioButtonTextPosition.right))
         ],
         onDone: (value) {
+          //all tabs shall have new sorting type info
+          for (var tab in tabs) tab.sortingType = sortingType;
+          //update child
+          curTab.widget.update();
           //then reset state
-          setState(() {
-            //all tabs shall have new sorting type info
-            for (var tab in tabs) tab.sortingType = sortingType;
-          });
+          setState(() {});
         });
   }
-
-  /*void update(Function() state) {
-    state ??= () {};
-    setState(state);
-  }*/
 
   int get countItems {
     int sum = 0;
