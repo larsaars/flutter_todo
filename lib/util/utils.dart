@@ -45,7 +45,7 @@ bool passwordValidates(String pass) {
   return count >= 2;
 }
 
-List makeNonNull(List list) =>
+List<T> makeNonNull<T>(List<T> list) =>
     list.where((element) => (element != null)).toList();
 
 bool isEmpty(obj, [emptyObj]) {

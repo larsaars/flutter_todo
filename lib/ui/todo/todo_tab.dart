@@ -7,7 +7,6 @@ import 'package:todo/util/widget_utils.dart';
 
 import '../../main.dart';
 
-
 class TodoTabWidget extends StatefulWidget {
   final TodoTab tab;
 
@@ -136,54 +135,74 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
     } else {
       //every other item
       TodoItem item = filteredItems[index];
-      return Dismissible(
-        key: Key(item.doc.id ?? index.toString()),
-        background: Container(
-          color: Colors.indigoAccent,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Icon(
-                isRightestTab
-                    ? Icons.delete
-                    : Icons.keyboard_arrow_right_outlined,
-                color: Colors.white54,
-              ),
-              Icon(
-                isLeftestTab ? Icons.delete : Icons.arrow_back_ios,
-                color: Colors.white54,
-              ),
-            ],
+      var key = Key(item.doc.id ?? index.toString());
+      return Card(
+        key: key,
+        child: Dismissible(
+          key: key,
+          background: Container(
+            decoration: BoxDecoration(
+              color: Colors.indigoAccent,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(
+                  isRightestTab
+                      ? Icons.delete
+                      : Icons.keyboard_arrow_right_outlined,
+                  color: Colors.white54,
+                ),
+                Icon(
+                  isLeftestTab ? Icons.delete : Icons.arrow_back_ios,
+                  color: Colors.white54,
+                ),
+              ],
+            ),
           ),
-        ),
-        onDismissed: (direction) {
-          //move it to the next / previous tab
-        },
-        child: ListTile(
-          trailing: customSorting
-              ? Icon(
-                  Icons.menu,
-                  color: Colors.grey,
-                )
-              : null,
-          title: Text(
-            '${item.name}',
+          onDismissed: tabDismissed,
+          child: ListTile(
+            trailing: customSorting
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: makeNonNull<Widget>([
+                      IconButton(
+                          icon: Icon(
+                            Icons.edit,
+                            color: Colors.grey,
+                          ),
+                          onPressed: () => editTab(index)),
+                      Icon(
+                        Icons.menu,
+                        color: Colors.grey,
+                      )
+                    ]),
+                  )
+                : null,
+            title: Text(
+              '${item.name}',
+            ),
+            subtitle: Text(
+              isEmpty(item.deadline)
+                  ? strings.no_deadline
+                  : formatTime(context,
+                      DateTime.fromMillisecondsSinceEpoch(item.deadline)),
+            ),
+            onTap: () => tapListTile(item),
+            onLongPress: customSorting ? null : () => editTab(index),
           ),
-          subtitle: Text(
-            isEmpty(item.deadline)
-                ? strings.no_deadline
-                : formatTime(context,
-                    DateTime.fromMillisecondsSinceEpoch(item.deadline)),
-          ),
-          onTap: () => tapListTile(item),
         ),
       );
     }
   }
 
-  void update(Function() state) {
-    state ??= () {};
-    setState(state);
+  void tabDismissed(DismissDirection direction) {
+    //move it to the next / previous tab
+  }
+
+  void editTab(int index) {
+    print('edit tab $index');
   }
 
   void pickDeadline() {
