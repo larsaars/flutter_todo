@@ -203,12 +203,54 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
   }
 
   void editTab(int index) {
-    print('edit tab $index');
+    TodoItem item = filteredItems[index];
+
+    currentDeadline = item.deadline;
+    var controller = TextEditingController(text: item.name);
+
+    showAnimatedDialog(context,
+        title: strings.rename_change_deadline,
+        children: <Widget>[
+          Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  maxLines: 1,
+                  textAlign: TextAlign.justify,
+                  controller: controller,
+                  textInputAction: TextInputAction.go,
+                  keyboardType: TextInputType.text,
+                  autofocus: false,
+                ),
+              ),
+              IconButton(
+                tooltip: strings.deadline,
+                icon: Icon(
+                  Icons.date_range,
+                  color: Colors.grey,
+                ),
+                onPressed: () => pickDeadline(true),
+              )
+            ],
+          ),
+        ], onDone: (value) {
+      if (value == 'ok') {
+        //edit with new state
+        setState(() {
+          item.deadline = currentDeadline;
+          item.name = controller.text;
+        });
+        //reset current deadline
+        currentDeadline = 0;
+        //update the item in db
+        item.update();
+      }
+    });
   }
 
-  void pickDeadline() {
+  void pickDeadline([bool forceShow]) {
     int ms = 0;
-    showAnimatedDialog(context, children: [
+    showAnimatedDialog(context, forceShow: forceShow ?? false, children: [
       DateTimePicker(
         type: DateTimePickerType.dateTimeSeparate,
         initialValue: DateTime.now().toString(),

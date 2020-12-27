@@ -221,7 +221,6 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
     );
   }
 
-
   void editTabs() {
     if (_showing) return;
     _showing = true;
@@ -328,23 +327,34 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
                             <Widget>[
                               Card(
                                 key: Key(tabsCopy.length.toString()),
-                                child: IconButton(
-                                  tooltip: strings.add_tab,
-                                  icon: Icon(
-                                    Icons.add_circle_outlined,
-                                    color: Colors.grey,
+                                child: ListTile(
+                                  title: IconButton(
+                                    tooltip: strings.add_tab,
+                                    icon: Icon(
+                                      Icons.add_circle_outlined,
+                                      color: Colors.grey,
+                                    ),
+                                    onPressed: () async {
+                                      //new input field dialog for the name
+                                      var name = await showInputFieldDialog(
+                                          context,
+                                          title: strings.add_tab);
+                                      //create the new tab with name in db
+                                      final tab = await TodoTab.addNew(
+                                          proDoc,
+                                          isEmpty(name) ? '' : name,
+                                          (tabsCopy.last ??
+                                                      (TodoTab()
+                                                        ..position = -1))
+                                                  .position +
+                                              1);
+                                      //set state by adding to list
+                                      setState0(() {
+                                        tabsCopy.add(tab);
+                                        tabs.add(tab);
+                                      });
+                                    },
                                   ),
-                                  onPressed: () async {
-                                    //new input field dialog for the name
-                                    var name = await showInputFieldDialog(context);
-                                    //create the new tab with name in db
-                                    final tab = await TodoTab.addNew(proDoc, isEmpty(name) ? '' : name, (tabsCopy.last ?? (TodoTab()..position = -1)).position + 1);
-                                    //set state by adding to list
-                                    setState0(() {
-                                      tabsCopy.add(tab);
-                                      tabs.add(tab);
-                                    });
-                                  },
                                 ),
                               )
                             ],
