@@ -65,6 +65,7 @@ class $de extends MessageLookupByLibrary {
 		"change_tab_positions" : MessageLookupByLibrary.simpleMessage("Tabpositionen verändern"),
 		"delete_tab" : MessageLookupByLibrary.simpleMessage("Willst du diesen Tab sicher löschen?"),
 		"edit_tabs" : MessageLookupByLibrary.simpleMessage("Tabs bearbeiten"),
+		"rename_change_deadline" : MessageLookupByLibrary.simpleMessage("umbenennen und Deadline verändern"),
 
   };
 }
@@ -132,6 +133,7 @@ class $en extends MessageLookupByLibrary {
 		"change_tab_positions" : MessageLookupByLibrary.simpleMessage("rearrange tabs"),
 		"delete_tab" : MessageLookupByLibrary.simpleMessage("Are you sure that you want to delete this tab?"),
 		"edit_tabs" : MessageLookupByLibrary.simpleMessage("edit tabs"),
+		"rename_change_deadline" : MessageLookupByLibrary.simpleMessage("rename and change deadline"),
 
   };
 }

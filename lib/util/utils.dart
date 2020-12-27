@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:uuid/uuid.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:uuid/uuid.dart';
 
 final Random random = Random();
 final uuid = Uuid();
@@ -26,10 +26,9 @@ void addLicenses() {
 
 RegExp _emailRegex;
 // ignore: non_constant_identifier_names
-Future<RegExp> get EMAIL_REGEX async =>
-    _emailRegex == null
-        ? _emailRegex = RegExp(await rootBundle.loadString('res/regex/email'))
-        : _emailRegex;
+Future<RegExp> get EMAIL_REGEX async => _emailRegex == null
+    ? _emailRegex = RegExp(await rootBundle.loadString('res/regex/email'))
+    : _emailRegex;
 
 bool passwordValidates(String pass) {
   int count = 0;
@@ -49,8 +48,7 @@ List<T> makeNonNull<T>(List<T> list) =>
     list.where((element) => (element != null)).toList();
 
 bool isEmpty(obj, [emptyObj]) {
-  if (obj == null || (emptyObj != null && obj == emptyObj))
-    return true;
+  if (obj == null || (emptyObj != null && obj == emptyObj)) return true;
 
   if (obj is Iterable)
     return obj.isEmpty;
@@ -58,8 +56,7 @@ bool isEmpty(obj, [emptyObj]) {
     return obj.isEmpty;
   else if (obj is Map)
     return obj.isEmpty;
-  else if (obj is num)
-    return obj == 0;
+  else if (obj is num) return obj == 0;
 
   return false;
 }
@@ -68,10 +65,11 @@ String formatTime(BuildContext context, DateTime dateTime) {
   //get localization
   var loc = MaterialLocalizations.of(context);
   //if the given time lays in the past, return via timeago
-  if (dateTime.millisecondsSinceEpoch < DateTime
-      .now()
-      .millisecondsSinceEpoch)
+  if (dateTime.millisecondsSinceEpoch < DateTime.now().millisecondsSinceEpoch)
     return timeago.format(dateTime);
   else
-    return loc.formatCompactDate(dateTime);
+    return loc.formatCompactDate(dateTime) +
+        ' ' +
+        loc.formatTimeOfDay(
+            TimeOfDay(hour: dateTime.hour, minute: dateTime.minute));
 }

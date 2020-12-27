@@ -52,6 +52,7 @@ Future showAnimatedDialog(
   String text,
   String onDoneText,
   bool forceNoCancelButton = false,
+      bool forceShow = false,
   bool warningOnDoneButton = false,
   String forceCancelText,
   List<Widget> children = const [],
@@ -65,7 +66,7 @@ Future showAnimatedDialog(
   List<TextInputType> inputTypes,
   List<FormFieldValidator> inputValidators,
 }) async {
-  if (_showing) return;
+  if (_showing && !forceShow) return;
 
   _showing = true;
 
@@ -90,6 +91,7 @@ Future showAnimatedDialog(
       obscureText: isPassword,
       onChanged: (value) => inputTexts[i] = value,
       decoration: InputDecoration(hintText: inputFieldsHints[i]),
+      autofocus: true,
     ));
   }
 

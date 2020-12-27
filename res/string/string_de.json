@@ -50,5 +50,6 @@
   "no_deadline": "keine deadline",
   "change_tab_positions": "Tabpositionen verändern",
   "delete_tab": "Willst du diesen Tab sicher löschen?",
-  "edit_tabs": "Tabs bearbeiten"
+  "edit_tabs": "Tabs bearbeiten",
+  "rename_change_deadline": "umbenennen und Deadline verändern"
 }

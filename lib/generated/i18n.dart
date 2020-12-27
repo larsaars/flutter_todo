@@ -254,6 +254,10 @@ class S {
     return Intl.message("edit tabs", name: 'edit_tabs');
   }
 
+  String get rename_change_deadline {
+    return Intl.message("rename and change deadline", name: 'rename_change_deadline');
+  }
+
 
 }
 
