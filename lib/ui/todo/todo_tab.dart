@@ -7,24 +7,18 @@ import 'package:todo/util/widget_utils.dart';
 
 import '../../main.dart';
 
-_TodoTabWidgetState _state00;
 
 class TodoTabWidget extends StatefulWidget {
   final TodoTab tab;
 
-  TodoTabWidget({this.tab});
-
-  void update([Function() state]) {
-    _state00?.update(state);
-  }
+  TodoTabWidget({Key key, this.tab}) : super(key: key);
 
   @override
-  _TodoTabWidgetState createState() => _state00 = _TodoTabWidgetState();
+  _TodoTabWidgetState createState() => _TodoTabWidgetState();
 }
 
 class _TodoTabWidgetState extends State<TodoTabWidget> {
   TextEditingController addController = TextEditingController();
-  final listKey = GlobalKey<AnimatedListState>();
   int currentDeadline;
 
   @override
@@ -54,6 +48,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
     //build the widget with simple list view or in case of custom list make it reorderable
     return customSorting
         ? ReorderableListView(
+            key: Key('list_view'),
             children: children,
             onReorder: (int oldIndex, int newIndex) {
               //if the old index is the last item, ignore
@@ -77,7 +72,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
             },
           )
         : ListView.builder(
-            key: listKey,
+            key: Key('list_view'),
             itemCount: filteredItems.length + 1,
             itemBuilder: (context, index) => buildListTile(index, false),
           );
@@ -86,61 +81,63 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
   Widget buildListTile(int index, bool customSorting) {
     //the last item, the add item edit text
     if (index == filteredItems.length) {
-      return Container(
+      return Padding(
         key: Key(filteredItems.length.toString()),
-        padding: EdgeInsets.all(2),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey, width: 0.7)),
-        child: Row(
-          children: [
-            Icon(
-              Icons.add,
-              color: Colors.grey,
-            ),
-            Expanded(
-              child: TextFormField(
-                maxLines: 1,
-                textAlign: TextAlign.justify,
-                controller: addController,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  disabledBorder: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  errorBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  focusedErrorBorder: InputBorder.none,
-                  contentPadding: EdgeInsets.all(2),
-                ),
-                textInputAction: TextInputAction.go,
-                keyboardType: TextInputType.text,
-                onFieldSubmitted: addItem,
-                autofocus: false,
-              ),
-            ),
-            Text(
-              isEmpty(currentDeadline)
-                  ? ''
-                  : formatTime(context,
-                      DateTime.fromMillisecondsSinceEpoch(currentDeadline)),
-              style: Theme.of(context).textTheme.bodyText2,
-            ),
-            IconButton(
-              tooltip: strings.deadline,
-              icon: Icon(
-                Icons.date_range,
+        padding: const EdgeInsets.all(4),
+        child: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.grey, width: 0.7)),
+          child: Row(
+            children: [
+              Icon(
+                Icons.add,
                 color: Colors.grey,
               ),
-              onPressed: pickDeadline,
-            )
-          ],
+              Expanded(
+                child: TextFormField(
+                  maxLines: 1,
+                  textAlign: TextAlign.justify,
+                  controller: addController,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    focusedErrorBorder: InputBorder.none,
+                    contentPadding: EdgeInsets.all(2),
+                  ),
+                  textInputAction: TextInputAction.go,
+                  keyboardType: TextInputType.text,
+                  onFieldSubmitted: addItem,
+                  autofocus: false,
+                ),
+              ),
+              Text(
+                isEmpty(currentDeadline)
+                    ? ''
+                    : formatTime(context,
+                        DateTime.fromMillisecondsSinceEpoch(currentDeadline)),
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+              IconButton(
+                tooltip: strings.deadline,
+                icon: Icon(
+                  Icons.date_range,
+                  color: Colors.grey,
+                ),
+                onPressed: pickDeadline,
+              )
+            ],
+          ),
         ),
       );
     } else {
       //every other item
       TodoItem item = filteredItems[index];
       return Dismissible(
-        key: Key(item.doc.id ?? index),
+        key: Key(item.doc.id ?? index.toString()),
         background: Container(
           color: Colors.indigoAccent,
           child: Row(
@@ -153,9 +150,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
                 color: Colors.white54,
               ),
               Icon(
-                isLeftestTab
-                    ? Icons.delete
-                    : Icons.keyboard_arrow_left_outlined,
+                isLeftestTab ? Icons.delete : Icons.arrow_back_ios,
                 color: Colors.white54,
               ),
             ],

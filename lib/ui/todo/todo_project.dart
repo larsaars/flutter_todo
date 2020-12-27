@@ -65,10 +65,6 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
         for (var queryDocSnapshot in querySnapshots.docs) {
           //create the new tab object
           var tab = TodoTab(proDoc.collection('tabs').doc(queryDocSnapshot.id));
-          //set the widget
-          tab.widget = TodoTabWidget(
-            tab: tab,
-          );
           //and sorting type
           tab.sortingType = sortingType;
           //read the values from the db
@@ -93,7 +89,7 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
           centerTitle: true,
           leading: IconButton(
             icon: Icon(
-              Icons.arrow_back_outlined,
+              Icons.arrow_back_ios,
               color: Colors.white54,
             ),
             onPressed: () => searching
@@ -138,7 +134,7 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
                           .copyWith(color: Colors.white),
                       onChanged: (value) => setState(() {
                         //filter the projects titles
-                        if (value.length == 0)
+                        if (value.isEmpty)
                           //clone the projects list
                           curTab.copyFullToFiltered();
                         else
@@ -230,7 +226,13 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
           ),
         ),
         body: TabBarView(
-          children: tabs.map((tab) => tab.widget).toList(),
+          children: [
+            for (final tab in tabs)
+              TodoTabWidget(
+                key: Key(tab.doc.id),
+                tab: tab,
+              )
+          ],
         ),
       ),
     );
@@ -266,12 +268,10 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
                   textPosition: RadioButtonTextPosition.right))
         ],
         onDone: (value) {
-          //all tabs shall have new sorting type info
-          for (var tab in tabs) tab.sortingType = sortingType;
-          //update child
-          curTab.widget.update();
-          //then reset state
-          setState(() {});
+          setState(() {
+            //all tabs shall have new sorting type info
+            for (var tab in tabs) tab.sortingType = sortingType;
+          });
         });
   }
 

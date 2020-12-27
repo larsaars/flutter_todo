@@ -55,7 +55,7 @@ bool isEmpty(obj, [emptyObj]) {
   if (obj is Iterable)
     return obj.isEmpty;
   else if (obj is String)
-    return obj.length == 0;
+    return obj.isEmpty;
   else if (obj is Map)
     return obj.isEmpty;
   else if (obj is num)

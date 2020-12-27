@@ -97,7 +97,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
             child: searching
                 ? IconButton(
                     icon: Icon(
-                      Icons.arrow_back,
+                      Icons.arrow_back_ios,
                       color: Colors.white54,
                     ),
                     onPressed: () => setState(() {
@@ -217,7 +217,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
                     autofocus: true,
                     onChanged: (value) => setState(() {
                       //filter the projects titles
-                      if (value.length == 0)
+                      if (value.isEmpty)
                         //clone the projects list
                         filteredProjects = [...projects];
                       else

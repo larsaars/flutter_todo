@@ -52,7 +52,6 @@ class TodoItem {
 class TodoTab {
   String name;
   List<TodoItem> items = [], filteredItems = [];
-  TodoTabWidget widget;
   int position = 0;
   int sortingType = 0;
 
