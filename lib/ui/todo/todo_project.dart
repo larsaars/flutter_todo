@@ -6,6 +6,7 @@ import 'package:todo/holder/todo.dart';
 import 'package:todo/main.dart';
 import 'package:todo/ui/todo/todo_tab.dart';
 import 'package:todo/ui/widget/standard_widgets.dart';
+import 'package:todo/util/utils.dart';
 import 'package:todo/util/widget_utils.dart';
 
 List<TodoTab> tabs = [];
@@ -168,36 +169,13 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
             ),
             Visibility(
               visible: !searching,
-              child: PopupMenuButton(
-                tooltip: strings.add_item_or_tab,
-                child: Icon(
+              child: IconButton(
+                tooltip: strings.edit_tabs,
+                icon: Icon(
                   Icons.tab,
                   color: Colors.white54,
                 ),
-                itemBuilder: (context) => <PopupMenuEntry<int>>[
-                  PopupMenuItem<int>(
-                    value: 0,
-                    child: Text(strings.change_tab_positions),
-                  ),
-                  PopupMenuItem<int>(
-                    value: 1,
-                    child: Text(strings.add_tab),
-                  ),
-                ],
-                onSelected: (value) {
-                  switch (value) {
-                    case 0:
-                      //change positions
-                      rearrangeTabs();
-                      break;
-                    case 1:
-                      //add tab
-                      addTab();
-                      break;
-                    default:
-                      break;
-                  }
-                },
+                onPressed: editTabs,
               ),
             ),
             Tooltip(
@@ -243,9 +221,8 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
     );
   }
 
-  void addTab() {}
 
-  void rearrangeTabs() {
+  void editTabs() {
     if (_showing) return;
     _showing = true;
 
@@ -273,74 +250,108 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
                     height: size.height / 2.5,
                     child: Center(
                       child: ReorderableListView(
-                        children: <Widget>[
-                          for (TodoTab tab in tabsCopy)
-                            Card(
-                              key: Key(tab.doc.id),
-                              child: Slidable(
-                                key: Key(tab.doc.id),
-                                controller: SlidableController(),
-                                actionExtentRatio: 0.25,
-                                direction: Axis.horizontal,
-                                actionPane: SlidableStrechActionPane(),
-                                dismissal: SlidableDismissal(
-                                  child: SlidableDrawerDismissal(),
-                                  dismissThresholds: <SlideActionType, double>{
-                                    SlideActionType.primary: 1,
-                                    SlideActionType.secondary: 1,
+                        children: tabsCopy
+                                .map(
+                                  (tab) {
+                                    var key = Key(tab.doc.id);
+                                    return Card(
+                                      key: key,
+                                      child: Slidable(
+                                        key: key,
+                                        controller: SlidableController(),
+                                        actionExtentRatio: 0.25,
+                                        direction: Axis.horizontal,
+                                        actionPane: SlidableStrechActionPane(),
+                                        dismissal: SlidableDismissal(
+                                          child: SlidableDrawerDismissal(),
+                                          dismissThresholds: <SlideActionType,
+                                              double>{
+                                            SlideActionType.primary: 1,
+                                            SlideActionType.secondary: 1,
+                                          },
+                                        ),
+                                        child: ListTile(
+                                          title: Text(tab.name),
+                                          trailing: Icon(
+                                            Icons.menu,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                        actions: <Widget>[
+                                          IconSlideAction(
+                                            caption: strings.delete,
+                                            color: Colors.red[800],
+                                            icon: Icons.delete,
+                                            onTap: () => showAnimatedDialog(
+                                              context,
+                                              warningOnDoneButton: true,
+                                              title: strings.delete,
+                                              text: strings.delete_tab,
+                                              onDone: (value) {
+                                                if (value == 'ok') {
+                                                  //since it is ok to delete this tab, remove it from both lists and from database
+                                                  tabsCopy.remove(tab);
+                                                  tabs.remove(tab);
+                                                  tab.doc.delete();
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                        secondaryActions: [
+                                          IconSlideAction(
+                                            caption: strings.rename,
+                                            color: Colors.indigoAccent,
+                                            icon:
+                                                Icons.drive_file_rename_outline,
+                                            onTap: () async {
+                                              var newName =
+                                                  await showInputFieldDialog(
+                                                      context,
+                                                      hint: tab.name,
+                                                      title: strings.rename);
+                                              //rename the tab object and update
+                                              setState0(() {
+                                                tab.name = newName ?? '';
+                                              });
+                                              print(tab.name);
+                                              tab.update();
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    );
                                   },
-                                ),
-                                child: ListTile(
-                                  title: Text(tab.name),
-                                  trailing: Icon(
-                                    Icons.menu,
+                                )
+                                .whereType<Widget>()
+                                .toList() +
+                            <Widget>[
+                              Card(
+                                key: Key(tabsCopy.length.toString()),
+                                child: IconButton(
+                                  tooltip: strings.add_tab,
+                                  icon: Icon(
+                                    Icons.add_circle_outlined,
                                     color: Colors.grey,
                                   ),
+                                  onPressed: () async {
+                                    //new input field dialog for the name
+                                    var name = await showInputFieldDialog(context);
+                                    //create the new tab with name in db
+                                    final tab = await TodoTab.addNew(proDoc, isEmpty(name) ? '' : name, (tabsCopy.last ?? (TodoTab()..position = -1)).position + 1);
+                                    //set state by adding to list
+                                    setState0(() {
+                                      tabsCopy.add(tab);
+                                      tabs.add(tab);
+                                    });
+                                  },
                                 ),
-                                actions: <Widget>[
-                                  IconSlideAction(
-                                    caption: strings.delete,
-                                    color: Colors.red[800],
-                                    icon: Icons.delete,
-                                    onTap: () => showAnimatedDialog(
-                                      context,
-                                      warningOnDoneButton: true,
-                                      title: strings.delete,
-                                      text: strings.delete_tab,
-                                      onDone: (value) {
-                                        if (value == 'ok') {
-                                          //since it is ok to delete this tab, remove it from both lists and from database
-                                          tabsCopy.remove(tab);
-                                          tabs.remove(tab);
-                                          tab.doc.delete();
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                ],
-                                secondaryActions: [
-                                  IconSlideAction(
-                                    caption: strings.rename,
-                                    color: Colors.indigoAccent,
-                                    icon: Icons.drive_file_rename_outline,
-                                    onTap: () async {
-                                      var newName = await showInputFieldDialog(
-                                          context,
-                                          hint: tab.name,
-                                          title: strings.rename);
-                                      //rename the tab object and update
-                                      setState0(() {
-                                        tab.name = newName ?? '';
-                                      });
-                                      print(tab.name);
-                                      tab.update();
-                                    },
-                                  ),
-                                ],
-                              ),
-                            )
-                        ],
+                              )
+                            ],
                         onReorder: (int start, int current) {
+                          //ignore if is concerning last item
+                          if (start == tabsCopy.length ||
+                              current >= tabsCopy.length) return;
                           // dragging from top to bottom
                           if (start < current) {
                             int end = current - 1;

@@ -250,6 +250,10 @@ class S {
     return Intl.message("Are you sure that you want to delete this tab?", name: 'delete_tab');
   }
 
+  String get edit_tabs {
+    return Intl.message("edit tabs", name: 'edit_tabs');
+  }
+
 
 }
 
