@@ -51,7 +51,8 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
             children: children,
             onReorder: (int oldIndex, int newIndex) {
               //if the old index is the last item, ignore
-              if (oldIndex == filteredItems.length) return;
+              if (oldIndex == filteredItems.length ||
+                  newIndex >= filteredItems.length) return;
               //set the state newly
               setState(() {
                 //set the changed item to the lower item + 1
