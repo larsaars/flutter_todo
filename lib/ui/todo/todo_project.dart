@@ -4,6 +4,7 @@ import 'package:group_radio_button/group_radio_button.dart';
 import 'package:todo/holder/todo.dart';
 import 'package:todo/main.dart';
 import 'package:todo/ui/todo/todo_tab.dart';
+import 'package:todo/ui/widget/standard_widgets.dart';
 import 'package:todo/util/widget_utils.dart';
 
 List<TodoTab> tabs = [];
@@ -27,6 +28,7 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
   int sortingType = 0, curTabIdx = 0;
   TextEditingController searchController = TextEditingController();
   DocumentReference proDoc;
+  bool _showing = false;
 
   @override
   void dispose() {
@@ -185,7 +187,7 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
                   switch (value) {
                     case 0:
                       //change positions
-                      changeTabPositions();
+                      rearrangeTabs();
                       break;
                     case 1:
                       //add tab
@@ -219,9 +221,11 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
           bottom: TabBar(
             isScrollable: tabs.length > 4,
             tabs: tabs
-                .map((tab) => Tab(
-                      text: tab.name,
-                    ))
+                .map(
+                  (tab) => Tab(
+                    text: tab.name,
+                  ),
+                )
                 .toList(),
           ),
         ),
@@ -240,7 +244,67 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
 
   void addTab() {}
 
-  void changeTabPositions() {}
+  void rearrangeTabs() {
+    if (_showing) return;
+    _showing = true;
+
+    List tabsCopy = <TodoTab>[...tabs];
+
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: '',
+      pageBuilder: (context, animation1, animation2) {
+        return Container();
+      },
+      transitionBuilder: (context, a1, a2, widget) {
+        final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+        return Transform(
+          transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+          child: Opacity(
+            opacity: a1.value,
+            child: StatefulBuilder(builder: (context, setState) {
+              var size = MediaQuery.of(context).size;
+
+              return AlertDialog(
+                  content: Container(
+                    width: size.width,
+                    height: size.height,
+                    child: ReorderableListView(
+                      children: <ListTile>[
+                        for (var tab in tabsCopy)
+                          ListTile(
+                            key: Key(tab.doc.id),
+                            title: Text(tab.name),
+                            trailing: Icon(
+                              Icons.menu,
+                              color: Colors.grey,
+                            ),
+                          )
+                      ],
+                      onReorder: (from, to) {},
+                    ),
+                  ),
+                  actions: [
+                    DefaultFilledButton(
+                      text: strings.ok,
+                      onPressed: () => Navigator.of(context).pop('ok'),
+                    )
+                  ]);
+            }),
+          ),
+        );
+      },
+      transitionDuration: Duration(milliseconds: 300),
+    ).then((value) {
+      _showing = false;
+
+      if (value == 'ok')
+        setState(() {
+          tabs = tabsCopy;
+        });
+    });
+  }
 
   void changeSorting() {
     List options = strings.sort_options.split(',');
