@@ -285,49 +285,53 @@ class _TodoStartPageState extends State<TodoStartPage> {
         itemCount: filteredProjects.length,
         itemBuilder: (context, index) {
           Project item = filteredProjects[index];
-          return Slidable(
+          var key = Key(item.id ?? index.toString());
+          return Card(
             key: Key(item.id ?? index.toString()),
-            controller: slidableController,
-            actionExtentRatio: 0.25,
-            direction: Axis.horizontal,
-            actionPane: SlidableStrechActionPane(),
-            dismissal: SlidableDismissal(
-                child: SlidableDrawerDismissal(),
-                dismissThresholds: <SlideActionType, double>{
-                  SlideActionType.primary: 0.6,
-                  SlideActionType.secondary: 1,
-                },
-                onDismissed: (actionType) {
-                  if (actionType == SlideActionType.primary)
-                    //could have new index if list changed, so get it newly
-                    deleteItem(item);
-                }),
-            child: ListTile(
-              title: Text(
-                '${item.name}',
+            child: Slidable(
+              key: key,
+              controller: slidableController,
+              actionExtentRatio: 0.25,
+              direction: Axis.horizontal,
+              actionPane: SlidableStrechActionPane(),
+              dismissal: SlidableDismissal(
+                  child: SlidableDrawerDismissal(),
+                  dismissThresholds: <SlideActionType, double>{
+                    SlideActionType.primary: 0.6,
+                    SlideActionType.secondary: 1,
+                  },
+                  onDismissed: (actionType) {
+                    if (actionType == SlideActionType.primary)
+                      //could have new index if list changed, so get it newly
+                      deleteItem(item);
+                  }),
+              child: ListTile(
+                title: Text(
+                  '${item.name}',
+                ),
+                subtitle: Text(
+                  formatTime(context,
+                      DateTime.fromMillisecondsSinceEpoch(item.lastAccessed)),
+                ),
+                onTap: () => tapListTile(item),
               ),
-              subtitle: Text(
-                formatTime(context,
-                    DateTime.fromMillisecondsSinceEpoch(item.lastAccessed)),
-              ),
-              onTap: () => tapListTile(item),
+              actions: <Widget>[
+                IconSlideAction(
+                  caption: strings.delete,
+                  color: Colors.red[800],
+                  icon: Icons.delete,
+                  onTap: () => deleteItem(item),
+                ),
+              ],
+              secondaryActions: [
+                IconSlideAction(
+                  caption: strings.rename,
+                  color: Colors.indigoAccent,
+                  icon: Icons.drive_file_rename_outline,
+                  onTap: () => renameItem(item),
+                ),
+              ],
             ),
-            actions: <Widget>[
-              IconSlideAction(
-                caption: strings.delete,
-                color: Colors.red[800],
-                icon: Icons.delete,
-                onTap: () => deleteItem(item),
-              ),
-            ],
-            secondaryActions: [
-              IconSlideAction(
-                caption: strings.rename,
-                color: Colors.indigoAccent,
-                icon: Icons.drive_file_rename_outline,
-                onTap: () => renameItem(item),
-              ),
-            ],
           );
         },
       ),

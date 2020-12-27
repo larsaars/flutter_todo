@@ -142,6 +142,11 @@ class TodoTab {
   @override
   bool operator ==(Object other) =>
       (other is TodoTab) && (doc?.id == other.doc?.id);
+
+  @override
+  String toString() {
+    return '$name: $position';
+  }
 }
 
 class TodoItemSortingType {

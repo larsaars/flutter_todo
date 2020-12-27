@@ -246,6 +246,10 @@ class S {
     return Intl.message("rearrange tabs", name: 'change_tab_positions');
   }
 
+  String get delete_tab {
+    return Intl.message("Are you sure that you want to delete this tab?", name: 'delete_tab');
+  }
+
 
 }
 
