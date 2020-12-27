@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:todo/ui/widget/divider.dart';
@@ -43,24 +45,26 @@ typedef void OnDialogReturnSetStateCallback(BuildContext context, setState);
 
 bool _showing = false;
 
-void showAnimatedDialog(BuildContext context,
-    {Widget dialog,
-    String title,
-    String text,
-    String onDoneText,
-    bool forceNoCancelButton = false,
-    bool warningOnDoneButton = false,
-    String forceCancelText,
-    List<Widget> children = const [],
-    OnDialogCancelCallback onDone,
-    OnDialogReturnSetStateCallback setStateCallback,
-    IconData icon,
-    var update,
-    bool showAnyActionButton = true,
-    int inputFields = 0,
-    List<String> inputFieldsHints,
-    List<TextInputType> inputTypes,
-    List<FormFieldValidator> inputValidators}) async {
+Future showAnimatedDialog(
+  BuildContext context, {
+  Widget dialog,
+  String title,
+  String text,
+  String onDoneText,
+  bool forceNoCancelButton = false,
+  bool warningOnDoneButton = false,
+  String forceCancelText,
+  List<Widget> children = const [],
+  OnDialogCancelCallback onDone,
+  OnDialogReturnSetStateCallback setStateCallback,
+  IconData icon,
+  var update,
+  bool showAnyActionButton = true,
+  int inputFields = 0,
+  List<String> inputFieldsHints,
+  List<TextInputType> inputTypes,
+  List<FormFieldValidator> inputValidators,
+}) async {
   if (_showing) return;
 
   _showing = true;
@@ -90,7 +94,7 @@ void showAnimatedDialog(BuildContext context,
   }
 
   //show dialog
-  showGeneralDialog(
+  var value = await showGeneralDialog(
     context: context,
     barrierDismissible: true,
     barrierLabel: '',
@@ -180,17 +184,36 @@ void showAnimatedDialog(BuildContext context,
       );
     },
     transitionDuration: Duration(milliseconds: 300),
-  ).then((value) {
-    //set showing dialog false
-    _showing = false;
-    //execute the on done
-    if (onDone != null && value != null) {
-      if (isEmpty(inputFields))
-        onDone(value);
-      else
-        onDone(inputTexts);
+  );
+  //set showing dialog false
+  _showing = false;
+  //execute the on done
+  if (onDone != null && value != null) {
+    if (isEmpty(inputFields)) {
+      onDone(value);
+      return value;
+    } else {
+      onDone(inputTexts);
+      return inputTexts;
     }
-  });
+  }
+
+  return value;
+}
+
+Future<String> showInputFieldDialog(
+  BuildContext context, {
+  String hint,
+  String title,
+}) async {
+  var values = await showAnimatedDialog(context,
+      title: title,
+      inputFields: 1,
+      inputFieldsHints: [hint],
+      inputTypes: [TextInputType.text],
+      inputValidators: [(value) => (isEmpty(value) ? null : '')],
+      onDone: (value) {});
+  return values[0];
 }
 
 void showAbout(BuildContext context) async {

@@ -63,6 +63,7 @@ class $de extends MessageLookupByLibrary {
 		"time" : MessageLookupByLibrary.simpleMessage("Uhrzeit"),
 		"no_deadline" : MessageLookupByLibrary.simpleMessage("keine deadline"),
 		"change_tab_positions" : MessageLookupByLibrary.simpleMessage("Tabpositionen verändern"),
+		"delete_tab" : MessageLookupByLibrary.simpleMessage("Willst du diesen Tab sicher löschen?"),
 
   };
 }
@@ -128,6 +129,7 @@ class $en extends MessageLookupByLibrary {
 		"time" : MessageLookupByLibrary.simpleMessage("time"),
 		"no_deadline" : MessageLookupByLibrary.simpleMessage("no deadline"),
 		"change_tab_positions" : MessageLookupByLibrary.simpleMessage("rearrange tabs"),
+		"delete_tab" : MessageLookupByLibrary.simpleMessage("Are you sure that you want to delete this tab?"),
 
   };
 }

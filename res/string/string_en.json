@@ -53,5 +53,6 @@
   "date": "date",
   "time": "time",
   "no_deadline": "no deadline",
-  "change_tab_positions": "rearrange tabs"
+  "change_tab_positions": "rearrange tabs",
+  "delete_tab": "Are you sure that you want to delete this tab?"
 }

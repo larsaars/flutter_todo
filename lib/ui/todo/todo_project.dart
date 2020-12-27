@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:group_radio_button/group_radio_button.dart';
 import 'package:todo/holder/todo.dart';
 import 'package:todo/main.dart';
@@ -248,7 +249,7 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
     if (_showing) return;
     _showing = true;
 
-    List tabsCopy = <TodoTab>[...tabs];
+    List<TodoTab> tabsCopy = [...tabs];
 
     showGeneralDialog(
       context: context,
@@ -263,26 +264,106 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
           transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
           child: Opacity(
             opacity: a1.value,
-            child: StatefulBuilder(builder: (context, setState) {
+            child: StatefulBuilder(builder: (context, setState0) {
               var size = MediaQuery.of(context).size;
 
               return AlertDialog(
                   content: Container(
                     width: size.width,
-                    height: size.height,
-                    child: ReorderableListView(
-                      children: <ListTile>[
-                        for (var tab in tabsCopy)
-                          ListTile(
-                            key: Key(tab.doc.id),
-                            title: Text(tab.name),
-                            trailing: Icon(
-                              Icons.menu,
-                              color: Colors.grey,
-                            ),
-                          )
-                      ],
-                      onReorder: (from, to) {},
+                    height: size.height / 2.5,
+                    child: Center(
+                      child: ReorderableListView(
+                        children: <Widget>[
+                          for (TodoTab tab in tabsCopy)
+                            Card(
+                              key: Key(tab.doc.id),
+                              child: Slidable(
+                                key: Key(tab.doc.id),
+                                controller: SlidableController(),
+                                actionExtentRatio: 0.25,
+                                direction: Axis.horizontal,
+                                actionPane: SlidableStrechActionPane(),
+                                dismissal: SlidableDismissal(
+                                  child: SlidableDrawerDismissal(),
+                                  dismissThresholds: <SlideActionType, double>{
+                                    SlideActionType.primary: 1,
+                                    SlideActionType.secondary: 1,
+                                  },
+                                ),
+                                child: ListTile(
+                                  title: Text(tab.name),
+                                  trailing: Icon(
+                                    Icons.menu,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                actions: <Widget>[
+                                  IconSlideAction(
+                                    caption: strings.delete,
+                                    color: Colors.red[800],
+                                    icon: Icons.delete,
+                                    onTap: () => showAnimatedDialog(
+                                      context,
+                                      warningOnDoneButton: true,
+                                      title: strings.delete,
+                                      text: strings.delete_tab,
+                                      onDone: (value) {
+                                        if (value == 'ok') {
+                                          //since it is ok to delete this tab, remove it from both lists and from database
+                                          tabsCopy.remove(tab);
+                                          tabs.remove(tab);
+                                          tab.doc.delete();
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
+                                secondaryActions: [
+                                  IconSlideAction(
+                                    caption: strings.rename,
+                                    color: Colors.indigoAccent,
+                                    icon: Icons.drive_file_rename_outline,
+                                    onTap: () async {
+                                      var newName = await showInputFieldDialog(
+                                          context,
+                                          hint: tab.name,
+                                          title: strings.rename);
+                                      //rename the tab object and update
+                                      setState0(() {
+                                        tab.name = newName ?? '';
+                                      });
+                                      print(tab.name);
+                                      tab.update();
+                                    },
+                                  ),
+                                ],
+                              ),
+                            )
+                        ],
+                        onReorder: (int start, int current) {
+                          // dragging from top to bottom
+                          if (start < current) {
+                            int end = current - 1;
+                            var startItem = tabsCopy[start];
+                            int i = 0;
+                            int local = start;
+                            do {
+                              tabsCopy[local] = tabsCopy[++local];
+                              i++;
+                            } while (i < end - start);
+                            tabsCopy[end] = startItem;
+                          }
+                          // dragging from bottom to top
+                          else if (start > current) {
+                            var startItem = tabsCopy[start];
+                            for (int i = start; i > current; i--) {
+                              tabsCopy[i] = tabsCopy[i - 1];
+                            }
+                            tabsCopy[current] = startItem;
+                          }
+                          setState0(() {});
+                        },
+                      ),
                     ),
                   ),
                   actions: [
@@ -301,9 +382,20 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
 
       if (value == 'ok')
         setState(() {
+          //set the positions and update to database
+          for (int i = 0; i < tabsCopy.length; i++) {
+            tabsCopy[i].position = i;
+            tabsCopy[i].update();
+          }
+
+          //copy the list
           tabs = tabsCopy;
         });
     });
+  }
+
+  void showSnackBar(String msg) {
+    scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(msg)));
   }
 
   void changeSorting() {
