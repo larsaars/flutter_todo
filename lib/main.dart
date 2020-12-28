@@ -207,7 +207,7 @@ class _MyHomePageAfterLoadingState extends State<MyHomePageAfterLoading>
                   child: IconButton(
                     icon: Icon(
                       Icons.info,
-                      color: Colors.black54,
+                      color: Styles.greyIconColor,
                     ),
                     onPressed: () => showAbout(context),
                   ),
