@@ -7,6 +7,7 @@ import 'package:todo/util/utils.dart';
 import 'package:todo/util/widget_utils.dart';
 
 import '../../main.dart';
+import '../style.dart';
 
 class TodoTabWidget extends StatefulWidget {
   final TodoTab tab;
@@ -88,12 +89,12 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
         child: Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.grey, width: 0.7)),
+              border: Border.all(color: Styles.greyIconColor, width: 0.7)),
           child: Row(
             children: [
               Icon(
                 Icons.add,
-                color: Colors.grey,
+                color: Styles.greyIconColor,
               ),
               Expanded(
                 child: TextFormField(
@@ -126,7 +127,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
                 tooltip: strings.deadline,
                 icon: Icon(
                   Icons.date_range,
-                  color: Colors.grey,
+                  color: Styles.greyIconColor,
                 ),
                 onPressed: pickDeadline,
               )
@@ -144,7 +145,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
           key: key,
           background: Container(
             decoration: BoxDecoration(
-              color: Colors.indigoAccent,
+              color: Styles.indigoAccentColor,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
@@ -154,11 +155,11 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
                   isRightestTab
                       ? Icons.delete
                       : Icons.keyboard_arrow_right_outlined,
-                  color: Colors.white54,
+                  color: Styles.white54IconColor,
                 ),
                 Icon(
                   isLeftestTab ? Icons.delete : Icons.arrow_back_ios,
-                  color: Colors.white54,
+                  color: Styles.white54IconColor,
                 ),
               ],
             ),
@@ -172,12 +173,12 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
                       IconButton(
                           icon: Icon(
                             Icons.edit,
-                            color: Colors.grey,
+                            color: Styles.greyIconColor,
                           ),
                           onPressed: () => editTab(index)),
                       Icon(
                         Icons.menu,
-                        color: Colors.grey,
+                        color: Styles.greyIconColor,
                       )
                     ]),
                   )
@@ -310,7 +311,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
                 tooltip: strings.deadline,
                 icon: Icon(
                   Icons.date_range,
-                  color: Colors.grey,
+                  color: Styles.greyIconColor,
                 ),
                 onPressed: () => pickDeadline(true),
               )

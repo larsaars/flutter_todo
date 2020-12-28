@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:todo/ui/style.dart';
 import 'package:todo/ui/widget/divider.dart';
 import 'package:todo/ui/widget/standard_widgets.dart';
 import 'package:todo/util/utils.dart';
@@ -29,7 +30,7 @@ AppBar appBar(BuildContext context, String title,
           : IconButton(
               icon: Icon(
                 Icons.arrow_back_ios,
-                color: Colors.white54,
+                color: Styles.white54IconColor,
               ),
               onPressed: Navigator.of(context).pop,
             ),
@@ -37,7 +38,7 @@ AppBar appBar(BuildContext context, String title,
           style: Theme.of(context)
               .textTheme
               .subtitle1
-              .copyWith(color: Colors.white)),
+              .copyWith(color: Styles.whiteTextFieldColor)),
     );
 
 typedef void OnDialogCancelCallback(value);

@@ -169,7 +169,6 @@ class _MyHomePageAfterLoadingState extends State<MyHomePageAfterLoading>
               ),
         child: SafeArea(
           child: Scaffold(
-            backgroundColor: Colors.brown[50],
             body: Stack(
               children: [
                 LogInPage(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../style.dart';
+
 class CircularButton extends StatelessWidget {
   final double width;
   final double height;
@@ -24,7 +26,7 @@ class CircularButton extends StatelessWidget {
       child: IconButton(
           icon: Icon(
             icon,
-            color: Colors.white54,
+            color: Styles.white54IconColor,
           ),
           enableFeedback: true,
           onPressed: onPressed),
