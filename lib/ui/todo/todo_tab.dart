@@ -20,6 +20,7 @@ class TodoTabWidget extends StatefulWidget {
 
 class _TodoTabWidgetState extends State<TodoTabWidget> {
   TextEditingController addController = TextEditingController();
+  FocusNode addFocusNode = FocusNode();
   int currentDeadline;
 
   @override
@@ -52,25 +53,25 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
             key: Key('list_view'),
             children: children,
             onReorder: (int oldIndex, int newIndex) {
+              if (oldIndex < newIndex) {
+                // removing the item at oldIndex will shorten the list by 1.
+                newIndex -= 1;
+              }
+              int len = filteredItems.length;
               //if the old index is the last item, ignore
-              if (oldIndex == filteredItems.length ||
-                  newIndex >= filteredItems.length) return;
+              if (oldIndex == len ||
+                  newIndex >= len) return;
+              //get the item
+              //set the changed item to the right index
+              final TodoItem removed = filteredItems.removeAt(oldIndex);
+              filteredItems.insert(newIndex, removed);
+              //update in database and position arguments
+              for(int i = 0; i < len; i++) {
+                filteredItems[i].position = i;
+                filteredItems[i].update();
+              }
               //set the state newly
-              setState(() {
-                //set the changed item to the lower item + 1
-                var item = filteredItems[oldIndex];
-                if ((oldIndex + 1) < filteredItems.length) {
-                  var lowerItem = filteredItems[oldIndex + 1].changed - 1;
-                  filteredItems[oldIndex].changed = lowerItem;
-                  tab.items[tab.items.indexOf(item)].changed = lowerItem;
-                } else if ((oldIndex - 1) >= 0) {
-                  var upperItem = filteredItems[oldIndex - 1].changed + 1;
-                  filteredItems[oldIndex].changed = upperItem;
-                  tab.items[tab.items.indexOf(item)].changed = upperItem;
-                }
-                //update in database
-                tab.items[tab.items.indexOf(item)].update();
-              });
+              setState(() {});
             },
           )
         : ListView.builder(
@@ -101,6 +102,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
                   maxLines: 1,
                   textAlign: TextAlign.justify,
                   controller: addController,
+                  focusNode: addFocusNode,
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     disabledBorder: InputBorder.none,
@@ -113,7 +115,6 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
                   textInputAction: TextInputAction.go,
                   keyboardType: TextInputType.text,
                   onFieldSubmitted: addItem,
-                  autofocus: false,
                 ),
               ),
               Text(
@@ -233,8 +234,8 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
     item.name = value;
     //delayed check last write, this must have been the last write if the check is true (estimated)
     Future.delayed(Duration(milliseconds: timeout)).then((value) {
-      if ((DateTime.now().millisecondsSinceEpoch - item.lastTextChange) >= (timeout - 50))
-        item.update();
+      if ((DateTime.now().millisecondsSinceEpoch - item.lastTextChange) >=
+          (timeout - 50)) item.update();
     });
   }
 
@@ -272,7 +273,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
     //delete item from database at this path
     item.doc.delete();
     //add the new item at the new tab
-    TodoItem.addNew(newTab, item.name, item.deadline, item.changed)
+    TodoItem.addNew(newTab, item.name, item.deadline, 0)
         .then((recreatedItem) {
       //after moving the item add it to the new tabs lists
       newTab.items.add(recreatedItem);
@@ -372,6 +373,8 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
     TodoItem.addNew(tab, name, isEmpty(currentDeadline) ? 0 : currentDeadline)
         .then((item) {
       setState(() {
+        //keep focus
+        addFocusNode.requestFocus();
         //add to the lists
         tab.items.add(item);
         tab.filteredItems.add(item);

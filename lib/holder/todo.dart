@@ -4,7 +4,7 @@ import 'package:todo/util/utils.dart';
 
 class TodoItem {
   String name;
-  int deadline, changed;
+  int deadline, position;
   DocumentReference doc;
 
   TextEditingController textController;
@@ -26,7 +26,7 @@ class TodoItem {
     var thisDoc = await tab.doc.collection('items').add(data);
     //then generate local object
     return TodoItem(thisDoc)
-      ..changed = time
+      ..position = -1
       ..deadline = deadline
       ..name = name
       ..textController = TextEditingController(text: name);
@@ -35,7 +35,7 @@ class TodoItem {
   Future<void> update() async {
     //update in database
     await doc
-        .update(<String, dynamic>{'n': name, 'dl': deadline, 'c': changed});
+        .update(<String, dynamic>{'n': name, 'dl': deadline, 'c': position});
   }
 
   Future<void> read([var snapshot]) async {
@@ -44,7 +44,7 @@ class TodoItem {
     //set values locally
     name = snapshot.get('n');
     deadline = snapshot.get('dl');
-    changed = snapshot.get('c');
+    position = snapshot.get('c');
     textController = TextEditingController(text: name);
   }
 
@@ -112,7 +112,7 @@ class TodoTab {
     items.sort((a, b) {
       int name = a.name.compareTo(b.name);
       int deadline = b.deadline.compareTo(a.deadline);
-      int changed = b.changed.compareTo(a.changed);
+      int changed = a.position.compareTo(b.position);
 
       if (sortingType == TodoItemSortingType.custom) {
         if (changed == 0) {
