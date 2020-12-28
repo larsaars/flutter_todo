@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:todo/ui/todo/todo_tab.dart';
+import 'package:todo/util/utils.dart';
 
 class TodoItem {
   String name;
@@ -8,13 +9,13 @@ class TodoItem {
 
   TodoItem([this.doc]);
 
-  static Future<TodoItem> addNew(TodoTab tab, String name, int deadline) async {
+  static Future<TodoItem> addNew(TodoTab tab, String name, int deadline, [int changed]) async {
     //current time
     int time = DateTime.now().millisecondsSinceEpoch;
     //create database object
     Map<String, dynamic> data = {
       'n': name,
-      'c': time,
+      'c': isEmpty(changed) ? time : changed,
       'dl': deadline,
     };
     //add to list database
