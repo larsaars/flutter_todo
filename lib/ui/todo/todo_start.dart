@@ -11,6 +11,7 @@ import 'package:todo/util/utils.dart';
 import 'package:todo/util/widget_utils.dart';
 
 import '../../main.dart';
+import '../style.dart';
 
 enum _PopupMenuAccount {
   logOff,
@@ -98,7 +99,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
                 ? IconButton(
                     icon: Icon(
                       Icons.arrow_back_ios,
-                      color: Colors.white54,
+                      color: Styles.white54IconColor,
                     ),
                     onPressed: () => setState(() {
                           //not searching anymore
@@ -196,7 +197,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
               ? Stack(alignment: Alignment.centerRight, children: [
                   Icon(
                     Icons.search,
-                    color: Colors.white54,
+                    color: Styles.white54IconColor,
                   ),
                   TextFormField(
                     textAlign: TextAlign.justify,
@@ -213,7 +214,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
                     style: Theme.of(context)
                         .textTheme
                         .subtitle1
-                        .copyWith(color: Colors.white),
+                        .copyWith(color: Styles.whiteTextFieldColor),
                     autofocus: true,
                     onChanged: (value) => setState(() {
                       //filter the projects titles
@@ -239,12 +240,12 @@ class _TodoStartPageState extends State<TodoStartPage> {
                           style: Theme.of(context)
                               .textTheme
                               .subtitle2
-                              .copyWith(color: Colors.white)),
+                              .copyWith(color: Styles.whiteTextFieldColor)),
                       Text(strings.projects,
                           style: Theme.of(context)
                               .textTheme
                               .subtitle1
-                              .copyWith(color: Colors.white)),
+                              .copyWith(color: Styles.whiteTextFieldColor)),
                     ]),
         ),
         actions: <Widget>[
@@ -255,7 +256,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
               child: IconButton(
                 icon: Icon(
                   Icons.add,
-                  color: Colors.white54,
+                  color: Styles.white54IconColor,
                 ),
                 onPressed: addTodoProject,
               ),
@@ -266,7 +267,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
             child: IconButton(
               icon: Icon(
                 searching ? Icons.clear : Icons.search,
-                color: Colors.white54,
+                color: Styles.white54IconColor,
               ),
               onPressed: () => setState(() {
                 if (searching) {
@@ -326,7 +327,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
               secondaryActions: [
                 IconSlideAction(
                   caption: strings.rename,
-                  color: Colors.indigoAccent,
+                  color: Styles.indigoAccentColor,
                   icon: Icons.drive_file_rename_outline,
                   onTap: () => renameItem(item),
                 ),

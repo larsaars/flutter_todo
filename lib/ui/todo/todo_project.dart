@@ -9,6 +9,8 @@ import 'package:todo/ui/widget/standard_widgets.dart';
 import 'package:todo/util/utils.dart';
 import 'package:todo/util/widget_utils.dart';
 
+import '../style.dart';
+
 List<TodoTab> tabs = [];
 
 class TodoProjectPage extends StatefulWidget {
@@ -94,7 +96,7 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back_ios,
-              color: Colors.white54,
+              color: Styles.white54IconColor,
             ),
             onPressed: () => searching
                 ? setState(() {
@@ -117,7 +119,7 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
                 ? Stack(alignment: Alignment.centerRight, children: [
                     Icon(
                       Icons.search,
-                      color: Colors.white54,
+                      color: Styles.white54IconColor,
                     ),
                     TextFormField(
                       textAlign: TextAlign.justify,
@@ -135,7 +137,7 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
                       style: Theme.of(context)
                           .textTheme
                           .subtitle1
-                          .copyWith(color: Colors.white),
+                          .copyWith(color: Styles.whiteTextFieldColor),
                       onChanged: (value) => setState(() {
                         //filter the projects titles
                         if (value.isEmpty)
@@ -161,7 +163,7 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
                 child: IconButton(
                   icon: Icon(
                     Icons.sort,
-                    color: Colors.white54,
+                    color: Styles.white54IconColor,
                   ),
                   onPressed: changeSorting,
                 ),
@@ -173,7 +175,7 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
                 tooltip: strings.edit_tabs,
                 icon: Icon(
                   Icons.tab,
-                  color: Colors.white54,
+                  color: Styles.white54IconColor,
                 ),
                 onPressed: editTabs,
               ),
@@ -183,7 +185,7 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
               child: IconButton(
                 icon: Icon(
                   searching ? Icons.clear : Icons.search,
-                  color: Colors.white54,
+                  color: Styles.white54IconColor,
                 ),
                 onPressed: () => setState(() {
                   if (searching) {
@@ -273,7 +275,7 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
                                           title: Text(tab.name),
                                           trailing: Icon(
                                             Icons.menu,
-                                            color: Colors.grey,
+                                            color: Styles.greyIconColor,
                                           ),
                                         ),
                                         actions: <Widget>[
@@ -300,7 +302,7 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
                                         secondaryActions: [
                                           IconSlideAction(
                                             caption: strings.rename,
-                                            color: Colors.indigoAccent,
+                                            color: Styles.indigoAccentColor,
                                             icon:
                                                 Icons.drive_file_rename_outline,
                                             onTap: () async {
@@ -332,7 +334,7 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
                                     tooltip: strings.add_tab,
                                     icon: Icon(
                                       Icons.add_circle_outlined,
-                                      color: Colors.grey,
+                                      color: Styles.greyIconColor,
                                     ),
                                     onPressed: () async {
                                       //new input field dialog for the name

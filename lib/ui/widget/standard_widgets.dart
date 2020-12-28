@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:todo/util/widget_utils.dart';
 
+import '../style.dart';
+
 class DefaultFilledButton extends StatelessWidget {
   final String text;
   final Function onPressed;
@@ -22,7 +24,7 @@ class DefaultFilledButton extends StatelessWidget {
           style: Theme.of(context)
               .textTheme
               .bodyText1
-              .copyWith(color: Colors.white)),
+              .copyWith(color: Styles.whiteTextFieldColor)),
       onPressed: onPressed,
     );
   }
@@ -61,7 +63,7 @@ class DefaultIcon extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(45),
       child: Container(
-        color: Colors.white54,
+        color: Styles.white54IconColor,
         child: Icon(
           icon,
           color: Colors.black54,

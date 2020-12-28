@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:todo/main.dart';
+import 'package:todo/ui/style.dart';
 import 'package:todo/util/widget_utils.dart';
 
 import '../todo/todo_start.dart';
@@ -42,7 +43,7 @@ class _LogInPageState extends State<LogInPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             RaisedButton.icon(
-              color: Colors.white,
+              color: Styles.white54IconColor,
               icon: Image.asset(
                 'res/drawable/google.png',
                 width: 24,
@@ -54,7 +55,7 @@ class _LogInPageState extends State<LogInPage> {
               },
             ),
             RaisedButton.icon(
-              color: Colors.white,
+              color: Styles.white54IconColor,
               icon: Icon(Icons.email),
               label: Text(strings.login_sign_in_with_email),
               onPressed: () {
