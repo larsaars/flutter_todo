@@ -56,5 +56,6 @@
   "change_tab_positions": "rearrange tabs",
   "delete_tab": "Are you sure that you want to delete this tab?",
   "edit_tabs": "edit tabs",
-  "rename_change_deadline": "rename and change deadline"
+  "rename_change_deadline": "rename and change deadline",
+  "dark_theme": "switch theme"
 }

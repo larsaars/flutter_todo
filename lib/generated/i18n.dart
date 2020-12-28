@@ -258,6 +258,10 @@ class S {
     return Intl.message("rename and change deadline", name: 'rename_change_deadline');
   }
 
+  String get dark_theme {
+    return Intl.message("switch theme", name: 'dark_theme');
+  }
+
 
 }
 

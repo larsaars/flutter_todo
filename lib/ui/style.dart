@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Styles {
   static Color indigoAccentColor,
@@ -33,10 +34,38 @@ class Styles {
       buttonTheme: Theme.of(context).buttonTheme.copyWith(
           colorScheme: isDarkTheme ? ColorScheme.dark() : ColorScheme.light()),
       appBarTheme: AppBarTheme(
-        color: indigoColor,
+        color: isDarkTheme ? Colors.black12 : indigoColor,
         textTheme: Theme.of(context).textTheme.apply(displayColor: whiteTextFieldColor),
         elevation: 0.0,
       ),
     );
+  }
+}
+
+class DarkThemeProvider with ChangeNotifier {
+  DarkThemePreference darkThemePreference = DarkThemePreference();
+  bool _darkTheme = false;
+
+  bool get darkTheme => _darkTheme;
+
+  set darkTheme(bool value) {
+    _darkTheme = value;
+    darkThemePreference.setDarkTheme(value);
+    notifyListeners();
+  }
+}
+
+
+class DarkThemePreference {
+  static const THEME_STATUS = "theme_status";
+
+  setDarkTheme(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool(THEME_STATUS, value);
+  }
+
+  Future<bool> getTheme() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(THEME_STATUS) ?? false;
   }
 }

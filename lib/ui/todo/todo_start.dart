@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 import 'package:todo/holder/project.dart';
 import 'package:todo/holder/todo.dart';
 import 'package:todo/ui/todo/todo_project.dart';
@@ -18,7 +19,8 @@ enum _PopupMenuAccount {
   changePassword,
   changeEmail,
   deleteAccount,
-  about
+  about,
+  changeTheme,
 }
 
 class TodoStartPage extends StatefulWidget {
@@ -81,6 +83,8 @@ class _TodoStartPageState extends State<TodoStartPage> {
 
   @override
   Widget build(BuildContext context) {
+    //the theme change provider
+    final themeChange = Provider.of<DarkThemeProvider>(context);
     //before every build resort the lists
     sort();
     //then build the widget
@@ -120,6 +124,14 @@ class _TodoStartPageState extends State<TodoStartPage> {
                             : Image.network(widget.firebaseUser.photoURL),
                         itemBuilder: (context) =>
                             makeNonNull(<PopupMenuEntry<_PopupMenuAccount>>[
+                          PopupMenuItem<_PopupMenuAccount>(
+                            value: _PopupMenuAccount.changeTheme,
+                            child: GestureDetector(
+                              onTap: () => themeChange.darkTheme =
+                                  !themeChange.darkTheme,
+                              child: Text(strings.dark_theme),
+                            ),
+                          ),
                           PopupMenuItem<_PopupMenuAccount>(
                             value: _PopupMenuAccount.about,
                             child: Text(
