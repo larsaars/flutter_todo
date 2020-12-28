@@ -1,11 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:todo/ui/todo/todo_tab.dart';
+import 'package:flutter/material.dart';
 import 'package:todo/util/utils.dart';
 
 class TodoItem {
   String name;
   int deadline, changed;
   DocumentReference doc;
+
+  TextEditingController textController;
+  FocusNode focusNode = FocusNode();
+  int lastTextChange = 0;
 
   TodoItem([this.doc]);
 
@@ -24,7 +28,8 @@ class TodoItem {
     return TodoItem(thisDoc)
       ..changed = time
       ..deadline = deadline
-      ..name = name;
+      ..name = name
+      ..textController = TextEditingController(text: name);
   }
 
   Future<void> update() async {
@@ -40,6 +45,7 @@ class TodoItem {
     name = snapshot.get('n');
     deadline = snapshot.get('dl');
     changed = snapshot.get('c');
+    textController = TextEditingController(text: name);
   }
 
   @override

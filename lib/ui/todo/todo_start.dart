@@ -126,11 +126,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
                             makeNonNull(<PopupMenuEntry<_PopupMenuAccount>>[
                           PopupMenuItem<_PopupMenuAccount>(
                             value: _PopupMenuAccount.changeTheme,
-                            child: GestureDetector(
-                              onTap: () => themeChange.darkTheme =
-                                  !themeChange.darkTheme,
-                              child: Text(strings.dark_theme),
-                            ),
+                            child: Text(strings.dark_theme),
                           ),
                           PopupMenuItem<_PopupMenuAccount>(
                             value: _PopupMenuAccount.about,
@@ -187,6 +183,9 @@ class _TodoStartPageState extends State<TodoStartPage> {
                               break;
                             case _PopupMenuAccount.about:
                               showAbout(context);
+                              break;
+                            case _PopupMenuAccount.changeTheme:
+                              themeChange.darkTheme = !themeChange.darkTheme;
                               break;
                             default:
                               break;
