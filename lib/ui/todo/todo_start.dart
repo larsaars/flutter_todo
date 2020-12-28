@@ -389,7 +389,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
             content: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(strings.deleted_project(project.name)),
+            Flexible(child: Text(strings.deleted_project(project.name))),
             DefaultFlatButton(
                 text: strings.undo,
                 onPressed: () {

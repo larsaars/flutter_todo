@@ -10,9 +10,8 @@ import '../../main.dart';
 
 class TodoTabWidget extends StatefulWidget {
   final TodoTab tab;
-  final GlobalKey<ScaffoldState> scaffoldKey;
 
-  TodoTabWidget({Key key, this.tab, this.scaffoldKey}) : super(key: key);
+  TodoTabWidget({Key key, this.tab}) : super(key: key);
 
   @override
   _TodoTabWidgetState createState() => _TodoTabWidgetState();
@@ -207,18 +206,18 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
     //get the index of this tab
     int tabIndex = tabs.indexOf(tab);
     //direction is to the right
-    if(direction == DismissDirection.startToEnd) {
+    if (direction == DismissDirection.startToEnd) {
       //delete action since is the rightest tab
-      if(tabIndex == (tabs.length - 1))
+      if (tabIndex == (tabs.length - 1))
         deleteItem(item);
       else {
         //else move to tab to the right (index + 1)
         moveItem(item, tabs[tabIndex + 1]);
       }
       //direction is to the left
-    }else if(direction == DismissDirection.endToStart) {
+    } else if (direction == DismissDirection.endToStart) {
       //delete action since is the leftest tab
-      if(tabIndex == 0)
+      if (tabIndex == 0)
         deleteItem(item);
       else {
         //else move to tab to the left (index - 1)
@@ -234,7 +233,8 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
     //delete item from database at this path
     item.doc.delete();
     //add the new item at the new tab
-    TodoItem.addNew(newTab, item.name, item.deadline, item.changed).then((recreatedItem) {
+    TodoItem.addNew(newTab, item.name, item.deadline, item.changed)
+        .then((recreatedItem) {
       //after moving the item add it to the new tabs lists
       newTab.items.add(recreatedItem);
       newTab.filteredItems.add(recreatedItem);
@@ -251,17 +251,20 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
     //state of undone
     bool undone = false;
     //show a snackbar with undo button
-    widget.scaffoldKey.currentState
+    Scaffold.of(context)
         .showSnackBar(SnackBar(
-        content: Row(
+            content: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(strings.deleted_project(item.name)),
+            Flexible(
+                child: Text(
+              strings.deleted_project(item.name),
+            )),
             DefaultFlatButton(
                 text: strings.undo,
                 onPressed: () {
                   //close the snack bar
-                  widget.scaffoldKey.currentState.hideCurrentSnackBar();
+                  Scaffold.of(context).hideCurrentSnackBar();
                   //has been undone
                   undone = true;
                   //set state
