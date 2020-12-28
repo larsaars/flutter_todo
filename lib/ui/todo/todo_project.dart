@@ -153,7 +153,13 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
                       }),
                     ),
                   ])
-                : Text(appBarTitle),
+                : Text(
+                    appBarTitle,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline5
+                        .copyWith(color: Styles.whiteTextFieldColor),
+                  ),
           ),
           actions: <Widget>[
             Visibility(
@@ -203,8 +209,18 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
             isScrollable: tabs.length > 4,
             tabs: tabs
                 .map(
-                  (tab) => Tab(
-                    text: tab.name,
+                  (tab) => Container(
+                    key: Key(tab.name),
+                    height: 43,
+                    child: Center(
+                      child: Text(
+                        tab.name,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText1
+                            .copyWith(color: Styles.whiteTextFieldColor),
+                      ),
+                    ),
                   ),
                 )
                 .toList(),

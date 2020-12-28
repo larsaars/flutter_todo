@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo/ui/login/log_in_page.dart';
 import 'package:todo/ui/style.dart';
@@ -24,7 +25,25 @@ void main() async {
   addLicenses();
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  DarkThemeProvider themeChangeProvider = new DarkThemeProvider();
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentAppTheme();
+  }
+
+  void getCurrentAppTheme() async {
+    themeChangeProvider.darkTheme =
+    await themeChangeProvider.darkThemePreference.getTheme();
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -35,19 +54,28 @@ class MyApp extends StatelessWidget {
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
     //create the material app
-    return MaterialApp(
-      //manage resources first
-      localizationsDelegates: [
-        S.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      supportedLocales: S.delegate.supportedLocales,
-      //define title etc.
-      title: app_name,
-      theme: Styles.themeData(false, context),
-      darkTheme: Styles.themeData(true, context),
-      home: MyHomePage(),
+    return ChangeNotifierProvider(
+      create: (_) => themeChangeProvider,
+      child: Consumer<DarkThemeProvider> (
+        builder: (context, value, child) {
+          return MaterialApp(
+            //no debug flag
+            debugShowCheckedModeBanner: false,
+            //manage resources first
+            localizationsDelegates: [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            supportedLocales: S.delegate.supportedLocales,
+            //define title etc.
+            title: app_name,
+            theme: Styles.themeData(themeChangeProvider.darkTheme, context),
+            darkTheme: Styles.themeData(true, context),
+            home: MyHomePage(),
+          );
+        }
+      )
     );
   }
 }
