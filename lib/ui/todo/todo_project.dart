@@ -76,8 +76,12 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
           //read the values from the db
           //when done reading add to tabs list and set state
           tab.read(queryDocSnapshot).then((value) => setState(() {
+                //add and sort
                 tabs.add(tab);
                 tabs.sort((a, b) => a.position.compareTo(b.position));
+                //on every item set a focus node node listener that when updated sets a new state
+                for (var item in tab.items)
+                  item.focusNode.addListener(() => setState(() {}));
               }));
         }
       });

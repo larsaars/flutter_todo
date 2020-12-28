@@ -166,25 +166,52 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
           ),
           onDismissed: (direction) => tileDismissed(index, direction),
           child: ListTile(
-            trailing: customSorting
-                ? Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: makeNonNull<Widget>([
-                      IconButton(
-                          icon: Icon(
-                            Icons.edit,
-                            color: Styles.greyIconColor,
-                          ),
-                          onPressed: () => editTab(index)),
-                      Icon(
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: makeNonNull<Widget>([
+                item.focusNode.hasPrimaryFocus
+                    ? IconButton(
+                        icon: Icon(
+                          Icons.date_range,
+                          color: Styles.greyIconColor,
+                        ),
+                        onPressed: () => changeDeadline(item))
+                    : null,
+                customSorting
+                    ? Icon(
                         Icons.menu,
                         color: Styles.greyIconColor,
                       )
-                    ]),
-                  )
-                : null,
-            title: Text(
-              '${item.name}',
+                    : null,
+              ]),
+            ),
+            title: TextFormField(
+              maxLines: 1,
+              textAlign: TextAlign.justify,
+              controller: item.textController,
+              focusNode: item.focusNode,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                focusedErrorBorder: InputBorder.none,
+                contentPadding: EdgeInsets.all(2),
+              ),
+              textInputAction: TextInputAction.next,
+              keyboardType: TextInputType.text,
+              onFieldSubmitted: (value) {
+                //focus the next item
+                setState(() {
+                  item.focusNode.unfocus();
+                  int idx = filteredItems.indexOf(item);
+                  if ((idx + 1) < filteredItems.length)
+                    filteredItems[idx + 1].focusNode.requestFocus();
+                });
+              },
+              autofocus: false,
+              onChanged: (value) => itemTextChanged(item, value),
             ),
             subtitle: Text(
               isEmpty(item.deadline)
@@ -192,12 +219,23 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
                   : formatTime(context,
                       DateTime.fromMillisecondsSinceEpoch(item.deadline)),
             ),
-            onTap: () => tapListTile(item),
-            onLongPress: customSorting ? null : () => editTab(index),
           ),
         ),
       );
     }
+  }
+
+  void itemTextChanged(final TodoItem item, String value) {
+    const timeout = 4400;
+    //last text change is now
+    item.lastTextChange = DateTime.now().millisecondsSinceEpoch;
+    //set the value to the item
+    item.name = value;
+    //delayed check last write, this must have been the last write if the check is true (estimated)
+    Future.delayed(Duration(milliseconds: timeout)).then((value) {
+      if ((DateTime.now().millisecondsSinceEpoch - item.lastTextChange) >= (timeout - 50))
+        item.update();
+    });
   }
 
   void tileDismissed(int index, DismissDirection direction) {
@@ -286,58 +324,30 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
     });
   }
 
-  void editTab(int index) {
-    TodoItem item = filteredItems[index];
-
+  void changeDeadline(TodoItem item) async {
+    //set the current deadline
     currentDeadline = item.deadline;
-    var controller = TextEditingController(text: item.name);
-
-    showAnimatedDialog(context,
-        title: strings.rename_change_deadline,
-        children: <Widget>[
-          Row(
-            children: [
-              Expanded(
-                child: TextFormField(
-                  maxLines: 1,
-                  textAlign: TextAlign.justify,
-                  controller: controller,
-                  textInputAction: TextInputAction.go,
-                  keyboardType: TextInputType.text,
-                  autofocus: false,
-                ),
-              ),
-              IconButton(
-                tooltip: strings.deadline,
-                icon: Icon(
-                  Icons.date_range,
-                  color: Styles.greyIconColor,
-                ),
-                onPressed: () => pickDeadline(true),
-              )
-            ],
-          ),
-        ], onDone: (value) {
-      if (value == 'ok') {
-        //edit with new state
-        setState(() {
-          item.deadline = currentDeadline;
-          item.name = controller.text;
-        });
-        //reset current deadline
-        currentDeadline = 0;
-        //update the item in db
-        item.update();
-      }
+    //await the pick deadline dialog
+    await pickDeadline();
+    //when deadline is picked
+    //edit with new state
+    setState(() {
+      item.deadline = currentDeadline;
     });
+    //reset current deadline
+    currentDeadline = 0;
+    //update the item in db
+    item.update();
   }
 
-  void pickDeadline([bool forceShow]) {
+  Future<void> pickDeadline() async {
     int ms = 0;
-    showAnimatedDialog(context, forceShow: forceShow ?? false, children: [
+    await showAnimatedDialog(context, children: [
       DateTimePicker(
         type: DateTimePickerType.dateTimeSeparate,
-        initialValue: DateTime.now().toString(),
+        initialValue: isEmpty(currentDeadline)
+            ? DateTime.now().toString()
+            : DateTime.fromMillisecondsSinceEpoch(currentDeadline).toString(),
         firstDate: DateTime(2000),
         lastDate: DateTime(2100),
         icon: Icon(Icons.event),
@@ -370,8 +380,6 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
       });
     });
   }
-
-  void tapListTile(TodoItem item) {}
 
   TodoTab get tab => widget.tab;
 
