@@ -2,6 +2,7 @@ import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:todo/holder/todo.dart';
 import 'package:todo/ui/todo/todo_project.dart';
+import 'package:todo/ui/widget/standard_widgets.dart';
 import 'package:todo/util/utils.dart';
 import 'package:todo/util/widget_utils.dart';
 
@@ -9,8 +10,9 @@ import '../../main.dart';
 
 class TodoTabWidget extends StatefulWidget {
   final TodoTab tab;
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
-  TodoTabWidget({Key key, this.tab}) : super(key: key);
+  TodoTabWidget({Key key, this.tab, this.scaffoldKey}) : super(key: key);
 
   @override
   _TodoTabWidgetState createState() => _TodoTabWidgetState();
@@ -162,7 +164,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
               ],
             ),
           ),
-          onDismissed: tabDismissed,
+          onDismissed: (direction) => tileDismissed(index, direction),
           child: ListTile(
             trailing: customSorting
                 ? Row(
@@ -198,8 +200,86 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
     }
   }
 
-  void tabDismissed(DismissDirection direction) {
-    //move it to the next / previous tab
+  void tileDismissed(int index, DismissDirection direction) {
+    //move it to the next / previous tab or delete
+    //get the item
+    TodoItem item = filteredItems[index];
+    //get the index of this tab
+    int tabIndex = tabs.indexOf(tab);
+    //direction is to the right
+    if(direction == DismissDirection.startToEnd) {
+      //delete action since is the rightest tab
+      if(tabIndex == (tabs.length - 1))
+        deleteItem(item);
+      else {
+        //else move to tab to the right (index + 1)
+        moveItem(item, tabs[tabIndex + 1]);
+      }
+      //direction is to the left
+    }else if(direction == DismissDirection.endToStart) {
+      //delete action since is the leftest tab
+      if(tabIndex == 0)
+        deleteItem(item);
+      else {
+        //else move to tab to the left (index - 1)
+        moveItem(item, tabs[tabIndex - 1]);
+      }
+    }
+  }
+
+  void moveItem(TodoItem item, TodoTab newTab) {
+    //remove the item from these lists
+    filteredItems.remove(item);
+    tab.items.remove(item);
+    //delete item from database at this path
+    item.doc.delete();
+    //add the new item at the new tab
+    TodoItem.addNew(newTab, item.name, item.deadline, item.changed).then((recreatedItem) {
+      //after moving the item add it to the new tabs lists
+      newTab.items.add(recreatedItem);
+      newTab.filteredItems.add(recreatedItem);
+    });
+  }
+
+  void deleteItem(TodoItem item) {
+    //update the state
+    setState(() {
+      //remove item from both lists
+      tab.items.remove(item);
+      filteredItems.remove(item);
+    });
+    //state of undone
+    bool undone = false;
+    //show a snackbar with undo button
+    widget.scaffoldKey.currentState
+        .showSnackBar(SnackBar(
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(strings.deleted_project(item.name)),
+            DefaultFlatButton(
+                text: strings.undo,
+                onPressed: () {
+                  //close the snack bar
+                  widget.scaffoldKey.currentState.hideCurrentSnackBar();
+                  //has been undone
+                  undone = true;
+                  //set state
+                  setState(() {
+                    //add again
+                    tab.items.add(item);
+                    filteredItems.add(item);
+                  });
+                })
+          ],
+        )))
+        .closed
+        .then((value) {
+      //remove project from database if not undone
+      if (!undone) {
+        item.doc.delete();
+      }
+    });
   }
 
   void editTab(int index) {
