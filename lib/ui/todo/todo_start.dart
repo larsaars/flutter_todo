@@ -155,7 +155,7 @@ class _TodoStartPageState extends State<TodoStartPage> {
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyText1
-                                  .copyWith(color: Colors.red),
+                                  .copyWith(color: Colors.red[800]),
                             ),
                           )
                         ]),

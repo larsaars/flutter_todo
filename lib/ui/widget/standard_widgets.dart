@@ -18,8 +18,8 @@ class DefaultFilledButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return RawMaterialButton(
       shape: roundedButtonShape,
-      fillColor: warningButton ? Colors.red[800] : Colors.indigo,
-      splashColor: warningButton ? Colors.red[600] : Colors.indigo[400],
+      fillColor: warningButton ? Colors.red[800] : Styles.indigoColor,
+      splashColor: warningButton ? Colors.red[600] : Styles.indigoColor[400],
       child: Text(text,
           style: Theme.of(context)
               .textTheme
@@ -46,7 +46,7 @@ class DefaultFlatButton extends StatelessWidget {
           style: Theme.of(context)
               .textTheme
               .bodyText1
-              .copyWith(color: Colors.indigo)),
+              .copyWith(color: Styles.indigoColor)),
       shape: roundedButtonShape,
       onPressed: onPressed,
     );
