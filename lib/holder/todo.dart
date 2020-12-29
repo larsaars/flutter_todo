@@ -111,7 +111,7 @@ class TodoTab {
   void _sort0(List<TodoItem> items, int sortingType) {
     items.sort((a, b) {
       int name = a.name.compareTo(b.name);
-      int deadline = b.deadline.compareTo(a.deadline);
+      int deadline = a.deadline.compareTo(b.deadline);
       int changed = a.position.compareTo(b.position);
 
       if (sortingType == TodoItemSortingType.custom) {
