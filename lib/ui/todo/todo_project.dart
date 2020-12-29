@@ -93,151 +93,181 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
     //return the widget
     return DefaultTabController(
       length: tabs.length,
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          centerTitle: true,
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios,
-              color: Styles.white54IconColor,
+      child: GestureDetector(
+        onTap: FocusScope.of(context).unfocus,
+        child: Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            centerTitle: true,
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back_ios,
+                color: Styles.white54IconColor,
+              ),
+              onPressed: () => searching
+                  ? setState(() {
+                      //not searching anymore
+                      searching = false;
+                      //also clear the search controller
+                      searchController.clear();
+                      //copy back the filtered items to normal
+                      curTab.copyFullToFiltered();
+                    })
+                  : Navigator.of(context).pop(),
             ),
-            onPressed: () => searching
-                ? setState(() {
-                    //not searching anymore
-                    searching = false;
-                    //also clear the search controller
-                    searchController.clear();
-                    //copy back the filtered items to normal
-                    curTab.copyFullToFiltered();
-                  })
-                : Navigator.of(context).pop(),
-          ),
-          title: AnimatedSwitcher(
-            duration: Duration(milliseconds: 170),
-            transitionBuilder: (child, animation) => ScaleTransition(
-              child: child,
-              scale: animation,
-            ),
-            child: searching
-                ? Stack(alignment: Alignment.centerRight, children: [
-                    Icon(
-                      Icons.search,
-                      color: Styles.white54IconColor,
-                    ),
-                    TextFormField(
-                      textAlign: TextAlign.justify,
-                      controller: searchController,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        focusedErrorBorder: InputBorder.none,
+            title: AnimatedSwitcher(
+              duration: Duration(milliseconds: 170),
+              transitionBuilder: (child, animation) => ScaleTransition(
+                child: child,
+                scale: animation,
+              ),
+              child: searching
+                  ? Stack(alignment: Alignment.centerRight, children: [
+                      Icon(
+                        Icons.search,
+                        color: Styles.white54IconColor,
                       ),
-                      keyboardType: TextInputType.text,
-                      autofocus: true,
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle1
-                          .copyWith(color: Styles.whiteTextFieldColor),
-                      onChanged: (value) => setState(() {
-                        //filter the projects titles
-                        if (value.isEmpty)
-                          //clone the projects list
-                          curTab.copyFullToFiltered();
-                        else
-                          curTab.filteredItems = curTab.items
-                              .where((element) => element.name
-                                  .toLowerCase()
-                                  .contains(
-                                      searchController.text.toLowerCase()))
-                              .toList();
-                      }),
-                    ),
-                  ])
-                : Text(
-                    appBarTitle,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline5
-                        .copyWith(color: Styles.whiteTextFieldColor),
-                  ),
-          ),
-          actions: <Widget>[
-            Visibility(
-              visible: !searching,
-              child: Tooltip(
-                message: strings.sorting,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.sort,
-                    color: Styles.white54IconColor,
-                  ),
-                  onPressed: changeSorting,
-                ),
-              ),
-            ),
-            Visibility(
-              visible: !searching,
-              child: IconButton(
-                tooltip: strings.edit_tabs,
-                icon: Icon(
-                  Icons.tab,
-                  color: Styles.white54IconColor,
-                ),
-                onPressed: editTabs,
-              ),
-            ),
-            Tooltip(
-              message: searching ? strings.clear : strings.search,
-              child: IconButton(
-                icon: Icon(
-                  searching ? Icons.clear : Icons.search,
-                  color: Styles.white54IconColor,
-                ),
-                onPressed: () => setState(() {
-                  if (searching) {
-                    //clear the search
-                    searchController.clear();
-                    //copy back the filtered items to normal
-                    curTab.copyFullToFiltered();
-                  } else
-                    searching = true;
-                }),
-              ),
-            ),
-          ],
-          bottom: TabBar(
-            isScrollable: tabs.length > 4,
-            tabs: tabs
-                .map(
-                  (tab) => Container(
-                    key: Key(tab.name),
-                    height: 43,
-                    child: Center(
-                      child: Text(
-                        tab.name,
+                      TextFormField(
+                        textAlign: TextAlign.justify,
+                        controller: searchController,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          focusedErrorBorder: InputBorder.none,
+                        ),
+                        keyboardType: TextInputType.text,
+                        autofocus: true,
                         style: Theme.of(context)
                             .textTheme
-                            .bodyText1
+                            .subtitle1
                             .copyWith(color: Styles.whiteTextFieldColor),
+                        onChanged: (value) => setState(() {
+                          //filter the projects titles
+                          if (value.isEmpty)
+                            //clone the projects list
+                            curTab.copyFullToFiltered();
+                          else
+                            curTab.filteredItems = curTab.items
+                                .where((element) => element.name
+                                    .toLowerCase()
+                                    .contains(
+                                        searchController.text.toLowerCase()))
+                                .toList();
+                        }),
+                      ),
+                    ])
+                  : Text(
+                      appBarTitle,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline5
+                          .copyWith(color: Styles.whiteTextFieldColor),
+                    ),
+            ),
+            actions: <Widget>[
+              Visibility(
+                visible: !searching,
+                child: Tooltip(
+                  message: strings.sorting,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.sort,
+                      color: Styles.white54IconColor,
+                    ),
+                    onPressed: changeSorting,
+                  ),
+                ),
+              ),
+              Visibility(
+                visible: !searching,
+                child: IconButton(
+                  tooltip: strings.edit_tabs,
+                  icon: Icon(
+                    Icons.tab,
+                    color: Styles.white54IconColor,
+                  ),
+                  onPressed: editTabs,
+                ),
+              ),
+              Tooltip(
+                message: searching ? strings.clear : strings.search,
+                child: IconButton(
+                  icon: Icon(
+                    searching ? Icons.clear : Icons.search,
+                    color: Styles.white54IconColor,
+                  ),
+                  onPressed: () => setState(() {
+                    if (searching) {
+                      //clear the search
+                      searchController.clear();
+                      //copy back the filtered items to normal
+                      curTab.copyFullToFiltered();
+                    } else
+                      searching = true;
+                  }),
+                ),
+              ),
+            ],
+            bottom: TabBar(
+              isScrollable: tabs.length > 3,
+              tabs: tabs
+                  .map(
+                    (tab) => Container(
+                      key: Key(tab.name),
+                      height: 43,
+                      child: Center(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  tab.name,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      .copyWith(
+                                          color: Styles.whiteTextFieldColor),
+                                ),
+                              ),
+                            ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(45),
+                              child: Container(
+                                padding: EdgeInsets.all(8),
+                                color: Styles.white54IconColor,
+                                child: Text(
+                                  tab.filteredItems.length.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle2
+                                      .copyWith(
+                                          color: Styles.whiteTextFieldColor),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                )
-                .toList(),
+                  )
+                  .toList(),
+            ),
           ),
-        ),
-        body: TabBarView(
-          children: [
-            for (final tab in tabs)
-              TodoTabWidget(
-                key: Key(tab.doc.id),
-                tab: tab,
-              )
-          ],
+          body: TabBarView(
+            children: [
+              for (final tab in tabs)
+                TodoTabWidget(
+                  key: Key(tab.doc.id),
+                  tab: tab,
+                  updateParent: update,
+                )
+            ],
+          ),
         ),
       ),
     );
@@ -335,7 +365,6 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
                                               setState0(() {
                                                 tab.name = newName ?? '';
                                               });
-                                              print(tab.name);
                                               tab.update();
                                             },
                                           ),
@@ -435,6 +464,11 @@ class _TodoProjectPageState extends State<TodoProjectPage> {
           tabs = tabsCopy;
         });
     });
+  }
+
+  void update([Function() state]) {
+    state ??= () {};
+    setState(state);
   }
 
   void showSnackBar(String msg) {

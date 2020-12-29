@@ -11,8 +11,9 @@ import '../style.dart';
 
 class TodoTabWidget extends StatefulWidget {
   final TodoTab tab;
+  final Function updateParent;
 
-  TodoTabWidget({Key key, this.tab}) : super(key: key);
+  TodoTabWidget({Key key, this.tab, this.updateParent}) : super(key: key);
 
   @override
   _TodoTabWidgetState createState() => _TodoTabWidgetState();
@@ -26,6 +27,9 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
   @override
   void initState() {
     super.initState();
+
+    //set listener on add focus node
+    addFocusNode.addListener(() => setState(() {}));
   }
 
   @override
@@ -59,14 +63,13 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
               }
               int len = filteredItems.length;
               //if the old index is the last item, ignore
-              if (oldIndex == len ||
-                  newIndex >= len) return;
+              if (oldIndex == len || newIndex >= len) return;
               //get the item
               //set the changed item to the right index
               final TodoItem removed = filteredItems.removeAt(oldIndex);
               filteredItems.insert(newIndex, removed);
               //update in database and position arguments
-              for(int i = 0; i < len; i++) {
+              for (int i = 0; i < len; i++) {
                 filteredItems[i].position = i;
                 filteredItems[i].update();
               }
@@ -92,11 +95,13 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: Styles.greyIconColor, width: 0.7)),
           child: Row(
-            children: [
-              Icon(
-                Icons.add,
-                color: Styles.greyIconColor,
-              ),
+            children: makeNonNull<Widget>([
+              addFocusNode.hasPrimaryFocus
+                  ? null
+                  : Icon(
+                      Icons.add,
+                      color: Styles.greyIconColor,
+                    ),
               Expanded(
                 child: TextFormField(
                   maxLines: 1,
@@ -112,7 +117,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
                     focusedErrorBorder: InputBorder.none,
                     contentPadding: EdgeInsets.all(2),
                   ),
-                  textInputAction: TextInputAction.go,
+                  textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.text,
                   onFieldSubmitted: addItem,
                 ),
@@ -132,7 +137,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
                 ),
                 onPressed: pickDeadline,
               )
-            ],
+            ]),
           ),
         ),
       );
@@ -178,6 +183,15 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
                         ),
                         onPressed: () => changeDeadline(item))
                     : null,
+                item.focusNode.hasPrimaryFocus
+                    ? IconButton(
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.red[800],
+                        ),
+                        onPressed: () => deleteItem(item),
+                      )
+                    : null,
                 customSorting
                     ? Icon(
                         Icons.menu,
@@ -209,6 +223,8 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
                   int idx = filteredItems.indexOf(item);
                   if ((idx + 1) < filteredItems.length)
                     filteredItems[idx + 1].focusNode.requestFocus();
+                  else
+                    addFocusNode.requestFocus();
                 });
               },
               autofocus: false,
@@ -273,17 +289,19 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
     //delete item from database at this path
     item.doc.delete();
     //add the new item at the new tab
-    TodoItem.addNew(newTab, item.name, item.deadline, 0)
-        .then((recreatedItem) {
-      //after moving the item add it to the new tabs lists
-      newTab.items.add(recreatedItem);
-      newTab.filteredItems.add(recreatedItem);
+    TodoItem.addNew(newTab, item.name, item.deadline, 0).then((recreatedItem) {
+      //update the parent widget
+      widget.updateParent(() {
+        //after moving the item add it to the new tabs lists
+        newTab.items.add(recreatedItem);
+        newTab.filteredItems.add(recreatedItem);
+      });
     });
   }
 
   void deleteItem(TodoItem item) {
-    //update the state
-    setState(() {
+    //update the parent widget
+    widget.updateParent(() {
       //remove item from both lists
       tab.items.remove(item);
       filteredItems.remove(item);
@@ -307,8 +325,8 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
                   Scaffold.of(context).hideCurrentSnackBar();
                   //has been undone
                   undone = true;
-                  //set state
-                  setState(() {
+                  //update the parent widget
+                  widget.updateParent(() {
                     //add again
                     tab.items.add(item);
                     filteredItems.add(item);
@@ -372,9 +390,8 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
     //add the item to firebase and then set the state
     TodoItem.addNew(tab, name, isEmpty(currentDeadline) ? 0 : currentDeadline)
         .then((item) {
-      setState(() {
-        //keep focus
-        addFocusNode.requestFocus();
+      //update the parent widget
+      widget.updateParent(() {
         //add to the lists
         tab.items.add(item);
         tab.filteredItems.add(item);

@@ -71,7 +71,6 @@ class _MyAppState extends State<MyApp> {
             //define title etc.
             title: app_name,
             theme: Styles.themeData(themeChangeProvider.darkTheme, context),
-            darkTheme: Styles.themeData(true, context),
             home: MyHomePage(),
           );
         }
