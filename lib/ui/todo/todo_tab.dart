@@ -164,7 +164,7 @@ class _TodoTabWidgetState extends State<TodoTabWidget> {
                   color: Styles.white54IconColor,
                 ),
                 Icon(
-                  isLeftestTab ? Icons.delete : Icons.arrow_back_ios,
+                  isLeftestTab ? Icons.delete : Icons.keyboard_arrow_left_outlined,
                   color: Styles.white54IconColor,
                 ),
               ],
