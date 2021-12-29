@@ -1,3 +1,3 @@
 # flutter todo application
 
-Better management of todos.
+Better management of your todos.
